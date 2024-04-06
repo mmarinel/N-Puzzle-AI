@@ -1,6 +1,8 @@
 {
 	"files.associations": {
 		"*.tpp": "cpp",
-		"qwidget": "cpp"
+		"qwidget": "cpp",
+		"array": "cpp",
+		"*.tcc": "cpp"
 	}
 }
