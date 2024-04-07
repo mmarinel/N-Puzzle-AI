@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="fonts">
+        <file alias="bold">fonts/FiraSans-Bold.ttf</file>
+        <file alias="regular">fonts/FiraSans-Regular.ttf</file>
+        <file alias="medium">fonts/FiraSans-Medium.ttf</file>
+        <file alias="icons">fonts/DynaPuff-VariableFont_wdth,wght.ttf</file>
+    </qresource>
+    <qresource prefix="stylesheet">
+        <file alias="style">style.qss</file>
+    </qresource>
+</RCC>

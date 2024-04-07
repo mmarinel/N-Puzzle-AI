@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:27:38 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/06 18:31:53 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/07 12:45:13 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ private:
 public:
 	static BoardState&	getInstance();
 						~BoardState();
+						
 	void				setSize(int	_size);
 	void				swap(int _x1, int _y1, int _x2, int _y2);
 						

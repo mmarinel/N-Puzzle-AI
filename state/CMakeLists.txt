@@ -1,0 +1,10 @@
+set(
+	STATELIB_SRCS
+	"./state/BoardState.hpp"
+	"./state/BoardState.cpp"
+	"./state/Tile.hpp"
+	"./state/Tile.cpp"
+	"./state/UIState.hpp"
+	"./state/UIState.cpp"
+	PARENT_SCOPE
+)

@@ -6,20 +6,34 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/03 20:26:41 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/07 17:13:52 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <QApplication>
+#include <QFontDatabase>
+#include <QDebug>
 
-int main(int argc, char *argv[])
+#include "Window.hpp"
+#include "utils.hpp"
+
+int main(int argc, char const* argv[])
 {
-    QGuiApplication app(argc, argv);
+	QApplication	app{
+		argc, const_cast<char**>(argv)
+	};
 
-    QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/hello/main.qml"_qs);
-    engine.load(url);
+	QFontDatabase::addApplicationFont(":/fonts/bold");
+	QFontDatabase::addApplicationFont(":/fonts/regular");
+	QFontDatabase::addApplicationFont(":/fonts/medium");
+	QFontDatabase::addApplicationFont(":/fonts/icons");
 
-    return app.exec();
+	// app.setFont(QFont("Roboto"));
+	NPuzzle::addStyleSheet(app);
+	Window	win{};
+
+	win.show();
+	auto	exit_status = app.exec();
+	//TODO ...cleanup?
+	return exit_status;
 }

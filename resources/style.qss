@@ -1,0 +1,32 @@
+
+QWidget
+{
+	background-color: #91ACF2;
+	font-family: "Fira Sans";
+	font-size: 16px;
+}
+QCheckBox::indicator:!checked
+{
+	background-color: white;
+}
+QCheckBox::indicator:checked
+{
+}
+QComboBox
+{
+	color: black;
+}
+
+QPushButton#forwardBtn,
+QPushButton#backwardBtn
+{
+	background-color: #91ACF2;
+	color: black;
+	font-family: "DynaPuff";
+	font-size: 24px;
+}
+
+QPushButton:disabled
+{
+	color: rgba(0, 0, 0, 0.637);
+}

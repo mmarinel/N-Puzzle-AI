@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(npuzzle VERSION 1.0.0 LANGUAGES CXX)
+set(
+	EXECUTABLE_NAME npuzzle
+)
+
+set(
+	STATELIB_NAME "statelib" CACHE STRING "name of the state library"
+)
+set(
+	GUILIB_NAME "guilib" CACHE STRING "name of the gui library"
+)
+
+project(${EXECUTABLE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
@@ -9,17 +20,38 @@ set(CMAKE_AUTOMOC on) # codice generato prima della compilazione
 set(CMAKE_AUTORCC on) # resource compiler (immagini icone, etc.)
 set(CMAKE_AUTOUIC on) # NON parsa il file xml per generare l'UI
 
-find_package(Qt6 REQUIRED COMPONENTS Qml)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-add_executable(
-	npuzzle
+
+add_subdirectory(state)
+add_subdirectory(gui)
+add_subdirectory(heuristics)
+
+qt_add_executable(
+	${EXECUTABLE_NAME}
 	main.cpp
+	resources/styleResources.qrc
+	${GUILIB_SRCS}
+	${STATELIB_SRCS}
+	${HEURISTICSLIB_SRCS}
 )
 
-target_link_libraries(npuzzle PRIVATE Qt6::Qml)
+target_link_libraries(
+	${EXECUTABLE_NAME}
+	PRIVATE
+	Qt6::Widgets
+)
+
+target_include_directories(
+	${EXECUTABLE_NAME}
+	PRIVATE
+	"./gui/"
+	"./state"
+	"./heuristics"
+)
 
 # per portabilità
-set_target_properties(npuzzle PROPERTIES
+set_target_properties(${EXECUTABLE_NAME} PROPERTIES
 	WIN32_EXECUTABLE ON
 	MACOSX_BUNDLE ON
 )

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 18:13:12 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/06 18:29:00 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/06 20:18:07 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ Tile&	Tile::operator=(const Tile& other)
 		empty = false;
 		nbr = other.nbr;
 	}
+	return *this;
 }
 
 Tile::operator int() const
@@ -51,5 +52,5 @@ Tile::operator std::string() const
 	if (empty)
 		return "";
 	else
-		 std::to_string(nbr);
+		return std::to_string(nbr);
 }
