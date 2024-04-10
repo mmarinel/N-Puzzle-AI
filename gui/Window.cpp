@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/07 17:11:07 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/10 19:39:03 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Window::Window(): QWidget{}
 	area = new QVBoxLayout{};
 	QHBoxLayout*	backforward_area = new QHBoxLayout();
 
-	
+	// Adding fixed components
 	forward_btn = new QPushButton{">"};
 	backward_btn = new QPushButton{"<"};
 	forward_btn->setObjectName("forwardBtn");
@@ -30,35 +30,25 @@ Window::Window(): QWidget{}
 	backforward_area->addWidget(backward_btn);
 	backforward_area->addWidget(forward_btn);
 
-	area->addLayout(new MenuView());
+	// Adding pages
+	menu_page = new QWidget{};
+	menu_page->setLayout(new MenuView{});
+
+	//Setting content
+	content = new QStackedWidget{};
+	
+	static_cast<MenuView*>(menu_page->layout())
+		->index = content->addWidget(menu_page);
+	content->setCurrentIndex(
+		static_cast<MenuView*>(menu_page->layout())->index
+	);
+
+	area->addWidget(content);
 	area->addLayout(backforward_area);
-	// area->addItem(
-	// 	new QSpacerItem(
-	// 		WIDTH / 2, HEIGHT
-	// 	)
-	// );
-	// area->addLayout(
-	// 	new MenuView()
-	// );
+
+	//
 	this->setLayout(area);
 	
-	// ui_area = new QVBoxLayout{};
-	// board = new QGridLayout{};
-	// buttons_area = new QHBoxLayout{};
-
-	// ui_area->addLayout(board);
-	// ui_area->addLayout(buttons_area);
-
-	// play = new QPushButton("|>");
-	// move_forward = new QPushButton("+1");
-	// move_backward = new QPushButton("-1");
-
-	// buttons_area->addWidget(move_backward);
-	// buttons_area->addWidget(play);
-	// buttons_area->addWidget(move_forward);
-
-
-	// this->setLayout(ui_area);
 }
 
 Window::~Window() {}

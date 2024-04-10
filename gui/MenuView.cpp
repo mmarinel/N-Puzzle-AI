@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/07 22:16:08 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/10 17:56:07 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ MenuView::MenuView(): QHBoxLayout{}
 	choose_heuristic->setPlaceholderText("--Select Heuristic--");
 	choose_heuristic->setCurrentIndex(-1);
 
+	// Adding to the vertical centered layout
 	widgets_area->addItem(hoz1);
 	widgets_area->addWidget(choose_file);
 	widgets_area->addWidget(choose_random);
@@ -60,10 +61,12 @@ MenuView::MenuView(): QHBoxLayout{}
 	widgets_area->addLayout(heuristics_area);
 	widgets_area->addItem(hoz2);
 
+	// Adding to the whole Horizontal layout |spacer W |spacer
 	this->addItem(vert1);
 	this->addLayout(widgets_area);
 	this->addItem(vert2);
 
+	// Controller
 	QObject::connect(
 		choose_file, &QPushButton::clicked,
 		this, &MenuView::setBoardFile
