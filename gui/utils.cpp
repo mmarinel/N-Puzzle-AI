@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:48:17 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/07 16:57:29 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/10 21:54:06 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,9 @@ void	NPuzzle::addStyleSheet(QApplication& app)
 	styleSheet = f.readAll();
 
 	app.setStyleSheet(styleSheet);
+}
+
+void	NPuzzle::addPage(Content* content, QWidget* page)
+{
+	
 }

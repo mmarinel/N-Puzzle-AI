@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:59:35 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/06 18:29:37 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/11 19:38:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,17 @@ BoardState& BoardState::getInstance() {
 	
 	return	state;
 }
-
-void	BoardState::setSize(int	_size)
+#include <iostream>
+void	BoardState::setSize(int	n)
 {
-	size = _size;
+	size = n;
 	board.clear();
 	board.resize(size);
-	for (std::vector<Tile>	row: board)
+	for (std::vector<Tile>&	row: board)
 	{
 		row.resize(size);
 	}
+	std::cout << "BoardState::setSize(int n) --- END" << std::endl;
 }
 
 void			BoardState::swap(int _x1, int _y1, int _x2, int _y2)

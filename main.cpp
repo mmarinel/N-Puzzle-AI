@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/07 17:13:52 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/12 16:55:30 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ int main(int argc, char const* argv[])
 	QFontDatabase::addApplicationFont(":/fonts/icons");
 
 	// app.setFont(QFont("Roboto"));
+
+	BoardState::getInstance().setSize(8);
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+		BoardState::getInstance().board[i][j] = Tile{1};
+
 	NPuzzle::addStyleSheet(app);
 	Window	win{};
 

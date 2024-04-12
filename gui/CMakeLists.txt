@@ -12,8 +12,17 @@ set(
 	GUILIB_SRCS
 	"./gui/Window.hpp"
 	"./gui/Window.cpp"
+	"./gui/Content.hpp"
+	"./gui/Content.cpp"
 	"./gui/MenuView.hpp"
 	"./gui/MenuView.cpp"
+	"./gui/Page.hpp"
+	"./gui/SolveView.hpp"
+	"./gui/SolveView.cpp"
+	"./gui/BoardView.hpp"
+	"./gui/BoardView.cpp"
+	"./gui/TileView.hpp"
+	"./gui/TileView.cpp"
 	"./gui/utils.hpp"
 	"./gui/utils.cpp"
 	PARENT_SCOPE

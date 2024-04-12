@@ -4,6 +4,7 @@ QWidget
 	background-color: #91ACF2;
 	font-family: "Fira Sans";
 	font-size: 16px;
+	/* border: 2px solid red; */
 }
 QCheckBox::indicator:!checked
 {
@@ -29,4 +30,9 @@ QPushButton#backwardBtn
 QPushButton:disabled
 {
 	color: rgba(0, 0, 0, 0.637);
+}
+
+QLabel#Tile
+{
+	border: 2px solid blue;
 }

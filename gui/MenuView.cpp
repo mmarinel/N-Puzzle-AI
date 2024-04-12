@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/10 17:56:07 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/12 16:51:50 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,28 +18,10 @@
 #include <QFileDialog>
 #include <QDebug>
 
-MenuView::MenuView(): QHBoxLayout{}
+MenuView::MenuView(): QVBoxLayout{}
 {
-	QSpacerItem*		vert1 = new QSpacerItem(
-		WIDTH / 4,
-		HEIGHT
-	);
-	QSpacerItem*		vert2 = new QSpacerItem(
-		WIDTH / 4,
-		HEIGHT
-	);
-	QSpacerItem*		hoz1 = new QSpacerItem(
-		WIDTH / 4,
-		HEIGHT / 3
-	);
-	QSpacerItem*		hoz2 = new QSpacerItem(
-		WIDTH / 4,
-		HEIGHT / 3
-	);
-	QVBoxLayout*	widgets_area = new QVBoxLayout();
+	// Adding widgets
 	QHBoxLayout*	heuristics_area = new QHBoxLayout();
-
-
 	choose_file = new QPushButton(CHOOSE_FILE_TEXT);
 	choose_random = new QCheckBox("...or choose at random");
 	heuristics_area = new QHBoxLayout{};
@@ -53,18 +35,11 @@ MenuView::MenuView(): QHBoxLayout{}
 	choose_heuristic->setCurrentIndex(-1);
 
 	// Adding to the vertical centered layout
-	widgets_area->addItem(hoz1);
-	widgets_area->addWidget(choose_file);
-	widgets_area->addWidget(choose_random);
+	this->addWidget(choose_file);
+	this->addWidget(choose_random);
 	heuristics_area->addWidget(heurstic_lbl);
 	heuristics_area->addWidget(choose_heuristic);
-	widgets_area->addLayout(heuristics_area);
-	widgets_area->addItem(hoz2);
-
-	// Adding to the whole Horizontal layout |spacer W |spacer
-	this->addItem(vert1);
-	this->addLayout(widgets_area);
-	this->addItem(vert2);
+	this->addLayout(heuristics_area);
 
 	// Controller
 	QObject::connect(

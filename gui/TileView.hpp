@@ -1,38 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BoardState.hpp                                     :+:      :+:    :+:   */
+/*   TileView.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/04 20:27:38 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 19:37:48 by matteo           ###   ########.fr       */
+/*   Created: 2024/04/11 20:06:37 by matteo            #+#    #+#             */
+/*   Updated: 2024/04/11 20:40:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <vector>
+#include <QLabel>
 
-#include "Tile.hpp"
-
-class BoardState
+class TileView: public QLabel
 {
-public:
-	int								size;
-	int								x_empty;
-	int								y_empty;
-	std::vector<std::vector<Tile> >	board;
-
+	Q_OBJECT
 private:
-	BoardState();
 public:
-	static BoardState&	getInstance();
-						~BoardState();
-						
-	void				setSize(int	n);
-	void				swap(int _x1, int _y1, int _x2, int _y2);
-						
-						BoardState(const BoardState&) = delete;
-	BoardState&			operator=(const BoardState&) = delete;
+
+	TileView();
+	~TileView();
+
+	bool	hasHeightForWidth() const override;
+	int		heightForWidth(int w) const override;
+
+// protected:
+// 	void	resizeEvent(QResizeEvent* event);
 };

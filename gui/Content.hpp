@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BoardView.hpp                                      :+:      :+:    :+:   */
+/*   Content.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/10 18:38:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 20:49:24 by matteo           ###   ########.fr       */
+/*   Created: 2024/04/10 19:44:42 by matteo            #+#    #+#             */
+/*   Updated: 2024/04/10 20:09:44 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <QGridLayout>
-#include <QWidget>
-#include <QLabel>
+#include <QStackedWidget>
+#include <QSpacerItem>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
-#include <string>
-
-#include "BoardState.hpp"
-#include "TileView.hpp"
-
-#define TILE_OBJ_NAME "Tile"
-
-class BoardView: public QWidget
+class Content: public QStackedWidget
 {
 	Q_OBJECT
-private:
-	const BoardState&	status;
-	QGridLayout*		grid;
 public:
-	BoardView();
-	~BoardView();
-
-	virtual void	paintEvent(QPaintEvent* event) override;
-protected:
-	void	resizeEvent(QResizeEvent* event);
+	
+	int	addWidget(QWidget* widget);
 };
