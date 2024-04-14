@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   UIState.cpp                                        :+:      :+:    :+:   */
+/*   CustomDialog.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/07 19:45:40 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 22:14:08 by matteo           ###   ########.fr       */
+/*   Created: 2024/04/13 15:47:52 by matteo            #+#    #+#             */
+/*   Updated: 2024/04/13 15:48:03 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "UIState.hpp"
+#pragma once
 
-UIState::UIState(): boardFileName{}, atRandom{false}, h{}, currentPage{MENU} {}
+#include <QDialog>
 
-UIState::~UIState() {}
-
-UIState& UIState::getInstance() {
-	static UIState	state{};
+class CustomDialog: public QDialog
+{
+	Q_OBJECT
+	private:
+		std::string		msg;
 	
-	return	state;
-}
+	public:
+		CustomDialog(const QString& msg, QWidget* parent = nullptr );
+};

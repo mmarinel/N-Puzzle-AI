@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:55:50 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/10 20:09:06 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/14 10:23:30 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,27 @@ int		Content::addWidget(QWidget* widget)
 {
 	QSpacerItem*		vert1 = new QSpacerItem(
 		WIDTH / 4,
-		HEIGHT
+		HEIGHT,
+		QSizePolicy::Preferred,
+		QSizePolicy::Preferred
 	);
 	QSpacerItem*		vert2 = new QSpacerItem(
 		WIDTH / 4,
-		HEIGHT
+		HEIGHT,
+		QSizePolicy::Preferred,
+		QSizePolicy::Preferred
 	);
 	QSpacerItem*		hoz1 = new QSpacerItem(
 		WIDTH / 4,
-		HEIGHT / 3
+		HEIGHT / 3,
+		QSizePolicy::Preferred,
+		QSizePolicy::Preferred
 	);
 	QSpacerItem*		hoz2 = new QSpacerItem(
 		WIDTH / 4,
-		HEIGHT / 3
+		HEIGHT / 3,
+		QSizePolicy::Preferred,
+		QSizePolicy::Preferred
 	);
 	QHBoxLayout*		l2 = new QHBoxLayout{};
 	QVBoxLayout*		l1 = new QVBoxLayout{};

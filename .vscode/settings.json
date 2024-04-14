@@ -82,6 +82,10 @@
 		"typeinfo": "cpp",
 		"variant": "cpp",
 		"qstackedwidget": "cpp",
-		"qtextedit": "cpp"
+		"qtextedit": "cpp",
+		"coroutine": "cpp",
+		"qfiledialog": "cpp",
+		"qguiapplication": "cpp",
+		"qgroupbox": "cpp"
 	}
 }

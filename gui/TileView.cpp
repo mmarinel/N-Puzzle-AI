@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 20:08:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 20:40:33 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/13 10:33:59 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 
 TileView::TileView(): QLabel()
 {
+	this->setFrameStyle(QFrame::Box | QFrame::Sunken);
+	this->setLineWidth(3);
+	this->setMidLineWidth(3);
+	// this->setMaximumWidth(50);
+	this->setFixedWidth(50);//TODO
+	// this->setFrameShape(QFrame::Panel);
+	// this->setFrameShadow(QFrame::Sunken);
 }
 
 TileView::~TileView() {}

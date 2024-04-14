@@ -20,7 +20,7 @@ set(CMAKE_AUTOMOC on) # codice generato prima della compilazione
 set(CMAKE_AUTORCC on) # resource compiler (immagini icone, etc.)
 set(CMAKE_AUTOUIC on) # NON parsa il file xml per generare l'UI
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
 
 
 add_subdirectory(state)
@@ -39,13 +39,16 @@ qt_add_executable(
 target_link_libraries(
 	${EXECUTABLE_NAME}
 	PRIVATE
+	Qt6::Core
 	Qt6::Widgets
+	Qt6::Gui
 )
 
 target_include_directories(
 	${EXECUTABLE_NAME}
 	PRIVATE
 	"./gui/"
+	"./gui/utils"
 	"./state"
 	"./heuristics"
 )

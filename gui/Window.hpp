@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:24:44 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/12 16:50:36 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/14 22:18:16 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 #include "SolveView.hpp"
 #include "Page.hpp"
 #include "Content.hpp"
+
+#include <QThread>
 
 #define WIDTH 900
 #define HEIGHT 800
@@ -44,4 +46,8 @@ private:
 public:
 	Window();
 	~Window();
+
+public slots:
+	void	forward();
+	void	backward();
 };

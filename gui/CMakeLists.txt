@@ -23,8 +23,10 @@ set(
 	"./gui/BoardView.cpp"
 	"./gui/TileView.hpp"
 	"./gui/TileView.cpp"
-	"./gui/utils.hpp"
-	"./gui/utils.cpp"
+	"./gui/utils/utils.hpp"
+	"./gui/utils/utils.cpp"
+	"./gui/utils/CustomDialog.hpp"
+	"./gui/utils/CustomDialog.cpp"
 	PARENT_SCOPE
 )
 

@@ -6,13 +6,14 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/12 16:50:27 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/14 22:30:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Window.hpp"
 #include "Page.hpp"
 #include "Content.hpp"
+#include "UIState.hpp"
 
 #include <QSpacerItem>
 
@@ -31,6 +32,7 @@ Window::Window(): QWidget{}
 	backward_btn->setObjectName("backwardBtn");
 	backforward_area->addWidget(backward_btn);
 	backforward_area->addWidget(forward_btn);
+	backward_btn->setDisabled(true);
 
 	// Adding pages
 	menu_page = new Page{};
@@ -52,16 +54,44 @@ Window::Window(): QWidget{}
 	//Controller
 	QObject::connect(
 		forward_btn, &QPushButton::clicked,
-		[this](){
-			this->content->setCurrentIndex(
-				solve_page->index
-			);
-		}
+		this, &Window::forward
+	);
+	QObject::connect(
+		backward_btn, &QPushButton::clicked,
+		this, &Window::backward
 	);
 
 	//
 	this->setLayout(area);
-	
 }
 
 Window::~Window() {}
+
+void	Window::forward()
+{
+	if (CurrentPage::MENU == UIState::getInstance().currentPage)
+	{
+		this->backward_btn->setDisabled(false);
+		this->forward_btn->setDisabled(true);
+		UIState::getInstance().currentPage = CurrentPage::SOLVE;
+		this->content->setCurrentIndex(
+			solve_page->index
+		);
+	}
+}
+
+void	Window::backward()
+{
+	if (CurrentPage::SOLVE == UIState::getInstance().currentPage)
+	{
+		static_cast<SolveView*>(
+			this->content->currentWidget()->layout()
+		)->abort();
+		this->backward_btn->setDisabled(true);
+		this->forward_btn->setDisabled(false);
+		UIState::getInstance().currentPage = CurrentPage::MENU;
+		this->content->setCurrentIndex(
+			menu_page->index
+		);
+	}
+}

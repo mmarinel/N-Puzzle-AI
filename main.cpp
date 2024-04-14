@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/12 16:55:30 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/14 11:07:58 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,12 @@ int main(int argc, char const* argv[])
 
 	// app.setFont(QFont("Roboto"));
 
+	int	count = 1;
 	BoardState::getInstance().setSize(8);
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++)
-		BoardState::getInstance().board[i][j] = Tile{1};
+			if (8 - 1 != i || 8 -1 != j)
+				BoardState::getInstance().board[i][j] = Tile{count++};
 
 	NPuzzle::addStyleSheet(app);
 	Window	win{};

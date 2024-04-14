@@ -4,22 +4,22 @@ QWidget
 	background-color: #91ACF2;
 	font-family: "Fira Sans";
 	font-size: 16px;
-	/* border: 2px solid red; */
 }
 QCheckBox::indicator:!checked
 {
 	background-color: white;
 }
-QCheckBox::indicator:checked
-{
-}
+
 QComboBox
 {
 	color: black;
 }
 
 QPushButton#forwardBtn,
-QPushButton#backwardBtn
+QPushButton#backwardBtn,
+QPushButton#playButton,
+QPushButton#playBackButton,
+QPushButton#playForwardButton
 {
 	background-color: #91ACF2;
 	color: black;
@@ -27,12 +27,56 @@ QPushButton#backwardBtn
 	font-size: 24px;
 }
 
-QPushButton:disabled
+QPushButton:disabled,
+QPushButton#playBackButton:disabled,
+QPushButton#playForwardButton:disabled,
+QPushButton#backwardBtn:disabled,
+QPushButton#forwardBtn:disabled
 {
-	color: rgba(0, 0, 0, 0.637);
+	color: rgba(0, 0, 0, 0.437);
 }
 
-QLabel#Tile
+QLabel#Tile:hover,
+QLabel#Tile:focus
 {
-	border: 2px solid blue;
+	background-color: #91acf2c9;
+}
+
+TileView
+{
+	font-family: "DynaPuff";
+	font-size: 12px;
+}
+
+QScrollBar:horizontal
+{
+	height: 20px;
+}
+
+QScrollBar:vertical
+{
+	width: 20px;
+}
+
+QScrollBar::handle:horizontal,
+QScrollBar::handle:vertical
+{
+	background-color: rgb(97, 132, 245);
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line
+{
+	background: transparent;
+}
+
+QScrollBar::handle:pressed
+{
+	background-color: rgba(97, 132, 245, 0.571);
+}
+
+QTextEdit
+{
+	font-family: "Fira Sans";
+	font-weight: medium;
 }
