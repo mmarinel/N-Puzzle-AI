@@ -8,4 +8,7 @@
     <qresource prefix="stylesheet">
         <file alias="style">style.qss</file>
     </qresource>
+    <qresource prefix="images">
+        <file alias="icon">images/icons/shakey.jpg</file>
+    </qresource>
 </RCC>

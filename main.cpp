@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 11:07:58 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/17 22:04:04 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int main(int argc, char const* argv[])
 	QApplication	app{
 		argc, const_cast<char**>(argv)
 	};
+
+	app.setWindowIcon(QIcon(":/images/icon"));
 
 	QFontDatabase::addApplicationFont(":/fonts/bold");
 	QFontDatabase::addApplicationFont(":/fonts/regular");
