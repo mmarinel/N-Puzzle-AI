@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 22:38:02 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/17 22:02:26 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ SolveView::SolveView(): QVBoxLayout(),
 solving{false},
 executing{false}
 {
-	// Adding widgets
+	// Creating widgets
 	second_window = nullptr;
 	new_win_board = nullptr;
 	board = nullptr;
@@ -46,17 +46,42 @@ executing{false}
 		}
 		else
 		{
+			board_box = new QHBoxLayout{};
 			board = new BoardView();
 			board->setSizePolicy(
 				QSizePolicy::Expanding, QSizePolicy::Preferred
 			);
+			board_box->addWidget(board);
+			board_box->setContentsMargins(-1, -1, -1, 50);
 		}
 	}
 
+	btns_stacked = new QStackedWidget{};
+
+	solve_btn_box = new QWidget{};
+	solve_btn_box->setLayout(new QHBoxLayout{});
 	solve_btn = new QPushButton("Solve");
 	solve_btn	->setFixedWidth(WIDTH / 3);
 	solve_btn	->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+	solve_btn_box->layout()->addWidget(solve_btn);
 	
+	play_box = new QWidget{};
+	play_box->setLayout(new QHBoxLayout{});
+	play_btn = new QPushButton{">"};
+	playback_btn = new QPushButton{"-1"};
+	playforward_btn = new QPushButton{"+1"};
+	play_btn->setObjectName("playButton");
+	playback_btn->setObjectName("playBackButton");
+	playforward_btn->setObjectName("playForwardButton");
+	play_box->layout()->setAlignment(Qt::AlignCenter);
+	play_box->layout()->addWidget(playback_btn);
+	play_box->layout()->addWidget(play_btn);
+	play_box->layout()->addWidget(playforward_btn);
+
+	btns_stacked->addWidget(solve_btn_box);
+	btns_stacked->addWidget(play_box);
+
+	output_box = new QHBoxLayout{};
 	output = new QTextEdit();
 	output->setText(
 		"Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, \
@@ -91,36 +116,14 @@ quasi aliquam eligendi, placeat qui corporis!"
 	output		->setFrameStyle(QFrame::Box | QFrame::Sunken);
 	output		->setLineWidth(3);
 	output		->setMidLineWidth(3);
-
-	play_box = new QHBoxLayout{};
-	play_btn = new QPushButton{">"};
-	playback_btn = new QPushButton{"-1"};
-	playforward_btn = new QPushButton{"+1"};
-	play_btn->setObjectName("playButton");
-	playback_btn->setObjectName("playBackButton");
-	playforward_btn->setObjectName("playForwardButton");
-	// play_box->setLayout(new QHBoxLayout{});
-	play_box->setAlignment(Qt::AlignCenter);
-
-	play_box->addWidget(playback_btn);
-	play_box->addWidget(play_btn);
-	play_box->addWidget(playforward_btn);
+	output_box->addWidget(output);
 
 	// Adding to the vertical centered layout
 	if (board)
 	{
-		board_box = new QHBoxLayout{};
-		board_box->addWidget(board);
 		this->addLayout(board_box);
-		board_box->setContentsMargins(-1, -1, -1, 50);
-		// board->hide();
 	}
-	solve_btn_box = new QHBoxLayout{};
-	solve_btn_box->addWidget(solve_btn);
-	this->addLayout(solve_btn_box);
-
-	output_box = new QHBoxLayout{};
-	output_box->addWidget(output);
+	this->addWidget(btns_stacked);
 	this->addLayout(output_box);
 
 	// Controller
@@ -163,22 +166,20 @@ SolveView::~SolveView()
 
 void	SolveView::startSolving()
 {
-	this->removeItem(solve_btn_box);
-	solve_btn_box->removeWidget(solve_btn);
-	delete solve_btn;
-	delete solve_btn_box;
-	
+	this->solving = true;
+
+	btns_stacked->setCurrentIndex(1);
 	//TODO
 	//TODO 1. Add Loading gif
 	//TODO 3. Connect SLOT for work done
 	//TODO 2. Start AI QThread
 
 	//TODO this will be inside mentioned SLOT
-	this->insertLayout(
-		BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW
-		? 0 : 1
-		, play_box
-	);
+	// this->insertLayout(
+	// 	BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW
+	// 	? 0 : 1
+	// 	, play_box
+	// );
 }
 
 void	SolveView::play_stop()
@@ -203,7 +204,17 @@ void	SolveView::abort()
 {
 	this->solving = false;
 	this->executing = false;
+
+	btns_stacked->setCurrentIndex(0);
+
 	//TODO handle reset of AI state?
 
 	//TODO substitute play area with solve button...tomorrow!
+
+	//TODO
+	//TODO 1. Add Loading gif
+	//TODO 3. Connect SLOT for work done
+	//TODO 2. Start AI QThread
+
+	//TODO this will be inside mentioned SLOT
 }

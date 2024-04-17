@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 22:30:20 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/17 21:49:58 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ Window::Window(): QWidget{}
 	menu_page->index = content->addWidget(menu_page);
 	solve_page->index = content->addWidget(solve_page);
 	
-	content->setCurrentIndex(menu_page->index);
+	// content->setCurrentIndex(menu_page->index);
 
 	area->addWidget(content);
 	area->addLayout(backforward_area);
@@ -73,10 +73,10 @@ void	Window::forward()
 	{
 		this->backward_btn->setDisabled(false);
 		this->forward_btn->setDisabled(true);
-		UIState::getInstance().currentPage = CurrentPage::SOLVE;
 		this->content->setCurrentIndex(
 			solve_page->index
 		);
+		UIState::getInstance().currentPage = CurrentPage::SOLVE;
 	}
 }
 
@@ -85,13 +85,13 @@ void	Window::backward()
 	if (CurrentPage::SOLVE == UIState::getInstance().currentPage)
 	{
 		static_cast<SolveView*>(
-			this->content->currentWidget()->layout()
+			solve_page->layout()
 		)->abort();
-		this->backward_btn->setDisabled(true);
-		this->forward_btn->setDisabled(false);
-		UIState::getInstance().currentPage = CurrentPage::MENU;
 		this->content->setCurrentIndex(
 			menu_page->index
 		);
+		this->backward_btn->setDisabled(true);
+		this->forward_btn->setDisabled(false);
+		UIState::getInstance().currentPage = CurrentPage::MENU;
 	}
 }
