@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 20:02:02 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 20:18:06 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ executing{false}
 	{
 		if (BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW)
 		{
+			second_window = new QWidget{};
 			new_win_board = new BoardView{};
 			new_win_board->setSizePolicy(
 				QSizePolicy::Expanding, QSizePolicy::Expanding
 			);
-			second_window = new QWidget{};
 			QHBoxLayout*	new_win_board_box = new QHBoxLayout{};
 			QScrollArea*	new_window_scroll_area = new QScrollArea{};
 			

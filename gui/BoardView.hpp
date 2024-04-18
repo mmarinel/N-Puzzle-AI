@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:38:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 11:20:06 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 20:12:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class BoardView: public QWidget
 	Q_OBJECT
 private:
 	const BoardState&	status;
+	QGridLayout*		grid;
 public:
-	QGridLayout*		grid;//TODO rimettere private
 	BoardView();
 	~BoardView();
 

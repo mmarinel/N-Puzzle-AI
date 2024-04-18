@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 19:41:45 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 20:14:48 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ MenuView::MenuView(): QVBoxLayout{}
 	choose_random = new QCheckBox("...or choose at random");
 	choose_size = new QSpinBox();
 	size_lbl = new QLabel("Size: ");
-	heuristics_area = new QHBoxLayout{};
 	heurstic_lbl = new QLabel("Choose heuristic: ");
 	choose_heuristic = new QComboBox{};
 	

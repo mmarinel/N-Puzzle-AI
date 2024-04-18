@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 19:58:20 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 20:42:54 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,20 @@ void	Window::forward()
 {
 	if (CurrentPage::MENU == UIState::getInstance().currentPage)
 	{
+		//? Check if all mandatory fields have been filled in
+		if (
+			(UIState::getInstance().boardFileName.isEmpty() && false == UIState::getInstance().atRandom) ||
+			(NPuzzle::t_heuristic::NONE == UIState::getInstance().h)
+		)
+		{
+			CustomDialog	d(
+				"Error\nfill all mandatory fields!",
+				QDialogButtonBox::Ok,
+				this
+			);
+			d.exec();
+			return ;
+		}
 		if (nullptr != notice)
 		{
 			//? Display the notice only the first time
