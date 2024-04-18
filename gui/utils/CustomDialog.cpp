@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:48:11 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/13 15:48:34 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 19:13:24 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 #include <QDialogButtonBox>
 #include <QLayout>
 
-CustomDialog::CustomDialog(const QString& msg, QWidget* parent): QDialog(parent)
+CustomDialog::CustomDialog(
+	const QString& msg,
+	QDialogButtonBox::StandardButtons flags,
+	QWidget* parent
+): QDialog(parent)
 {
 	QLabel*				label = new QLabel(msg);
-	QDialogButtonBox*	b = new QDialogButtonBox(
-		QDialogButtonBox::Ok | QDialogButtonBox::Cancel
-	);
+	QDialogButtonBox*	b = new QDialogButtonBox(flags);
 
 	connect(
 		b, &QDialogButtonBox::accepted,

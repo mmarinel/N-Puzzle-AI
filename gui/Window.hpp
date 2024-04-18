@@ -6,19 +6,21 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:24:44 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 22:18:16 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 19:19:43 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <QWidget>
+#include <QDialogButtonBox>
 #include <QStackedWidget>
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 
+#include "CustomDialog.hpp"
 #include "MenuView.hpp"
 #include "SolveView.hpp"
 #include "Page.hpp"
@@ -42,6 +44,8 @@ private:
 	Page*			goal_page;
 	QPushButton*	forward_btn;
 	QPushButton*	backward_btn;
+
+	CustomDialog*	notice;
 
 public:
 	Window();

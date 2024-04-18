@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/17 21:49:58 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 19:22:28 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,14 @@ Window::Window(): QWidget{}
 	backforward_area->addWidget(backward_btn);
 	backforward_area->addWidget(forward_btn);
 	backward_btn->setDisabled(true);
+
+	notice = new CustomDialog{
+		"NOTICE\n\
+for larger puzzle sizes, the grid may be displayed in a new window\n\
+for even larger sizes, the grid may not be displayed at all...please use the output text field",
+		QDialogButtonBox::Ok,
+		this
+	};
 
 	// Adding pages
 	menu_page = new Page{};
@@ -71,6 +79,13 @@ void	Window::forward()
 {
 	if (CurrentPage::MENU == UIState::getInstance().currentPage)
 	{
+		if (nullptr != notice)
+		{
+			//? Display the notice only the first time
+			notice->exec();
+			delete notice;
+			notice = nullptr;
+		}
 		this->backward_btn->setDisabled(false);
 		this->forward_btn->setDisabled(true);
 		this->content->setCurrentIndex(
