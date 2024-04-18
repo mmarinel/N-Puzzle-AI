@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/17 21:58:24 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 19:56:28 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ public:
 	~SolveView();
 
 	void			abort();
+	void			start();
+	void			close();
 public slots:
 	void	startSolving();
 	void	play_stop();

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/17 22:02:26 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 20:02:02 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,11 @@ executing{false}
 			new_win_board_box->addWidget(new_window_scroll_area);
 			new_win_board_box->setAlignment(Qt::AlignCenter);
 			second_window->setLayout(new_win_board_box);
-			second_window->setWindowFlags(Qt::Window);
-			// second_window->show();
+			second_window->setWindowFlags(
+				Qt::Window |
+				Qt::WindowMinimizeButtonHint |
+				Qt::WindowMaximizeButtonHint
+			);
 		}
 		else
 		{
@@ -205,7 +208,17 @@ void	SolveView::abort()
 	this->solving = false;
 	this->executing = false;
 
+	//Resetting solve button
 	btns_stacked->setCurrentIndex(0);
+
+	//Resetting play-stop button
+	this->playforward_btn->setDisabled(false);
+	this->playback_btn->setDisabled(false);
+	this->play_btn->setText(">");
+
+	//deleting second window if created
+	if (second_window)
+		second_window->setVisible(false);
 
 	//TODO handle reset of AI state?
 
@@ -217,4 +230,16 @@ void	SolveView::abort()
 	//TODO 2. Start AI QThread
 
 	//TODO this will be inside mentioned SLOT
+}
+
+void	SolveView::start()
+{
+	if (second_window)
+		second_window->show();
+}
+
+void	SolveView::close()
+{
+	if (second_window)
+		second_window->setVisible(false);
 }

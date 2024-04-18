@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 19:22:28 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 19:58:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,11 @@ void	Window::forward()
 			delete notice;
 			notice = nullptr;
 		}
+		//? Opening new window if grid too big
+		static_cast<SolveView*>(
+			solve_page->layout()
+		)->start();
+		//changing page
 		this->backward_btn->setDisabled(false);
 		this->forward_btn->setDisabled(true);
 		this->content->setCurrentIndex(
@@ -109,4 +114,15 @@ void	Window::backward()
 		this->forward_btn->setDisabled(false);
 		UIState::getInstance().currentPage = CurrentPage::MENU;
 	}
+}
+
+void	Window::setVisible(bool visible)
+{
+	if (false == visible)
+	{
+		static_cast<SolveView*>(
+			solve_page->layout()
+		)->close();
+	}
+	QWidget::setVisible(visible);
 }

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:24:44 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 19:19:43 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 19:56:46 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,5 @@ public:
 public slots:
 	void	forward();
 	void	backward();
+	void	setVisible(bool visible) override;
 };
