@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 20:14:48 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/21 19:07:11 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <QFileDialog>
 #include <QDebug>
 
-MenuView::MenuView(): QVBoxLayout{}
+MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 {
 	// Adding widgets
 	QHBoxLayout*	choose_file_area = new QHBoxLayout{};
@@ -26,12 +26,28 @@ MenuView::MenuView(): QVBoxLayout{}
 	QHBoxLayout*	choose_at_random_area = new QHBoxLayout{};
 	QHBoxLayout*	choose_size_area = new QHBoxLayout{};
 	
-	choose_file = new QPushButton(CHOOSE_FILE_TEXT);
-	choose_random = new QCheckBox("...or choose at random");
-	choose_size = new QSpinBox();
-	size_lbl = new QLabel("Size: ");
-	heurstic_lbl = new QLabel("Choose heuristic: ");
-	choose_heuristic = new QComboBox{};
+	choose_file = new QPushButton(
+		CHOOSE_FILE_TEXT,
+		static_cast<QWidget*>(parent)
+	);
+	choose_random = new QCheckBox(
+		"...or choose at random",
+		static_cast<QWidget*>(parent)
+	);
+	choose_size = new QSpinBox(
+		static_cast<QWidget*>(parent)
+	);
+	size_lbl = new QLabel(
+		"Size: ",
+		static_cast<QWidget*>(parent)
+	);
+	heurstic_lbl = new QLabel(
+		"Choose heuristic: ",
+		static_cast<QWidget*>(parent)
+	);
+	choose_heuristic = new QComboBox{
+		static_cast<QWidget*>(parent)
+	};
 	
 	choose_heuristic->addItem(
 		NPuzzle::to_string(NPuzzle::t_heuristic::MANHATTAN_DISTANCE).c_str()
@@ -85,7 +101,8 @@ MenuView::~MenuView() {}
 void	MenuView::setBoardFile()
 {
 	UIState::getInstance().boardFileName = QFileDialog::getOpenFileName(
-		this->choose_file, tr("Choose file"), "~", tr("Board files (*.txt)")
+		qobject_cast<QWidget*>(this->parent()),
+		tr("Choose file"), "~", tr("Board files (*.txt)")
 	);
 	if (UIState::getInstance().boardFileName.isEmpty())
 		return ;

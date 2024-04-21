@@ -1,27 +1,21 @@
 cmake_minimum_required(VERSION 3.18)
 
-set(
-	EXECUTABLE_NAME npuzzle
-)
-
-set(
-	STATELIB_NAME "statelib" CACHE STRING "name of the state library"
-)
-set(
-	GUILIB_NAME "guilib" CACHE STRING "name of the gui library"
-)
+set(EXECUTABLE_NAME npuzzle)
 
 project(${EXECUTABLE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
+# Set for a Debug Build
+# set(CMAKE_BUILD_TYPE DEBUG)
 
 set(CMAKE_AUTOMOC on) # codice generato prima della compilazione
 set(CMAKE_AUTORCC on) # resource compiler (immagini icone, etc.)
 set(CMAKE_AUTOUIC on) # NON parsa il file xml per generare l'UI
 
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
 
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 add_subdirectory(state)
 add_subdirectory(gui)
@@ -39,14 +33,13 @@ qt_add_executable(
 target_link_libraries(
 	${EXECUTABLE_NAME}
 	PRIVATE
-	Qt6::Core
 	Qt6::Widgets
-	Qt6::Gui
 )
 
 target_include_directories(
 	${EXECUTABLE_NAME}
 	PRIVATE
+	${Qt6Widgets_INCLUDE_DIRS}
 	"./gui/"
 	"./gui/utils"
 	"./state"

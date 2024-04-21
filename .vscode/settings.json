@@ -86,6 +86,11 @@
 		"coroutine": "cpp",
 		"qfiledialog": "cpp",
 		"qguiapplication": "cpp",
-		"qgroupbox": "cpp"
+		"qgroupbox": "cpp",
+		"qstackedlayout": "cpp",
+		"*.ipp": "cpp",
+		"qvboxlayout": "cpp",
+		"qdialog": "cpp",
+		"qapplication": "cpp"
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 20:42:54 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/21 19:27:21 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,20 @@
 
 Window::Window(): QWidget{}
 {
+	// Setting windows props
 	setFixedSize(
 		WIDTH, HEIGHT
 	);
+
+	// Creating Widgets
 	area 								= new QVBoxLayout{};
 	QHBoxLayout*	backforward_area	= new QHBoxLayout();
-
-	// Adding fixed components
-	forward_btn = new QPushButton{">"};
-	backward_btn = new QPushButton{"<"};
+	forward_btn = new QPushButton{">", this};
+	backward_btn = new QPushButton{"<", this};
 	forward_btn->setObjectName("forwardBtn");
 	backward_btn->setObjectName("backwardBtn");
 	backforward_area->addWidget(backward_btn);
 	backforward_area->addWidget(forward_btn);
-	backward_btn->setDisabled(true);
 
 	notice = new CustomDialog{
 		"NOTICE\n\
@@ -44,21 +44,25 @@ for even larger sizes, the grid may not be displayed at all...please use the out
 
 	// Adding pages
 	menu_page = new Page{};
-	menu_page->setLayout(new MenuView{});
+	menu_page->setLayout(new MenuView{menu_page});
 	solve_page = new Page{};
-	solve_page->setLayout(new SolveView{});
+	solve_page->setLayout(new SolveView{solve_page});
 
 	//Setting content
-	content = new Content{};
+	content = new Content{this};
 	
 	menu_page->index = content->addWidget(menu_page);
 	solve_page->index = content->addWidget(solve_page);
 	
-	// content->setCurrentIndex(menu_page->index);
-
 	area->addWidget(content);
 	area->addLayout(backforward_area);
 
+	// Setting visibilities
+	backward_btn->setDisabled(true);
+	
+	// Setting window
+	this->setLayout(area);
+	
 	//Controller
 	QObject::connect(
 		forward_btn, &QPushButton::clicked,
@@ -68,9 +72,6 @@ for even larger sizes, the grid may not be displayed at all...please use the out
 		backward_btn, &QPushButton::clicked,
 		this, &Window::backward
 	);
-
-	//
-	this->setLayout(area);
 }
 
 Window::~Window() {}
@@ -104,7 +105,7 @@ void	Window::forward()
 		static_cast<SolveView*>(
 			solve_page->layout()
 		)->start();
-		//changing page
+		// Changing page and status
 		this->backward_btn->setDisabled(false);
 		this->forward_btn->setDisabled(true);
 		this->content->setCurrentIndex(
@@ -118,9 +119,13 @@ void	Window::backward()
 {
 	if (CurrentPage::SOLVE == UIState::getInstance().currentPage)
 	{
-		static_cast<SolveView*>(
+		// Tell Solve View to abort computation
+		auto aborted = static_cast<SolveView*>(
 			solve_page->layout()
 		)->abort();
+		if (false == aborted)
+			return ;
+		// Changing page and status
 		this->content->setCurrentIndex(
 			menu_page->index
 		);
@@ -132,6 +137,7 @@ void	Window::backward()
 
 void	Window::setVisible(bool visible)
 {
+	// Manage closing of second window too
 	if (false == visible)
 	{
 		static_cast<SolveView*>(

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:38:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 20:12:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 22:06:45 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ private:
 	const BoardState&	status;
 	QGridLayout*		grid;
 public:
-	BoardView();
+	BoardView(QWidget* parent = nullptr);
 	~BoardView();
 
 	virtual void	paintEvent(QPaintEvent* event) override;

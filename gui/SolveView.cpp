@@ -6,17 +6,20 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 20:18:06 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/21 23:11:27 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SolveView.hpp"
 #include "Window.hpp"
+#include "CustomDialog.hpp"
+
+#include <QDialogButtonBox>
 
 //? EXPERIMENT FOR AI ACTUATION
 // #include <QTimer>
 
-SolveView::SolveView(): QVBoxLayout(),
+SolveView::SolveView(QWidget* parent): QVBoxLayout{parent},
 solving{false},
 executing{false}
 {
@@ -34,7 +37,7 @@ executing{false}
 				QSizePolicy::Expanding, QSizePolicy::Expanding
 			);
 			QHBoxLayout*	new_win_board_box = new QHBoxLayout{};
-			QScrollArea*	new_window_scroll_area = new QScrollArea{};
+			QScrollArea*	new_window_scroll_area = new QScrollArea{second_window};
 			
 			new_window_scroll_area->setWidget(new_win_board);
 			new_window_scroll_area->setWindowState(Qt::WindowFullScreen);
@@ -50,7 +53,9 @@ executing{false}
 		else
 		{
 			board_box = new QHBoxLayout{};
-			board = new BoardView();
+			board = new BoardView(
+				static_cast<QWidget*>(parent)
+			);
 			board->setSizePolicy(
 				QSizePolicy::Expanding, QSizePolicy::Preferred
 			);
@@ -59,22 +64,24 @@ executing{false}
 		}
 	}
 
-	btns_stacked = new QStackedWidget{};
+	btns_stacked = new QStackedWidget{
+		static_cast<QWidget*>(parent)
+	};
 
 	solve_btn_box = new QWidget{};
 	solve_btn_box->setLayout(new QHBoxLayout{});
-	solve_btn = new QPushButton("Solve");
+	solve_btn = new QPushButton{"Solve", solve_btn_box};
 	solve_btn	->setFixedWidth(WIDTH / 3);
 	solve_btn	->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 	solve_btn_box->layout()->addWidget(solve_btn);
 	
 	play_box = new QWidget{};
 	play_box->setLayout(new QHBoxLayout{});
-	play_btn = new QPushButton{">"};
-	playback_btn = new QPushButton{"-1"};
-	playforward_btn = new QPushButton{"+1"};
-	play_btn->setObjectName("playButton");
+	playback_btn = new QPushButton{"-1", play_box};
+	play_btn = new QPushButton{">", play_box};
+	playforward_btn = new QPushButton{"+1", play_box};
 	playback_btn->setObjectName("playBackButton");
+	play_btn->setObjectName("playButton");
 	playforward_btn->setObjectName("playForwardButton");
 	play_box->layout()->setAlignment(Qt::AlignCenter);
 	play_box->layout()->addWidget(playback_btn);
@@ -85,7 +92,9 @@ executing{false}
 	btns_stacked->addWidget(play_box);
 
 	output_box = new QHBoxLayout{};
-	output = new QTextEdit();
+	output = new QTextEdit(
+		static_cast<QWidget*>(parent)
+	);
 	output->setText(
 		"Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, \
 molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum \
@@ -173,7 +182,8 @@ void	SolveView::startSolving()
 
 	btns_stacked->setCurrentIndex(1);
 	//TODO
-	//TODO 1. Add Loading gif
+	//TODO 1. disable inappropriate buttons &&  Add Loading gif
+	//TODO 1.1 	only leave buttons like the "close" button to not freeze the app
 	//TODO 3. Connect SLOT for work done
 	//TODO 2. Start AI QThread
 
@@ -203,8 +213,20 @@ void	SolveView::play_stop()
 	}
 }
 
-void	SolveView::abort()
+bool	SolveView::abort()
 {
+	//Show dialog for confirmation
+	CustomDialog	d{
+		"Are you sure you want to abort AI computation?",
+		QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+		qobject_cast<QWidget*>(this->parent())
+	};
+
+	if (QDialog::Rejected == d.exec())
+		return false ;
+
+	//TODO handle reset of AI state?
+	
 	this->solving = false;
 	this->executing = false;
 
@@ -220,16 +242,7 @@ void	SolveView::abort()
 	if (second_window)
 		second_window->setVisible(false);
 
-	//TODO handle reset of AI state?
-
-	//TODO substitute play area with solve button...tomorrow!
-
-	//TODO
-	//TODO 1. Add Loading gif
-	//TODO 3. Connect SLOT for work done
-	//TODO 2. Start AI QThread
-
-	//TODO this will be inside mentioned SLOT
+	return true;
 }
 
 void	SolveView::start()

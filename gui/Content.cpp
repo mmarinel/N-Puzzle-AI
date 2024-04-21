@@ -6,12 +6,16 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:55:50 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 10:23:30 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/18 21:53:35 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Content.hpp"
 #include "Window.hpp"
+
+Content::Content(QWidget* parent): QStackedWidget{parent}
+{
+}
 
 int		Content::addWidget(QWidget* widget)
 {

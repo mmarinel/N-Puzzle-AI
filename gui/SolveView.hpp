@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 19:56:28 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/21 19:26:15 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ private:
 	QWidget*		solve_btn_box;
 	QWidget*		play_box;
 public:
-	SolveView();
+	SolveView(QWidget* parent=nullptr);
 	~SolveView();
 
-	void			abort();
+	bool			abort();
 	void			start();
 	void			close();
 public slots:

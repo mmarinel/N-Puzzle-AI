@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:56:45 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/13 15:35:56 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/20 12:22:16 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ public slots:
 	void	setRandomGeneratedSize(int n);
 
 public:
-	MenuView();
+	MenuView(QWidget* parent=nullptr);
 	~MenuView();
 
 	friend class Window;

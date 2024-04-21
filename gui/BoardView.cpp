@@ -6,14 +6,14 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 20:49:30 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/21 23:05:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BoardView.hpp"
 #include "Window.hpp"
 
-BoardView::BoardView(): QWidget(),
+BoardView::BoardView(QWidget* parent): QWidget{parent},
 	status(BoardState::getInstance())
 {
 	grid = new QGridLayout();
@@ -32,10 +32,6 @@ BoardView::BoardView(): QWidget(),
 	grid->setSpacing(1);
 	grid->setContentsMargins(0, 0, 0, 0);
 
-	// this->setFixedSize(
-	// 	WIDTH / 2,
-	// 	WIDTH / 2
-	// );
 	this->setLayout(grid);
 }
 
