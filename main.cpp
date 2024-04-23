@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/21 23:04:45 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/23 14:54:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <QDebug>
 
 #include "Window.hpp"
-#include "utils.hpp"
+#include "gui_utils.hpp"
 
 int main(int argc, char const* argv[])
 {

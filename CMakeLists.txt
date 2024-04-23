@@ -20,6 +20,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_subdirectory(state)
 add_subdirectory(gui)
 add_subdirectory(heuristics)
+add_subdirectory(utils)
 
 qt_add_executable(
 	${EXECUTABLE_NAME}
@@ -28,12 +29,14 @@ qt_add_executable(
 	${GUILIB_SRCS}
 	${STATELIB_SRCS}
 	${HEURISTICSLIB_SRCS}
+	${UTILS_SRCS}
 )
 
 target_link_libraries(
 	${EXECUTABLE_NAME}
 	PRIVATE
 	Qt6::Widgets
+	Qt6::Core
 )
 
 target_include_directories(
@@ -41,9 +44,10 @@ target_include_directories(
 	PRIVATE
 	${Qt6Widgets_INCLUDE_DIRS}
 	"./gui/"
-	"./gui/utils"
+	"./gui/gui_utils"
 	"./state"
 	"./heuristics"
+	"./utils"
 )
 
 # per portabilità

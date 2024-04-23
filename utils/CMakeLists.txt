@@ -1,0 +1,6 @@
+set(
+	UTILS_SRCS
+	"${CMAKE_CURRENT_LIST_DIR}/utils.h"
+	"${CMAKE_CURRENT_LIST_DIR}/utils.cpp"
+	PARENT_SCOPE
+)

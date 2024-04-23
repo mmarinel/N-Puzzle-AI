@@ -1,10 +1,10 @@
 set(
 	STATELIB_SRCS
-	"./state/BoardState.hpp"
-	"./state/BoardState.cpp"
-	"./state/Tile.hpp"
-	"./state/Tile.cpp"
-	"./state/UIState.hpp"
-	"./state/UIState.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/BoardState.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/BoardState.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Tile.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Tile.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/UIState.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/UIState.cpp"
 	PARENT_SCOPE
 )

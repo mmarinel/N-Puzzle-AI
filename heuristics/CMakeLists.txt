@@ -1,7 +1,7 @@
 
 set(
 	HEURISTICSLIB_SRCS
-	"./heuristics/heuristics.hpp"
-	"./heuristics/heuristics.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/heuristics.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/heuristics.cpp"
 	PARENT_SCOPE
 )

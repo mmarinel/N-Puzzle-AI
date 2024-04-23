@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/21 19:27:21 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/23 14:58:49 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	Window::forward()
 		{
 			CustomDialog	d(
 				"Error\nfill all mandatory fields!",
-				QDialogButtonBox::Ok,
+				QDialogButtonBox::Cancel,
 				this
 			);
 			d.exec();

@@ -6,13 +6,14 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/21 19:07:11 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/23 15:19:43 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MenuView.hpp"
 #include "Window.hpp"
 #include "UIState.hpp"
+#include "utils.h"
 
 #include <QSpacerItem>
 #include <QFileDialog>
@@ -100,12 +101,24 @@ MenuView::~MenuView() {}
 
 void	MenuView::setBoardFile()
 {
-	UIState::getInstance().boardFileName = QFileDialog::getOpenFileName(
+	QString		boardFileName = QFileDialog::getOpenFileName(
 		qobject_cast<QWidget*>(this->parent()),
 		tr("Choose file"), "~", tr("Board files (*.txt)")
 	);
-	if (UIState::getInstance().boardFileName.isEmpty())
+	if (false == NPuzzle::parse_file(boardFileName))
+	{
+		CustomDialog	d{
+			"Error\nCould not parse file",
+			QDialogButtonBox::Cancel,
+			qobject_cast<QWidget*>(this->parent())
+		};
+
+		d.exec();
 		return ;
+	}
+	UIState::getInstance().boardFileName = boardFileName;
+	// if (UIState::getInstance().boardFileName.isEmpty())
+	// 	return ;
 	this->choose_file->setText(
 		UIState::getInstance().boardFileName.split("/").last()
 	);
