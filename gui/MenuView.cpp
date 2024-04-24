@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/23 15:19:43 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/24 23:46:05 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,10 @@ void	MenuView::setBoardFile()
 		qobject_cast<QWidget*>(this->parent()),
 		tr("Choose file"), "~", tr("Board files (*.txt)")
 	);
+	// didn't choose no file
+	if (boardFileName.isEmpty())
+		return ;
+	// invalid file
 	if (false == NPuzzle::parse_file(boardFileName))
 	{
 		CustomDialog	d{
@@ -117,8 +121,6 @@ void	MenuView::setBoardFile()
 		return ;
 	}
 	UIState::getInstance().boardFileName = boardFileName;
-	// if (UIState::getInstance().boardFileName.isEmpty())
-	// 	return ;
 	this->choose_file->setText(
 		UIState::getInstance().boardFileName.split("/").last()
 	);

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/23 14:54:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/24 23:45:31 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int main(int argc, char const* argv[])
 		argc, const_cast<char**>(argv)
 	};
 
-
 	// Set style
 	app.setWindowIcon(QIcon(":/images/icon"));
 
@@ -33,15 +32,6 @@ int main(int argc, char const* argv[])
 	QFontDatabase::addApplicationFont(":/fonts/icons");
 
 	NPuzzle::addStyleSheet(app);
-	
-	/// TESTs
-	int	count = 1;
-	BoardState::getInstance().setSize(9);
-	for (int i = 0; i < 9; i++)
-		for (int j = 0; j < 9; j++)
-			if (9 - 1 != i || 9 -1 != j)
-				BoardState::getInstance().board[i][j] = Tile{count++};
-	/// TESTs
 
 	// Create widget tree
 	Window	*win = new Window{};

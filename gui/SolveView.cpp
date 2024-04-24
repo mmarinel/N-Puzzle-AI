@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/21 23:11:27 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/24 23:38:00 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,46 +24,42 @@ solving{false},
 executing{false}
 {
 	// Creating widgets
-	second_window = nullptr;
-	new_win_board = nullptr;
-	board = nullptr;
-	if (BoardState::getInstance().size < THRESHOLD_FOR_NO_GRID)
-	{
-		if (BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW)
-		{
-			second_window = new QWidget{};
-			new_win_board = new BoardView{};
-			new_win_board->setSizePolicy(
-				QSizePolicy::Expanding, QSizePolicy::Expanding
-			);
-			QHBoxLayout*	new_win_board_box = new QHBoxLayout{};
-			QScrollArea*	new_window_scroll_area = new QScrollArea{second_window};
-			
-			new_window_scroll_area->setWidget(new_win_board);
-			new_window_scroll_area->setWindowState(Qt::WindowFullScreen);
-			new_win_board_box->addWidget(new_window_scroll_area);
-			new_win_board_box->setAlignment(Qt::AlignCenter);
-			second_window->setLayout(new_win_board_box);
-			second_window->setWindowFlags(
-				Qt::Window |
-				Qt::WindowMinimizeButtonHint |
-				Qt::WindowMaximizeButtonHint
-			);
-		}
-		else
-		{
-			board_box = new QHBoxLayout{};
-			board = new BoardView(
-				static_cast<QWidget*>(parent)
-			);
-			board->setSizePolicy(
-				QSizePolicy::Expanding, QSizePolicy::Preferred
-			);
-			board_box->addWidget(board);
-			board_box->setContentsMargins(-1, -1, -1, 50);
-		}
-	}
+	
+	// Creating detached board
+	second_window = new QWidget{};
+	new_win_board = new BoardView{};
+	QHBoxLayout*	new_win_board_box = (
+		new QHBoxLayout{}
+	);
+	QScrollArea*	new_window_scroll_area = (
+		new QScrollArea{second_window}
+	);
+	new_win_board->setSizePolicy(
+		QSizePolicy::Maximum, QSizePolicy::Maximum
+	);
+	new_window_scroll_area->setWidget(new_win_board);
+	new_window_scroll_area->setWindowState(Qt::WindowFullScreen);
+	new_win_board_box->addWidget(new_window_scroll_area);
+	new_win_board_box->setAlignment(Qt::AlignCenter);
+	second_window->setLayout(new_win_board_box);
+	second_window->setWindowFlags(
+		Qt::Window |
+		Qt::WindowMinimizeButtonHint |
+		Qt::WindowMaximizeButtonHint
+	);
 
+	// Creating in-window board
+	board_box = new QHBoxLayout{};
+	board = new BoardView(
+		static_cast<QWidget*>(parent)
+	);
+	board->setSizePolicy(
+		QSizePolicy::Maximum, QSizePolicy::Maximum
+	);
+	board_box->addWidget(board);
+	board_box->setContentsMargins(-1, -1, -1, 50);
+
+	// Creating play buttons
 	btns_stacked = new QStackedWidget{
 		static_cast<QWidget*>(parent)
 	};
@@ -91,6 +87,7 @@ executing{false}
 	btns_stacked->addWidget(solve_btn_box);
 	btns_stacked->addWidget(play_box);
 
+	// Creating output log widget
 	output_box = new QHBoxLayout{};
 	output = new QTextEdit(
 		static_cast<QWidget*>(parent)
@@ -120,10 +117,6 @@ quasi aliquam eligendi, placeat qui corporis!"
 	);
 	output->setReadOnly(true);
 	output->setFixedWidth(WIDTH - 50);
-	if (board)
-		output->setMinimumHeight(HEIGHT / 4.5f);
-	else
-		output->setMinimumHeight(HEIGHT - 200);
 	output		->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 	output		->setFrameStyle(QFrame::Box | QFrame::Sunken);
 	output		->setLineWidth(3);
@@ -131,13 +124,14 @@ quasi aliquam eligendi, placeat qui corporis!"
 	output_box->addWidget(output);
 
 	// Adding to the vertical centered layout
-	if (board)
-	{
-		this->addLayout(board_box);
-	}
+	this->addLayout(board_box);
 	this->addWidget(btns_stacked);
 	this->addLayout(output_box);
 
+	// Setting visibilities
+	second_window->setVisible(false);
+	board->setVisible(false);
+	
 	// Controller
 	QObject::connect(
 		this->solve_btn, &QPushButton::clicked,
@@ -225,7 +219,7 @@ bool	SolveView::abort()
 	if (QDialog::Rejected == d.exec())
 		return false ;
 
-	//TODO handle reset of AI state?
+	//TODO handle reset of AI state? && BoardState
 	
 	this->solving = false;
 	this->executing = false;
@@ -238,17 +232,30 @@ bool	SolveView::abort()
 	this->playback_btn->setDisabled(false);
 	this->play_btn->setText(">");
 
-	//deleting second window if created
-	if (second_window)
-		second_window->setVisible(false);
+	//resetting boards
+	second_window->setVisible(false);
+	board->setVisible(false);
 
 	return true;
 }
 
 void	SolveView::start()
 {
-	if (second_window)
-		second_window->show();
+	if (BoardState::getInstance().size < THRESHOLD_FOR_NO_GRID)
+	{
+		if (BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW)
+		{
+			new_win_board->setup();
+			output->setMinimumHeight(HEIGHT - 200);
+			second_window->show();
+		}
+		else
+		{
+			board->setup();
+			output->setMinimumHeight(HEIGHT / 4.5f);
+			board->setVisible(true);
+		}
+	}
 }
 
 void	SolveView::close()

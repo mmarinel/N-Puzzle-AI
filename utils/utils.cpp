@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/23 15:48:07 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/24 23:46:39 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ bool	NPuzzle::parse_file(QString filepath)
 			if (false == ok)
 				return false;
 			// continue reading file...
+			BoardState::getInstance().board.clear();
+			BoardState::getInstance().setSize(size);
 			continue ;
 		}
 		for (QString nbr: next_row)

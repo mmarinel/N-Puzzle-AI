@@ -91,6 +91,7 @@
 		"*.ipp": "cpp",
 		"qvboxlayout": "cpp",
 		"qdialog": "cpp",
-		"qapplication": "cpp"
+		"qapplication": "cpp",
+		"qtalgorithms": "cpp"
 	}
 }

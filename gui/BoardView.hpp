@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:38:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 22:06:45 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/24 23:42:34 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ class BoardView: public QWidget
 private:
 	const BoardState&	status;
 	QGridLayout*		grid;
+
+	void	reset();
 public:
 	BoardView(QWidget* parent = nullptr);
 	~BoardView();
 
+	void			setup();
 	virtual void	paintEvent(QPaintEvent* event) override;
-protected:
-	void	resizeEvent(QResizeEvent* event);
 };

@@ -6,33 +6,57 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/21 23:05:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/24 23:43:00 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BoardView.hpp"
 #include "Window.hpp"
 
+#include <QtAlgorithms>
+
 BoardView::BoardView(QWidget* parent): QWidget{parent},
-	status(BoardState::getInstance())
+	status(BoardState::getInstance()),
+	grid(nullptr)
 {
 	grid = new QGridLayout();
+	
+	grid->setSpacing(1);
+	grid->setContentsMargins(0, 0, 0, 0);
+	this->setLayout(grid);
+}
+
+void	BoardView::setup()
+{
+	reset();
 	
 	for (int i = 0; i < status.size; i++)
 	{
 		for (int j = 0; j < status.size; j++)
 		{
-			TileView*	tile = new TileView{};
+			TileView*	tile = new TileView{this};
 			tile->setObjectName(TILE_OBJ_NAME);
 			tile->setAlignment(Qt::AlignCenter);
 			grid->addWidget(tile, i, j);
 		}
 	}
 
-	grid->setSpacing(1);
-	grid->setContentsMargins(0, 0, 0, 0);
+	this->resize(
+		BoardState::getInstance().size * 50 + BoardState::getInstance().size - 1,
+		BoardState::getInstance().size * 50 + BoardState::getInstance().size - 1
+	);
+}
 
-	this->setLayout(grid);
+void	BoardView::reset()
+{
+	QList<QWidget*>	tiles = this->findChildren<QWidget*>(
+		QString(), Qt::FindDirectChildrenOnly
+	);
+	for (QWidget* tile: tiles)
+	{
+		grid->removeWidget(tile);
+		delete tile;
+	}
 }
 
 void	BoardView::paintEvent(QPaintEvent* event)
@@ -54,27 +78,3 @@ void	BoardView::paintEvent(QPaintEvent* event)
 }
 
 BoardView::~BoardView() {}
-
-
-void	BoardView::resizeEvent(QResizeEvent* event)
-{
-	double	aspect_ratio = (
-		static_cast<double>(this->height())
-		/
-		static_cast<double>(this->width())
-	);
-	int		target_width;
-
-	if (aspect_ratio < 1) // Too wide
-	{
-		this->setMaximumWidth(
-			static_cast<int>(this->height())
-		);
-	}
-	else if (aspect_ratio > 1) // Too tall
-	{
-		this->setMaximumHeight(
-			static_cast<int>(this->width())
-		);
-	}
-}
