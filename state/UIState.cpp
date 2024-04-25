@@ -6,13 +6,21 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 19:45:40 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/18 20:39:20 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 23:53:40 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "UIState.hpp"
 
-UIState::UIState(): boardFileName{}, atRandom{false}, h{NPuzzle::t_heuristic::NONE}, currentPage{MENU} {}
+UIState::UIState():
+currentPage{MENU},
+boardFileName{},
+atRandom{false},
+size{0},
+x_empty{-1},
+y_empty{-1},
+h{NPuzzle::t_heuristic::NONE}
+{}
 
 UIState::~UIState() {}
 

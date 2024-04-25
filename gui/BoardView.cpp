@@ -6,17 +6,19 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/24 23:43:00 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 23:57:57 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BoardView.hpp"
 #include "Window.hpp"
+#include "gui_utils.hpp"
 
-#include <QtAlgorithms>
+#include <QApplication>
 
 BoardView::BoardView(QWidget* parent): QWidget{parent},
 	status(BoardState::getInstance()),
+	ui_status(UIState::getInstance()),
 	grid(nullptr)
 {
 	grid = new QGridLayout();
@@ -57,11 +59,12 @@ void	BoardView::reset()
 		grid->removeWidget(tile);
 		delete tile;
 	}
+	ui_status.x_empty = -1;
+	ui_status.y_empty = -1;
 }
 
 void	BoardView::paintEvent(QPaintEvent* event)
 {
-	
 	for (int i = 0; i < status.size; i++)
 	{
 		for (int j = 0; j < status.size; j++)
@@ -74,6 +77,16 @@ void	BoardView::paintEvent(QPaintEvent* event)
 				).c_str()
 			);
 		}
+	}
+	if (
+		ui_status.x_empty != status.x_empty &&
+		ui_status.y_empty != status.y_empty
+	)
+	{//Empty tile moved
+		qApp->setStyleSheet("");
+		NPuzzle::addStyleSheet(*qApp);
+		ui_status.x_empty = status.x_empty;
+		ui_status.y_empty = status.y_empty;
 	}
 }
 

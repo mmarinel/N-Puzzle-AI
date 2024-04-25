@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:27:38 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 19:37:48 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 12:26:26 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ public:
 						~BoardState();
 						
 	void				setSize(int	n);
+	bool				contains(Tile nbr, size_t cap = std::string::npos);
 	void				swap(int _x1, int _y1, int _x2, int _y2);
 						
 						BoardState(const BoardState&) = delete;

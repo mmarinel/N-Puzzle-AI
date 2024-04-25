@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 18:09:13 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 19:42:01 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 20:06:09 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ public:
 	Tile(const Tile&);
 	Tile&	operator=(const Tile& other);
 	
+	bool	isEmpty() const;
 	operator int() const;
 	operator std::string() const;
 };

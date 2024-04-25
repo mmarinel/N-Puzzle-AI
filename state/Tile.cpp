@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 18:13:12 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/23 15:02:41 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 20:06:02 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ Tile&	Tile::operator=(const Tile& other)
 		nbr = other.nbr;
 	}
 	return *this;
+}
+
+bool	Tile::isEmpty() const
+{
+	return empty;
 }
 
 Tile::operator int() const

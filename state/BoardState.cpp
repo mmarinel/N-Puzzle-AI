@@ -6,13 +6,16 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:59:35 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/11 19:38:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 18:35:54 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BoardState.hpp"
 
-BoardState::BoardState(): board{}, size(0), x_empty(-1), y_empty(-1) {}
+BoardState::BoardState(): board{}, size(0), x_empty(-1), y_empty(-1)
+{
+	setSize(3);
+}
 
 BoardState::~BoardState() {}
 
@@ -21,7 +24,7 @@ BoardState& BoardState::getInstance() {
 	
 	return	state;
 }
-#include <iostream>
+
 void	BoardState::setSize(int	n)
 {
 	size = n;
@@ -31,7 +34,24 @@ void	BoardState::setSize(int	n)
 	{
 		row.resize(size);
 	}
-	std::cout << "BoardState::setSize(int n) --- END" << std::endl;
+}
+
+bool	BoardState::contains(Tile nbr, size_t cap)
+{
+	size_t	checked_elements = 0;
+
+	for(int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			if (cap == checked_elements)
+				return false;
+			if (nbr == board[i][j])
+				return true;
+			checked_elements += 1;
+		}
+	}
+	return false;
 }
 
 void			BoardState::swap(int _x1, int _y1, int _x2, int _y2)

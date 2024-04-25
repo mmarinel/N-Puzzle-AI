@@ -6,13 +6,15 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/24 23:38:00 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/26 00:00:11 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SolveView.hpp"
 #include "Window.hpp"
 #include "CustomDialog.hpp"
+#include "UIState.hpp"
+#include "utils.h"
 
 #include <QDialogButtonBox>
 
@@ -243,6 +245,8 @@ void	SolveView::start()
 {
 	if (BoardState::getInstance().size < THRESHOLD_FOR_NO_GRID)
 	{
+		if (UIState::getInstance().atRandom)
+			NPuzzle::generate_board();
 		if (BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW)
 		{
 			new_win_board->setup();

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/24 23:46:05 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 18:31:02 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,7 @@ void	MenuView::setAtRandomFile()
 
 void	MenuView::setRandomGeneratedSize(int n)
 {
-	qDebug() << "new size: " << n;
-	UIState::getInstance().size = n;
+	BoardState::getInstance().setSize(n);
 }
 
 void	MenuView::setHeuristic(int index)

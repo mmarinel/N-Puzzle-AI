@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 19:42:39 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/14 22:13:32 by matteo           ###   ########.fr       */
+/*   Updated: 2024/04/25 20:08:56 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ public:
 	QString					boardFileName;
 	bool					atRandom;
 	size_t					size;
+	int						x_empty;
+	int						y_empty;
 	NPuzzle::t_heuristic	h;
 
 private:

@@ -36,8 +36,13 @@ QPushButton#forwardBtn:disabled
 	color: rgba(0, 0, 0, 0.437);
 }
 
-QLabel#Tile:hover,
-QLabel#Tile:focus
+/* Regular Tile */
+QLabel[text]#Tile
+{
+	background-color: #91ACF2;
+}
+/* EMPTY Tile --- Highlighted */
+QLabel#Tile
 {
 	background-color: #91acf2c9;
 }
