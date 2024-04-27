@@ -1,5 +1,18 @@
 # Valgrind QT clash
 
+## Valgrind with suppressions
+
+```
+valgrind \
+--leak-check=full --show-leak-kinds=all --track-origins=yes \
+--error-limit=no --verbose --gen-suppressions=all --log-file=valgrind-out.log \
+./npuzzle
+```
+
+### Generate minimal suppression file
+
+`cat valgrind-out.log | ./parse_valgrind_suppressions.sh > minimal.supp`
+
 ## References
 - [Official Open Issue](https://bugreports.qt.io/browse/QTBUG-8756)
 - [Open Issue 2](https://forum.qt.io/topic/22879/qt5-qfiledialog-is-leaking-memory/12)
