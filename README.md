@@ -66,3 +66,30 @@ for a total of 13 inversions
 *Claim*: when a move is made, polarity does not change
 
 *Proof*:
+
+If the tile is moved horizontally, clearly the polarity does not change as the order remains untouched (we just moved the adjacent tile into the empty space without touching the order with respect to other tiles)
+
+If a move is made vertically, we instead have just changed the order of this tile with the next or previous N - 1 tiles (if we moved upwards, the order with respect to the previous N - 1 tiles has been changed, if we moved downwards, the order with respect to the successive N - 1 has been changed).
+
+Now, since N is odd, n' = N - 1 is EVEN.
+So 2t = n' for some t.
+
+if k was the number of inversion that the moved tile had with respect to the other n' tiles, we would have
+
+2t = n' = (n' - k) + k
+
+Now, we fixed the k inversions but messed up the remaining (n' - k); so the new number of inversions can be obtained by subtracting, from the previous total number of inversions, the number of inversions that the move fixed and then adding the new number of inversions that the move messed up involving these tiles.
+
+This gives the following factor
+
+-k + (n' - k) = -2k + n' = -2k +2t = 2(t-k).
+
+Which is an even number and therefore does not change the parity of the previous number of inversions.
+
+
+*Theo*: When N is ODD, if the puzzle is solvable then the polarity of the initial state must be EVEN.
+
+*Proof*: Since making a move does not change polarity, and since the goal state has an EVEN polarity because there are no inversions in it, then it would be impossible to start from an initial state of ODD polarity and reach the goal state.
+
+CASE 2: N is EVEN
+
