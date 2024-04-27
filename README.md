@@ -41,20 +41,22 @@ In order to not doom our agent to failure, we must understand when the puzzle is
 
 *Example*: The following configuration has an odd polarity (the '0' represents the empty tile)
 
-4 5 2
-1 0 8
-7 6 3
+|   |   |  | 
+|---|---|---|
+| 4  | 5  | 2  
+| 1  |  0 |  8 
+|  7 | 6  | 3  
 
 starting from the rightmost and bottomost tile, and reading all the successive tiles, we have infact 
 
-0 inversions for tile '3'
-1 inversions for tile '6'
-2 inversions for tile '7'
-3 inversions for tile '8'
-0 inversions for tile '1'
-1 inversions for tile '2'
-3 inversions for tile '5'
-3 inversions for tile '4'
+0 inversions for tile '3';
+1 inversions for tile '6';
+2 inversions for tile '7';
+3 inversions for tile '8';
+0 inversions for tile '1';
+1 inversions for tile '2';
+3 inversions for tile '5';
+3 inversions for tile '4';
 
 for a total of 13 inversions
 
