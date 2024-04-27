@@ -26,6 +26,8 @@ I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidi
 
 1. [The A* search algorithm](README.md#the-a*-search-algorithm)
 2. [The N-Puzzle](README.md#the-n-puzzle)
+	- [Exitence of Solutions](README#existence-of-a-solution)
+	- [Uniqueness of Optimal Solution](README#uniqueness-of-optimal-solution)
 3. [The Parallel Bidirectional A* search](README.md#the-parallel-bidirectional-a*-search)
 
 ## The A* search algorithm
@@ -122,3 +124,26 @@ Which is an ODD number and since ODD + ODD = EVEN \&\& EVEN + ODD = ODD, the fol
 
 Given the previous invariant, the only way to reach such a state is when the initial configuration does not share parity of inversions with parity of empty tile row index.
 
+</br>
+The following theorems provide a necessary, but not sufficient condition for the existence of solutions.
+To prove this condition is also sufficient, one can observe that each configuration can be uniquely identified with the pair
+
+- number of inversion
+- position of empty tile
+
+Let's in fact imagine there exist two configurations sharing the same values for both properties.
+One of them must be turned to the other one by moving one of the tiles; we cannot move the empty tile so we must swap at least two tiles.
+
+When we swap two tiles, the order between them gets broken, and that gives at least a -1 or +1 to the number of inversions; moreover, if there were other tiles in between the two swapped tiles, each of those tiles would either add a +1,-1 to the number of inversions with respect to both swapped tiles.
+
+So each tile in between would add either
+- 0 (the leftomst swapped tile either solved or introduced an inversion with the in-between tile and rightmost did the opposite -- one fixed, one broken--),
+- -2 (the tile in between was greater than the rightmost swapped but lesser than the leftmost swapped one),
+- +2 (the three tiles were perfectly ordered relatively to each other, so the move introduced the maximum number of inversions for the in-between tile).
+
+So the number of inversions definitely does change.
+Therefore, it is not possible to turn one configuration into the other.
+
+Now, one can prove that using only legal moves, starting from the goal state, one can reach configurations for all values of those two properties with respect to the theorems we just proved; and since there must be only one configuration for all set of values for those two properties, each configuration can be effectively reached by the goal state.
+
+### Uniqueness of Optimal Solution
