@@ -93,3 +93,32 @@ Which is an even number and therefore does not change the parity of the previous
 
 CASE 2: N is EVEN
 
+In this case, n' = N - 1 = 2t + 1 for some t.
+
+So, when we make a move, we are now changing the order with respect to an ODD number of tiles and the previous argument does not hold anymore.
+
+*Claim* 2.1: Each horizontal move does not change polarity and parity of empty tile row index (counting 1 from bottom)
+
+*Proof*: The first assertion has already been proved, for what concerns the second one, obviously moving the tile horizontally does not change its current row.
+
+*Claim* 2.2: Each vertical move changes both polarity and parity of empty tile row index
+
+*Proof*: For the second assertion this is obvious, as we can only go up or down one row at a time.
+For the second assertion, assuming we have k inversions with the soon to be involved n' tiles, we have
+
+2t + 1 = n' = (n' - k) + k
+
+as before, to obtain the new number of inversions we have to add the following term
+
++(n' - k) - k = n' - 2k = 2t + 1 - 2k = 2(t - k) + 1
+
+Which is an ODD number and since ODD + ODD = EVEN \&\& EVEN + ODD = ODD, the following term changes the polarity.
+
+*Theo*: When N is EVEN, if the N-Puzzle is solvable then the initial state must exhibit the following property
+
+(polarity EVEN \&\& parity of empty tile row index ODD) OR (polarity ODD \&\& parity of empty tile row index EVEN)
+
+*Proof*: This is because the final state has both EVEN polarity (as there are no inversions in it) and ODD parity of empty tile row index (as the empty tile is in the bottomost rightmost corner, so at row 1).
+
+Given the previous invariant, the only way to reach such a state is when the initial configuration does not share parity of inversions with parity of empty tile row index.
+
