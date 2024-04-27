@@ -32,3 +32,35 @@ I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidi
 
 ## The N-Puzzle
 
+### Existence of a Solution
+In order to not doom our agent to failure, we must understand when the puzzle is solvable
+
+*Definition*: An inversion, inside a configuration, is formed whenever there is a tile with a greater number than another successive tile encountered while reading through the grid left-right, top-bottom starting from said tile
+
+*Definition*: We define as polarity of a configuration the parity of its inversions
+
+*Example*: The following configuration has an odd polarity (the '0' represents the empty tile)
+
+4 5 2
+1 0 8
+7 6 3
+
+starting from the rightmost and bottomost tile, and reading all the successive tiles, we have infact 
+
+0 inversions for tile '3'
+1 inversions for tile '6'
+2 inversions for tile '7'
+3 inversions for tile '8'
+0 inversions for tile '1'
+1 inversions for tile '2'
+3 inversions for tile '5'
+3 inversions for tile '4'
+
+for a total of 13 inversions
+
+
+*CASE 1*: N is odd
+
+*Claim*: when a move is made, polarity does not change
+
+*Proof*:
