@@ -26,8 +26,8 @@ I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidi
 
 1. [The A* search algorithm](README.md#the-a*-search-algorithm)
 2. [The N-Puzzle](README.md#the-n-puzzle)
-	- [Existence of Solutions](README#existence-of-a-solution)
-	- [Uniqueness of Optimal Solution](README#uniqueness-of-optimal-solution)
+	- [Existence of Solutions](README.md#existence-of-a-solution)
+	- [Uniqueness of Optimal Solution](README.md#uniqueness-of-optimal-solution)
 3. [The Parallel Bidirectional A* search](README.md#the-parallel-bidirectional-a*-search)
 
 ## The A* search algorithm
