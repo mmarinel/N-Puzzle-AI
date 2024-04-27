@@ -95,7 +95,7 @@ CASE 2: N is EVEN
 
 In this case, n' = N - 1 = 2t + 1 for some t.
 
-So, when we make a move, we are now changing the order with respect to an ODD number of tiles and the previous argument does not hold anymore.
+So, when we make a vertical move, we are now changing the order with respect to an ODD number of tiles and the previous argument does not hold anymore.
 
 *Claim* 2.1: Each horizontal move does not change polarity and parity of empty tile row index (counting 1 from bottom)
 
