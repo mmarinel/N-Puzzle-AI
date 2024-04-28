@@ -247,5 +247,53 @@ The only difference between the two being that the *graph_search* remembers whic
 Since our algorithm will be based on the general *graph_search*, we will give the high level description of only this template
 
 ```
-graph_se
+graph_search(problem) returns an action sequence
+	frontier = new Queue{} # can be LIFO, FIFO, a priority queue with any strategy
+	explored = new Set{}
+
+	frontier->push(problem.initial_state)
+	while (false == frontier->empty())
+	{
+		node = frontier->pop(); # This is the bulk of any derived search algorithm
+
+		if (problem.goal_test(node.state))
+			return problem.solution(node)
+		
+		explored->add(node)
+		for (A: problem.actions(node.state))
+		{
+			child = problem.result(node.state, A)
+			if (
+				false == frontier.contains(child) &&
+				false == explored.contains(child.state)
+			)
+				frontier->add(child)
+		}
+	}
+	return {}
 ```
+As we can see from the pseudocode, the bulk of any derived search algorithm is in the way the frontier is organized.
+Changing the politics of the frontier, in fact, changes the way the algorithm operates; by doing so, we can obtain all sorts of algorithms, we can in fact derive *Breadth First Search* and *Depth First Search* just to name a few.
+
+Different politics may lead to more or less efficient algorithms; one politic that does not prioritize the expansion of most promising nodes, can in fact get stuck on a long path or even a dead end path.
+Moreover, the politics determines whether our algorithm is optimal or not.
+
+Among all optimal solutions, we call "optimal solution" a solution with minimal path_cost for the final node as described in the *child_node* procedure.
+
+
+Given the template above, one can classify all search algorithms into two big families:
+
+- Uninformed search algorithms: meaning algorithms that are not given any additional knowledge about the problem they have to solve other than the problem definition itself. Among such algorithms we can name the *Breadth First Search* and *Depth First Search* algorithms
+
+- Informed search algorithms: which are given additional knowledge about the problem that can guide them towards finding a solution
+
+The most common way to impart problem specific knowledge to a search algorithm is by the use of heuristic functions. Heuristic functions can be used as a cost estimate for a node to reach the final goal node and can be derived by
+
+- experience: one can realize after trying solving the problem many times that there is a metric correlated with the actual solution, which is easy to calculate and can be used as a guidance on the "quality" of the current node (think about straight line distances in a route finding problem -- more on this in the chapters above --)
+
+- solutions to relaxed problems: By relaxing the constraints of the original problem, one can derive many other problems which, if immediately solvable, have solutions that can be used as a cost esitmate for the actual problem
+
+- other advanced techniques such as pattern databases
+
+We stop for now as we will talk more in detail about heuristic functions in the above chapters; for any doubt refer also the Russell's and Norvig's book!
+
