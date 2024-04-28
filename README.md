@@ -29,8 +29,16 @@ I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidi
 	- [Existence of Solutions](README.md#existence-of-a-solution)
 	- [Uniqueness of Optimal Solution](README.md#uniqueness-of-optimal-solution)
 3. [The Parallel Bidirectional A* search](README.md#the-parallel-bidirectional-a*-search)
+4. [Appendix](README.md#appendix)
 
 ## The A* search algorithm
+
+The following observations are taken from the book "*Artificial Intelligence: A modern Approach" by Russell and Norvig (Third Edition)*".
+If you don't feel very confident about the arguments of the upcoming chapters, I advise you read chapter 2 and 3 of the mentioned book.
+
+I also provided an appendix at the bottom of the present README, describing the basis of search algorithms.
+
+
 
 ## The N-Puzzle
 
@@ -179,3 +187,65 @@ When the empty tile gets moved in the same square, the number that was in that s
 </br>
 Now, with the previous claim in mind, there can only be one action sequence that gets to the goal within a minimal number of moves because each move produces two different configurations in two different actions sequences; therefore the second one will need some more moves to reach the goal state.
 
+## Appendix
+
+Before diving straight into the A* search algorithm, I think it's worthwile spending a couple more words on what is a search algorithm.
+A search algorithm takes a problem P in input which, in our case study, is described by
+- the initial state
+- the set of all legal actions in a particular state
+- the transition model, providing rules describing what state results from appliying action A in state S
+- the goal state description (which can be a complete description of the state or a set of abstract properties a goal state has to satisfy)
+- a step cost function describing the cost of performing action A in state S
+
+given such a problem, the search algorithm has to find a solution, meaning a path that leads from the initial state of the world, as seen by the problem, to the final goal state.
+Given a particular state, each legal action in that state originates a different action sequence; this means that the possible action sequences starting from the initial state form a search tree with the initial state at the root, all the branches corresponding to actions and all the nodes corresponding to states in the state space of the problem.
+
+One thing to immediately clarify is that "search tree" and "state space" are not words referring to the same thing.
+
+*Definition*: the state space of a problem is the ***set*** of all possible states
+
+*Definition*: the search tree is the tree constructed by a search algorithm that has paths leading from one state to another, in which a sequence of actions can generate the same state multiple times (loopy path).
+
+Think, for example, to the problem of getting from city A to city B; there can be multiple ways one can follow, some quicker, some slower. Therefore, there may be multiple action sequences that lead us from city A to city B, such that in all of which the final node will be different even if it contains the same final state, simply because it is on a different path than the others.
+
+This makes it necessary to describe how one can build a node of the search tree.
+A node is simply a data structure containing:
+
+- the state
+- the parent node (the node from which this one was generated)
+- the action that generated the node
+- the path cost of getting to this node from the initial state
+
+As we will see, this structure makes it easy for our search algorithms to derive the solution (which is an action sequence) once a goal state is found.
+
+The initial node will simply contain
+
+- the initial state
+- a nil reference
+- a nil reference
+- 0
+
+To build a node from a parent node, instead, the following procedure is used
+
+```
+child_node(problem, parent, action) returns a node
+	node = new Node{}
+
+	node->state = problem.result(parent, action) # transition model
+	node->parent = parent
+	node->action = action
+	node->path_cost = parent->path_cost + problem.step_cost(parent.state, action)
+```
+
+</br>
+Now, we give the general flavor of search algorithms.
+
+All of the search algorithms are derived from the same two high level templates, the general "*tree_search*" and "*graph_search*" algorithms.
+
+The only difference between the two being that the *graph_search* remembers which nodes it has met until now so that it does not incur in loopy paths.
+
+Since our algorithm will be based on the general *graph_search*, we will give the high level description of only this template
+
+```
+graph_se
+```
