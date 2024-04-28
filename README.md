@@ -191,7 +191,7 @@ Now, with the previous claim in mind, there can only be one action sequence that
 
 Before diving straight into the A* search algorithm, I think it's worthwile spending a couple more words on what is a search algorithm.
 A search algorithm takes a problem P in input which, in our case study, is described by
-- the initial state
+- the initial state of the world as "seen" by the problem
 - the set of all legal actions in a particular state
 - the transition model, providing rules describing what state results from appliying action A in state S
 - the goal state description (which can be a complete description of the state or a set of abstract properties a goal state has to satisfy)
