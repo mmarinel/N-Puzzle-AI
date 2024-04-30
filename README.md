@@ -206,7 +206,7 @@ One thing to immediately clarify is that "search tree" and "state space" are not
 
 *Definition*: the search tree is the tree constructed by a search algorithm that has paths leading from one state to another, in which a sequence of actions can generate the same state multiple times (loopy path).
 
-Think, for example, to the problem of getting from city A to city B; there can be multiple ways one can follow, some quicker, some slower. Therefore, there may be multiple action sequences that lead us from city A to city B, such that in all of which the final node will be different even if it contains the same final state, simply because it is on a different path than the others.
+Think, for example, about the problem of getting from city A to city B; there can be multiple ways one can follow, some quicker, some slower. Therefore, there may be multiple action sequences that lead us from city A to city B, such that in all of which the final node will be different even if it contains the same final state, simply because it is on a different path than the others.
 
 This makes it necessary to describe how one can build a node of the search tree.
 A node is simply a data structure containing:
@@ -278,7 +278,7 @@ Changing the politics of the frontier, in fact, changes the way the algorithm op
 Different politics may lead to more or less efficient algorithms; one politic that does not prioritize the expansion of most promising nodes, can in fact get stuck on a long path or even a dead end path.
 Moreover, the politics determines whether our algorithm is optimal or not.
 
-Among all optimal solutions, we call "optimal solution" a solution with minimal path_cost for the final node as described in the *child_node* procedure.
+Among all solutions, we call "optimal solution" a solution with minimal path_cost for the final node as described in the *child_node* procedure.
 
 
 Given the template above, one can classify all search algorithms into two big families:
@@ -289,11 +289,11 @@ Given the template above, one can classify all search algorithms into two big fa
 
 The most common way to impart problem specific knowledge to a search algorithm is by the use of heuristic functions. Heuristic functions can be used as a cost estimate for a node to reach the final goal node and can be derived by
 
-- experience: one can realize after trying solving the problem many times that there is a metric correlated with the actual solution, which is easy to calculate and can be used as a guidance on the "quality" of the current node (think about straight line distances in a route finding problem -- more on this in the chapters above --)
+- experience: one can realize, after trying to solve the problem many times, that there is a metric correlated with the actual solution, which is easy to calculate and can be used as a guidance on the "quality" of the current node (think about straight line distances in a route finding problem -- more on this in the chapters above --)
 
-- solutions to relaxed problems: By relaxing the constraints of the original problem, one can derive many other problems which, if immediately solvable, have solutions that can be used as a cost esitmate for the actual problem
+- solutions to relaxed problems: By relaxing the constraints of the original problem, one can derive many other problems which, if immediately solvable, have solutions that can be used as a cost esitmate for the solution of the actual problem
 
 - other advanced techniques such as pattern databases
 
-We stop for now as we will talk more in detail about heuristic functions in the above chapters; for any doubt refer also the Russell's and Norvig's book!
+We stop for now as we will talk more in detail about heuristic functions in the above chapters; for any doubt refer also to Russell's and Norvig's book!
 
