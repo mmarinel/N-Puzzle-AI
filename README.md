@@ -123,8 +123,21 @@ Therefore, h(n) <= c(n, a1, n1) + h(n1) <= c(n, a1, n1) +  c(n1, a2, n2) + h(n2)
 which contradicts our previous assumption.
 
 
+Admissible heuristics, on the other hand, are not always consistent. One can observe this by artificially creating admissible heuristics for any problem that violate even just once the triangular inequality expressed by the consistency property. Think about the straight line distance for the route finding problem. This heuristic is both admissible and consistent because, if the consistency property was not satisfied, then the triangular inequality would not hold for every couple of nodes, but as we can see from the following image 
+
+![](resources/images/github/triangle-inequality.png)
+
+The straight line distances form a triangle, so, as we know from basic geometry
+
+h(n) <= sld + h(n') where we have indicated, with sld, the straight line distance between n and n'.
+Now, since sld <= c(n, a, n'), it follows
+
+h(n) <= c(n, a, n') + h(n')
+
+Hence, the heuristic is admissible.
 
 
+This being said, 
 ## The N-Puzzle
 
 ### Existence of a Solution
