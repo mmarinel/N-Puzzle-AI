@@ -146,7 +146,42 @@ Hence, the heuristic is admissible.
 
 ### Optimality of A*
 
+*Claim 1*: If h is consistent, then the values of f along any path are non decreasing.
 
+In mathematical terms: f(n') >= f(n) for every nodes n, n' such that n' = problem.result(n, a) for some action a in problem.actions(n)
+
+*Proof*: f(n') = g(n') + h(n') = g(n) + c(n, a, n') + h(n')
+
+Now, since h is consistent, h(n) <= c(n, a, n') + h(n')
+
+Therefore, f(n') >= g(n) + h(n) = f(n)
+
+*Claim 2*: Whenever *A\** selects a node n for expansion, the optimal path to that node has been found
+
+*Proof*: Let's suppose this is not the case. As a first consequence, we have that there were two children of an ancestor of node n such that one of them was on the optimal path to the state at node n, while the other was not.
+Let's call ñ the ancestor, n1 the children that was the ancestor of n, and n2 the children that was the ancestor of n*, the node containing the same state as n that is on the optimal path.
+
+*Clam 1* tells us that values of f along any path are non decreasing, so
+
+f(ñ) <= f(n2) <= f(n*)
+
+and
+
+f(ñ) <= f(n1) <= f(n)
+
+Moreover, since f = g + h, h is only dependant on the contained state and n* is on the optimal path, we have f(n*) <= f(n).
+In fact, g(n*) <= g(n) otherwise n would be the node on the optimal path.
+
+Therefore, we have f(n2) <= f(n*) <= f(n), which means that the children n2 would have been considered for expansion before node n, since the frontier is a priority queue ordered by increasing values of f.
+
+
+*Theo*: From the two preceding observations, it follows that the sequence of nodes expanded by A* is in non decreasing order of f. Hence, the first goal node selected for expansion must be an optimal solution.
+
+*Proof*: What we just proved is that when *A\** expands a node, that node is the one on the optimal path to the state contained in that node. What we need to prove now is that the first goal node found is also the optimal one, meaning the one that it costs less to arrive to. There may be in fact many goal nodes, some of them far away in the graph while some others not.
+
+The first thing we observe is that, for goal nodes, f is the real cost of getting to that node as h = 0 for nodes containing goal states. Now, based on what we proved, if there was a better goal node nG2, there would be another node n' in the frontier such that f(n') <= f(nG2). Moreover, since nG2 is a better goal node and f is the real cost of getting to the node for nodes containing goal states, we also have f(nG2) < f(n), where n is the first encountered goal node. 
+
+Hence, f(n') < f(n) and n' would have been taken in consideration for expansion before than n. The same applies for all intermediate nodes up until nG2 comprised, as f(nG2) < f(n) and therefore would have been expanded before than n, contradicting our assumption.
 
 ## The N-Puzzle
 
