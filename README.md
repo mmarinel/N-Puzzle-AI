@@ -25,6 +25,7 @@ The precise requirements of the project are described [here](en.subject.pdf), wi
 I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidirectional A**** search algorithm.
 
 1. [The A* search algorithm](README.md#the-a*-search-algorithm)
+	- [Heuristic Functions For the N-Puzzle](README.md#heuristic-functions-for-the-n-puzzle)
 2. [The N-Puzzle](README.md#the-n-puzzle)
 	- [Existence of Solutions](README.md#existence-of-a-solution)
 	- [Uniqueness of Optimal Solution](README.md#uniqueness-of-optimal-solution)
@@ -203,6 +204,66 @@ Regarding *A\** complexity analysis, it can be proven that the growth in run tim
 Computation time is not, however, A∗’s main drawback. Because it keeps all generated
 nodes in memory,  A∗ usually runs out of space long before it runs out of time. For this reason, A∗ is not practical for many large-scale problems. There are, however, algorithms that overcome the space problem without sacrificing
 optimality or completeness, at a small cost in execution time.
+
+### Heuristic Functions For the N-Puzzle
+
+We start this section by introducing two possible heuristics for the N-Puzzle
+
+- *Misplaced Tiles*: h(n) = number of misplaced tiles in state n.state. This heuristic is admissible as any tile that is out of place cleary needs to be moved at least once
+
+- *Manhattan Distance*: h(n) = sum of distances of each tile to its goal position. Where the distance of each tile is calculated as the sum of its horizontal and vertical distance to the goal position. This is also an admissible solution as the shortest sequence of moves to place a tile in its goal position is exactly the sum of how many squares to go left/right + how many squares to go up/down.
+
+Following, there is an example of the Manhattan distance
+
+
+|   |   |  | 
+|---|---|---|
+| 4  | 5  | 2  
+| 1  |  0 |  8 
+|  7 | 6  | 3  
+
+We notice, for example, that tile number 8 needs to be moved one square left and then one square down to reach its goal position. Similarly, tile number 3 needs to be moved two squares up and none horizontally.
+
+</br>
+
+One way to characterize the quality of an heuristic is by the **effective branching factor** b*.
+
+If an instance of A* search generates N nodes and the solution depth is d, then we call "effective branching factor" the branching factor a uniform tree of depth d would have to contain N + 1 nodes.
+
+So, N + 1 = 1 + b* + (b*)^2 + ... + (b*)^d
+
+
+Clearly, the better the heuristic the closer b* will be to 1.
+
+But how to determine when an heuristic is better than another?
+If we take in exam the two heuristic functions we just introduced, we can confidently state that
+
+manhattan_distance(n) >= misplaced_tiles(n) for every node n
+
+That is because the second heuristic assumes each tile can be moved at least once, but not necessarely more, to get to its goal position, while the manhattan distance provides a higher lower bound, stating that each tile needs at least a number of moves equal to the sum of its horizontal and vertical distances.
+
+This makes the Manhattan distance better as heuristics are optimistic by nature (they always think the cost of getting to the solution is lower than it actually is, in fact, A* proceeds by enlarging the contours increasingly on the value of f), so the higher they get while retaining admissibility, the closer they would get to the real cost.
+
+This can also be proven mathematically
+
+*Claim*: if h1(n) >= h2(n) for every node n, then h1 is a better heuristic than h2.
+
+*Proof*: As we've seen, A* search with heuristic h1 expands all nodes with f(n) < C*, where C* is the cost of the optimal solution.
+
+Now, f(n) = g(n) + h1(n) \&\& f(n) < C* ==> h1(n) < C* - g(n)
+
+Since h1(n) >= h2(n), we finally obtain
+
+h2(n) < C* - g(n)
+
+Hence, if we use h2, we get f(n) = g(n) + h2(n) < C* ...
+
+Which means that any node expanded when using heuristic h1 also gets expanded when using heuristic h2. But the contrary is not necessarely true.
+
+In this case, we say that h1 ***dominates*** h2.
+
+</br>
+TODO Relaxed problems and max heuristic
 
 ## The N-Puzzle
 
