@@ -130,6 +130,7 @@ Admissible heuristics, on the other hand, are not always consistent. One can obs
 The straight line distances form a triangle, so, as we know from basic geometry
 
 h(n) <= sld + h(n') where we have indicated, with sld, the straight line distance between n and n'.
+
 Now, since sld <= c(n, a, n'), it follows
 
 h(n) <= c(n, a, n') + h(n')
