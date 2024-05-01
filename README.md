@@ -103,7 +103,7 @@ We introduce these properites in the remainder of the section, where we focus on
 The first thing to observe as a consequence of the previous definition, is that when we have an admissible heuristic h, f = g + h never overestimates the true cost of a solution along the current path through n.
 That is simply because g(n) is the actual cost until node n, and h(n) is a lower bound on the cost of the cheapest path from n to a goal node.
 
-One example of an admissible heuristic is the straight line distance for the route finding problem. Being the straight line connecting two nodes the shortest possible path between them, we have in fact as a consequence that such heuristic be admissible.
+One example of an admissible heuristic is the straight line distance for the route finding problem. Being that the straight line connecting two nodes forms the shortest possible path between them, we have as a consequence that such heuristic is admissible.
 
 ### Consistency
 
@@ -123,7 +123,14 @@ Therefore, h(n) <= c(n, a1, n1) + h(n1) <= c(n, a1, n1) +  c(n1, a2, n2) + h(n2)
 which contradicts our previous assumption.
 
 
-Admissible heuristics, on the other hand, are not always consistent. One can observe this by artificially creating admissible heuristics for any problem that violate even just once the triangular inequality expressed by the consistency property. Think about the straight line distance for the route finding problem. This heuristic is both admissible and consistent because, if the consistency property was not satisfied, then the triangular inequality would not hold for every couple of nodes, but as we can see from the following image 
+Admissible heuristics, on the other hand, are not always consistent. One can observe this by artificially creating admissible heuristics for any problem that violate even just once the triangular inequality expressed by the consistency property.
+
+It follows that consistency is a stricter requirement than admissibility
+
+
+![](resources/images/github/admissibleVSconsistent.png)
+
+An example of a consistent heuristic is again the straight line distance for the route finding problem. This heuristic is both admissible and consistent because, if the consistency property was not satisfied, then the triangular inequality would not hold for every couple of nodes, but as we can see from the following image 
 
 ![](resources/images/github/triangle-inequality.png)
 
@@ -137,8 +144,10 @@ h(n) <= c(n, a, n') + h(n')
 
 Hence, the heuristic is admissible.
 
+### Optimality of A*
 
-This being said, 
+
+
 ## The N-Puzzle
 
 ### Existence of a Solution
