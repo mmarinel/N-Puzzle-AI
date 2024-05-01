@@ -33,7 +33,7 @@ I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidi
 
 ## The A* search algorithm
 
-The following observations are taken from the book "*Artificial Intelligence: A modern Approach" by Russell and Norvig (Third Edition)*".
+The following observations are taken from the book "*Artificial Intelligence: A modern Approach" by Russell and Norvig (Third Edition)*.
 If you don't feel very confident about the arguments of the upcoming chapters, I advise you read chapter 2 and 3 of the mentioned book.
 
 I also provided an appendix at the bottom of the present README, describing the basis of search algorithms.
@@ -186,6 +186,23 @@ Hence, whenever *A\** chooses a node for expansion, the optimal path to that nod
 The first thing we observe is that, for goal nodes, f is the real cost of getting to that node as h = 0 for nodes containing goal states. Now, based on what we proved, if there was a better goal node nG2, there would be another node n' in the frontier such that f(n') <= f(nG2). Moreover, since nG2 is a better goal node and f is the real cost of getting to the node for nodes containing goal states, we also have f(nG2) < f(n), where n is the first encountered goal node. 
 
 Hence, f(n') < f(n) and n' would have been taken in consideration for expansion before than n. The same applies for all intermediate nodes up until nG2 comprised, as f(nG2) < f(n) and therefore would have been expanded before than n, contradicting our assumption.
+
+</br>
+If C* is the cost of the optimal solution, then we can say the following
+
+- *A\** expands all nodes with f(n) < C*
+- *A\** might expand some of the nodes right on the "goal contour" (where f(n) = C*) before selecting a goal node.
+
+Completeness requires that there be only finitely many nodes with cost less than or equal to C∗, a condition that is true if all step costs exceed some finite epsilon and if b is finite.
+
+Moreover, *A\** is optimally efficient for any given heuristic. That is because any algorithm that does not expand all the nodes with f(n) < C* runs the risk of missing the optimal solution. The only way an algorithm can do a bit better than A* is by saving the useless expansion of some of the non goal nodes on the goal contour.
+
+We just proved A* is complete, optimal and optimally efficient. That does not mean it is the answer to all our needs, as most problems have a number of states within the goal contour that is exponential in the length of the solution.
+
+Regarding *A\** complexity analysis, it can be proven that the growth in run time as a function of the optimal solution depth d is correlated with the the **absolute error** or the **relative error** of the heuristic. The absolute error is defined as Δ ≡ h* − h, where h* is the actual cost of getting from the root to the goal, and the relative error is defined as epsilon ≡ (h* − h)/h*.
+Computation time is not, however, A∗’s main drawback. Because it keeps all generated
+nodes in memory,  A∗ usually runs out of space long before it runs out of time. For this reason, A∗ is not practical for many large-scale problems. There are, however, algorithms that overcome the space problem without sacrificing
+optimality or completeness, at a small cost in execution time.
 
 ## The N-Puzzle
 
