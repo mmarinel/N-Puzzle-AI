@@ -111,6 +111,8 @@ One example of an admissible heuristic is the straight line distance for the rou
 
 *Claim*: Every consistent heuristic is also admissible
 
+N.B.: from now on, we'll indicate the step_cost with the letter c.
+
 *Proof*: Let's in fact suppose that it were not admissible, then it would exist a path composed of k nodes such that h(n) > c(n, a1, n1) + c(n1, a2, n2) + .... + c(nk-1, ak, nk), where nk is a goal node.
 </br>
 
