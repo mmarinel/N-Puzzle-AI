@@ -85,7 +85,7 @@ The difference between the *uniform cost* and *A\** search algorithms relies in 
 the heuristic function is the additional problem specific information we impart to our search algorithm so that it can be guided by knowledge on the problem beyond the problem description itself. One can gather such information from experience or other techniques as discussed in the *Appendix* section.
 
 One thing to immediately notice is that, unlike g, the h component of our f function only depends on the state at node n, not the node itself.
-Think about straight line distances when used as heuristic information in a route finding problem. When we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city, can be used as the estimated cost of the cheapest path between them.
+Think about straight line distances when used as heuristic information in a route finding problem. When we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city, can be used as the estimated cost of the cheapest path between them, independently on the way one got to the starting city.
 
 It follows that we consider heuristic functions to
 
