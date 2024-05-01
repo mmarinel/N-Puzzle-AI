@@ -134,7 +134,7 @@ An example of a consistent heuristic is again the straight line distance for the
 
 ![](resources/images/github/triangle-inequality.png)
 
-The straight line distances form a triangle, so, as we know from basic geometry
+The straight line distances form a triangle, so as we know from basic geometry
 
 h(n) <= sld + h(n') where we have indicated, with sld, the straight line distance between n and n'.
 
