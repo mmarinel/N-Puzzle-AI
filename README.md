@@ -181,7 +181,7 @@ Hence, whenever *A\** chooses a node for expansion, the optimal path to that nod
 
 *Theo*: From the two preceding observations, it follows that the sequence of nodes expanded by A* is in non decreasing order of f. Hence, the first goal node selected for expansion must be an optimal solution.
 
-*Proof*: What we just proved is that when *A\** expands a node, that node is the one on the optimal path to the state contained in that node. What we need to prove now is that the first goal node found is also the optimal one, meaning the one that it costs less to arrive to. There may be in fact many goal nodes, some of them far away in the graph while some others not.
+*Proof*: What we just proved is that when *A\** expands a node, that node is the one on the optimal path to the state contained in that node. What we need to prove now is that the first goal node found is also the optimal one, meaning the one that it costs less to arrive to. There may be in fact many goal states, some of them only inside nodes far away in the graph while some others not.
 
 The first thing we observe is that, for goal nodes, f is the real cost of getting to that node as h = 0 for nodes containing goal states. Now, based on what we proved, if there was a better goal node nG2, there would be another node n' in the frontier such that f(n') <= f(nG2). Moreover, since nG2 is a better goal node and f is the real cost of getting to the node for nodes containing goal states, we also have f(nG2) < f(n), where n is the first encountered goal node. 
 
