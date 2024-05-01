@@ -38,7 +38,65 @@ If you don't feel very confident about the arguments of the upcoming chapters, I
 
 I also provided an appendix at the bottom of the present README, describing the basis of search algorithms.
 
+A* is an *informed* search algorithm whose structure is basically the same as the *uniform cost search* algorithm (which is an uninformed search algorithm).
 
+```
+aStar(problem)
+{
+	node = new Node{problem.initial_state}
+	frontier = new PriorityQueue{f}; // f = g + h
+	explored = new Set{}
+
+	frontier.push(node)
+	while (false == frontier.empty())
+	{
+		node = frontier.pop()
+		if (problem.goal_test(node))
+			return problem.solution(node)
+		explored.add(node.state)
+
+		for a: problem.actions(node)
+		{
+			child = child_node(problem, node, action) // see Appendix
+
+			if (
+				false == frontier.contains(child) &&
+				false == explored.contains(child.state)
+			)
+				frontier.push(child)
+			else if (frontier.contains(child))
+			{
+				existing = frontier.get(child)
+				if (existing.f_cost > child.f_cost)
+					frontier.replace(existing, child)
+			}
+		}
+	}
+	return {}
+}
+```
+
+The difference between the *uniform cost* and *A\** search algorithms relies in the function f used to order the frontier.
+
+- In the *uniform cost* search: f = g, where g is the function indicating the path cost of a node
+
+- In *A\** search: f = g + h, where h is an heuristic function estimating the cost of the cheapest path from the state at node n to a goal state
+
+the heuristic function is the additional problem specific information we impart to our search algorithm so that it can be guided by knowledge on the problem beyond the problem description itself. One can gather such information from experience or other techniques as discussed in the *Appendix* section.
+
+One thing to immediately notice is that, unlike g, the h component of our f function only depends on the state at node n, not the node itself.
+Think about straight line distances when used as heuristic information in a route finding problem. When we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city, can be used as the estimated cost of the cheapest path between them.
+
+It follows that we consider heuristic functions to
+
+- be non negative
+- problem specific
+- h(n) = 0 if and only if n.state is a goal state
+
+There are other two properties we desire an heuristic function would have, namely **admissibility** and **consistency**.
+We introduce these properites in the remainder of the section, where we focus on the demonstration of completeness and optimaility of the *A\** search algorithm.
+
+### Admissibility
 
 ## The N-Puzzle
 
@@ -208,6 +266,7 @@ One thing to immediately clarify is that "search tree" and "state space" are not
 
 Think, for example, about the problem of getting from city A to city B; there can be multiple ways one can follow, some quicker, some slower. Therefore, there may be multiple action sequences that lead us from city A to city B, such that in all of which the final node will be different even if it contains the same final state, simply because it is on a different path than the others.
 
+Nodes are abstract constructs that form the building blocks of paths, which are representations of the different ways to get from one state to another. They contain state rather than being a state.
 This makes it necessary to describe how one can build a node of the search tree.
 A node is simply a data structure containing:
 
@@ -280,6 +339,7 @@ Moreover, the politics determines whether our algorithm is optimal or not.
 
 Among all solutions, we call "optimal solution" a solution with minimal path_cost for the final node as described in the *child_node* procedure.
 
+But how does one derive the solution when a goal state is found? Look again at the *child_node* procedure; once a goal node is found, one can follow the chain of parents and derive the action sequence by adding each action into a LIFO queue!
 
 Given the template above, one can classify all search algorithms into two big families:
 
