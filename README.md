@@ -98,6 +98,31 @@ We introduce these properites in the remainder of the section, where we focus on
 
 ### Admissibility
 
+*Definition*: An heuristic is said to be admissible when it never overestimates the cost of reaching the goal.
+
+The first thing to observe as a consequence of the previous definition, is that when we have an admissible heuristic h, f = g + h never overestimates the true cost of a solution along the current path through n.
+That is simply because g(n) is the actual cost until node n, and h(n) is a lower bound on the cost of the cheapest path from n to a goal node.
+
+One example of an admissible heuristic is the straight line distance for the route finding problem. Being the straight line connecting two nodes the shortest possible path between them, we have in fact as a consequence that such heuristic be admissible.
+
+### Consistency
+
+*Definition*: An heuristic h(n) is said to be consistent when, for every legal action a and resulting node n', we have h(n) <= step_cost(n, a, n') + h(n')
+
+*Claim*: Every consistent heuristic is also admissible
+
+*Proof*: Let's in fact suppose that it were not admissible, then it would exist a path composed of k nodes such that h(n) > c(n, a1, n1) + c(n1, a2, n2) + .... + c(nk-1, ak, nk), where nk is a goal node.
+</br>
+
+But from the definition of consistency, we have h(n) <= c(n, a1, n1) + h(n1) and h(n1) <= c(n1, a2, n2) + h(n2) and so on
+
+Therefore h(n) <= c(n, a1, n1) + h(n1) <= c(n, a1, n1) +  c(n1, a2, n2) + h(n2) <= ... <=  c(n, a1, n1) + c(n1, a2, n2) + .... + c(nk-1, ak, nk)
+
+which contradicts our previous assumption.
+
+
+
+
 ## The N-Puzzle
 
 ### Existence of a Solution
