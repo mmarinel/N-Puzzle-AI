@@ -174,6 +174,10 @@ In fact, g(n*) <= g(n) otherwise n would be the node on the optimal path.
 
 Therefore, we have f(n2) <= f(n*) <= f(n), which means that the children n2 would have been considered for expansion before node n, since the frontier is a priority queue ordered by increasing values of f.
 
+We can iterate this reasoning up until node n*, and since f(n*) <= f(n), we again find out that n* would have been expanded before node n.
+
+Hence, whenever *A\** chooses a node for expansion, the optimal path to that node has been found.
+
 
 *Theo*: From the two preceding observations, it follows that the sequence of nodes expanded by A* is in non decreasing order of f. Hence, the first goal node selected for expansion must be an optimal solution.
 
