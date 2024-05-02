@@ -268,7 +268,33 @@ If a problem definition is written down in a formal language, it is possible to 
 
 For example, if the rules of the N-Puzzle are described as
 
-...TODO COntinue
+"a tile can move from square A to square B if square A is horizontally or vertically adjacent to square B and square B is empty"
+
+then we can phrase this with a more rigorous language
+
+A vertically/horizontally adjacent to B && B is empty ==> can move from A to B
+
+and can generate three relaxed problems by removing one or both the conditions of the thesis of previous implication
+
+- removing the first: "a tile can move from square A to square B if square A is vertically or horizontally adjacent to B"
+
+- removing the second: "a tile can move from square A to square B if square B is empty"
+
+- removing both: "a tile can move from square A to square B"
+
+We can now observe that
+
+- from the first: we obtain the *Manhattan Distance*
+- from the second: we obtain an heuristic we'll discuss soon
+- from the last: we obtain the *Misplaced Tiles*
+
+Of much importance is the fact that the relaxed problems are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive.
+
+TODO...
+- provide some numbers on the 8-Puzzle and N-Puzzle
+- Gashnig's heuristic
+- ABSOLVER and new heuristics for N-Puzzle
+- taking the max of many heuristic with proof of validity
 
 ## The N-Puzzle
 
