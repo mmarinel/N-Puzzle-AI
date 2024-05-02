@@ -260,7 +260,15 @@ There can in fact be values for h1(n) such that h2(n) < C* - g(n) < h1(n)
 In this case, we say that h1 ***dominates*** h2.
 
 </br>
-TODO Relaxed problems and max heuristic
+
+One way one can come up with a new heuristic is by solving relaxed problems. By relaxing the constraints of the original problem, in fact, one can derive many other problems which have solutions that can be used as a cost esitmate for the solution of the actual problem (in other words, heuristic h(n) = cost of optimal solution from node n in the relaxed problem). Moreover, since the relaxed problem has a bigger state graph (as it permits actions that would otherwise be illegal in the original problem), it follows that it has **better** solutions. Hence, any optimal solution to a relaxed problem is also an *admissible* heuristic for the original problem.
+But there's even more, since such a heuristic is a solution to the relaxed problem, it must be also *consistent*. Otherwise, the optimal solution from a node n would cost more than what it costs to get to one of its neighbours plus the cost of the optimal solution from that neighbour. Which is contradictory.
+
+If a problem definition is written down in a formal language, it is possible to derive many relaxed problems **automatically**.
+
+For example, if the rules of the N-Puzzle are described as
+
+...TODO COntinue
 
 ## The N-Puzzle
 
