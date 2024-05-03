@@ -288,12 +288,14 @@ We can now observe that
 - from the second: we obtain an heuristic we'll discuss soon
 - from the last: we obtain the *Misplaced Tiles*
 
-Of much importance is the fact that the relaxed problems are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive.
+Regarding the second of the three derived heuristics, ...TODO
+
+Of much importance is the fact that the relaxed problems are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive. Supposing a relaxed problem derived heuristic reduces the branching factor from b to c, and optimal solution depth of the original problem is d, a total of c^d nodes will be generated. If the heuristic were not immediately calculable, a search algorithm on the relaxed problem would cost λ^δ, where λ is the branching factor and δ the optimal solution depth for the relaxed problem. It follows that the use of the heuristic is really useful only when (c^d)*(λ^δ) < b^d. So, only when λ^δ < (b/c)^d. Most of the times though, it's difficult to verify such a condition holds for a relaxed problem, except for the ones from which immediately calculable heuristics are derived.
+Researchers developed a program called ABSOLVER that can generate heuristics automatically from formal problem descriptions by deriving relaxed problems. This program was able to find a new, better heuristic than the *Manhattan Distance* called the *X-Y Heuristic*, but the time it takes to calculate the values of such heuristic for each node would make *A\** worse when comparing it with the use of only the *Manhattan Distance* (which is an immediately calculable heuristic).
 
 TODO...
 - provide some numbers on the 8-Puzzle and N-Puzzle
 - Gashnig's heuristic
-- ABSOLVER and new heuristics for N-Puzzle
 - taking the max of many heuristic with proof of validity
 
 ## The N-Puzzle
