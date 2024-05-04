@@ -31,6 +31,7 @@ I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidi
 	- [Uniqueness of Optimal Solution](README.md#uniqueness-of-optimal-solution)
 3. [The Parallel Bidirectional A* search](README.md#the-parallel-bidirectional-a*-search)
 4. [Appendix](README.md#appendix)
+5. [Bibliography](README.md#bibliography)
 
 ## The A* search algorithm
 
@@ -313,7 +314,8 @@ In this case, *Manhattan Distance* has the same value of *Misplaced Tiles*, so *
 Of much importance is the fact that the relaxed problems, from which we derive heurisitcs, are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive. Supposing a relaxed problem derived heuristic reduces the branching factor from b to c, and optimal solution depth of the original problem is d, a total of c^d nodes will be generated. If the heuristic were not immediately calculable, a search algorithm on the relaxed problem would cost λ^δ, where λ is the branching factor and δ the optimal solution depth for the relaxed problem. It follows that the use of the heuristic is really useful only when (c^d)*(λ^δ) < b^d. So, only when λ^δ < (b/c)^d. Most of the times though, it's difficult to verify such a condition holds for a relaxed problem, except for the ones from which immediately calculable heuristics are derived.
 Researchers developed a program called ABSOLVER that can generate heuristics automatically from formal problem descriptions by deriving relaxed problems. This program was able to find a new, better heuristic than the *Manhattan Distance* called the *X-Y Heuristic*, but the time it takes to calculate the values of such heuristic for each node would make *A\** worse when comparing it with the use of only the *Manhattan Distance* (which is an immediately calculable heuristic).
 
-The *X-Y Heuristic* is derived from a STRIPS-style (Stanford Research Institute Problem Solver) Cartesian representation of the N-Puzzle, where we describe moves, also called operators, in terms of the precondition that must hold for the move to be applied, the *add-list* and the *delete-list* predicates that describe, respectively, the conditions that hold and the conditions that no longer hold after having applied the move.
+To derive relaxed problems, of crucial importance is the representation used to describe the problem. Simply from the fact that each relaxed problem is derived by applying transformations on the problem description.
+The *X-Y Heuristic* is derived from a STRIPS-style (Stanford Research Institute Problem Solver) Cartesian representation of the N-Puzzle, where we describe moves, also called operators, in terms of the precondition that must hold for the move to be applied, the *add-list* predicate and finally the *delete-list* predicate that describe, respectively, the conditions that hold and the conditions that no longer hold after having applied the move.
 
 Using this representation, the N-Puzzle problem goal configuration can be described as 
 
@@ -344,7 +346,7 @@ From this representation, one can derive two independent relaxed sub-problems, o
 
 dist(s, g1 U g2) >= dist(s, g1) + dist(s, g2)
 
-where dist(s, G) denotes the distance of state s from the goal for the original problem, for which G = g1 U g2 is the goal which is the union of the goals of the sub-problems.
+where dist(s, G) denotes the distance of state s from the optimal goal for the original problem, for which G = g1 U g2 is the goal which is the union of the optimal goals of the sub-problems.
 
 Now, one can relax the subproblems by removing not the empty tile information, which is what all the other heuristics do - therefore losing accuracy -, but by removing the X information from the Y problem and vice versa.
 
@@ -368,7 +370,7 @@ Ymove(T, Y, Y'): move a tile T from row Y to row Y'
 
 These two subproblems are independent from each other because they treat rows and columns like if they were sets. You can move a tile from one row to another adjacent row, as long as the adjacent row has the blank somewhere. It doesn't matter whether the empty tile is in the same column or not, so the merging of the two solutions can be taken as a lower bound for the original solution.
 
-The algorithm consists of 2 separate parts - for rows and columns.
+The algorithm for calculating the heuristic consists of 2 separate parts - for rows and columns.
 
 |   |   |  | 
 |---|---|---|
@@ -428,8 +430,19 @@ Number of required steps = 10
 
 </br>
 
-TODO...
-- taking the max of many heuristic with proof of validity
+In the final part of this section, we describe a method to obtain the best out of a set of possible heuristics, since none is always the best, as seen earlier.
+
+If a collection of consistent heuristics h1, ..., hm is available for a problem and none dominates the others, we can take the following heuristic
+
+h(n) = max{h1(n), ..., hm(n)} for all nodes n
+
+This heuristic is clearly more accurate than all the other heuristics, since it always considers the best heuristic of the set to be applied based on the currently examined node. This heuristic is also admissible, since it's the maximum of a set of admissible heuristics and, therefore, cannot overestimate the cost of the true solution. Furthermore, it obviously dominates all other heuristics and it can also be proven to be consistent. In fact,
+
+max{h1(n), ..., hm(n)} = hk(n) <= c(n, a, n') + hk(n') for some k in 1, ..., m
+
+but clearly hk(n') <= max{h1(n'), ..., hm(n')}
+
+So, max{h1(n), ..., hm(n)} = hk(n) <= c(n, a, n') + hk(n') <= c(n, a, n') + max{h1(n), ..., hm(n)}
 
 ## The N-Puzzle
 
@@ -690,3 +703,8 @@ The most common way to impart problem specific knowledge to a search algorithm i
 
 We stop for now as we will talk more in detail about heuristic functions in the above chapters; for any doubt refer also to Russell's and Norvig's book!
 
+## Bibliography
+
+- "*Artificial Intelligence: A modern Approach" by Russell and Norvig (Third Edition)*
+
+- [*"Discovering Admissible Heuristics by Abstracting and Optimizing: A Transformational Approach" by Jack Mosto w and Arman d E. Prieditis*](https://web.mit.edu/6.034/wwwbob/absolver.pdf)
