@@ -315,7 +315,6 @@ Researchers developed a program called ABSOLVER that can generate heuristics aut
 
 TODO...
 - ABSOLVER new X-Y heuristic
-- Nilsson Heuristic
 - taking the max of many heuristic with proof of validity
 
 ## The N-Puzzle
