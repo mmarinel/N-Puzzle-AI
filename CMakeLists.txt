@@ -17,7 +17,6 @@ set(CMAKE_AUTOUIC on) # NON parsa il file xml per generare l'UI
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-add_subdirectory(state)
 add_subdirectory(gui)
 add_subdirectory(heuristics)
 add_subdirectory(utils)
@@ -27,7 +26,6 @@ qt_add_executable(
 	main.cpp
 	resources/styleResources.qrc
 	${GUILIB_SRCS}
-	${STATELIB_SRCS}
 	${HEURISTICSLIB_SRCS}
 	${UTILS_SRCS}
 )
@@ -45,7 +43,7 @@ target_include_directories(
 	${Qt6Widgets_INCLUDE_DIRS}
 	"./gui/"
 	"./gui/gui_utils"
-	"./state"
+	"./gui/gui_state"
 	"./heuristics"
 	"./utils"
 )
