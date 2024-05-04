@@ -1,5 +1,5 @@
 set(
-	STATELIB_SRCS
+	GUISTATE_SRCS
 	"${CMAKE_CURRENT_LIST_DIR}/BoardState.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/BoardState.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Tile.hpp"
