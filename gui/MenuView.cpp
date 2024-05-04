@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/25 18:31:02 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/04 20:11:17 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ void	MenuView::setAtRandomFile()
 	if (this->choose_random->isChecked())
 	{
 		UIState::getInstance().atRandom = true;
+		setRandomGeneratedSize(choose_size->text().toInt());
 		this->choose_file->setDisabled(true);
 		this->choose_size->setVisible(true);
 		this->choose_size->setDisabled(false);

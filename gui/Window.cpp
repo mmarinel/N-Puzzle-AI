@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/23 14:58:49 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/04 20:23:28 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,10 @@ void	Window::forward()
 	{
 		//? Check if all mandatory fields have been filled in
 		if (
-			(UIState::getInstance().boardFileName.isEmpty() && false == UIState::getInstance().atRandom) ||
+			(
+				UIState::getInstance().boardFileName.isEmpty() &&
+				false == UIState::getInstance().atRandom
+			) ||
 			(NPuzzle::t_heuristic::NONE == UIState::getInstance().h)
 		)
 		{
