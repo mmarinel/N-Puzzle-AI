@@ -313,8 +313,122 @@ In this case, *Manhattan Distance* has the same value of *Misplaced Tiles*, so *
 Of much importance is the fact that the relaxed problems, from which we derive heurisitcs, are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive. Supposing a relaxed problem derived heuristic reduces the branching factor from b to c, and optimal solution depth of the original problem is d, a total of c^d nodes will be generated. If the heuristic were not immediately calculable, a search algorithm on the relaxed problem would cost λ^δ, where λ is the branching factor and δ the optimal solution depth for the relaxed problem. It follows that the use of the heuristic is really useful only when (c^d)*(λ^δ) < b^d. So, only when λ^δ < (b/c)^d. Most of the times though, it's difficult to verify such a condition holds for a relaxed problem, except for the ones from which immediately calculable heuristics are derived.
 Researchers developed a program called ABSOLVER that can generate heuristics automatically from formal problem descriptions by deriving relaxed problems. This program was able to find a new, better heuristic than the *Manhattan Distance* called the *X-Y Heuristic*, but the time it takes to calculate the values of such heuristic for each node would make *A\** worse when comparing it with the use of only the *Manhattan Distance* (which is an immediately calculable heuristic).
 
+The *X-Y Heuristic* is derived from a STRIPS-style (Stanford Research Institute Problem Solver) Cartesian representation of the N-Puzzle, where we describe moves, also called operators, in terms of the precondition that must hold for the move to be applied, the *add-list* and the *delete-list* predicates that describe, respectively, the conditions that hold and the conditions that no longer hold after having applied the move.
+
+Using this representation, the N-Puzzle problem goal configuration can be described as 
+
+{ Xloc(1,1), Yloc(1,1), Xloc(2, 2), Yloc(2, 1), ..., XlocB(N), YlocB(N)}
+
+where the *Xloc* and *Yloc* predicates describe respectively the column and row cartesian coordinates of a normal tile (for the empty tile, we have the analogous *XlocB* and *YlocB* predicates).
+Any other configuration can be represented in the same way.
+
+Using this representation, two operators suffice to describe the set of all legal actions
+
+Xmove(T, X, X'): move tile T from column X to column X'
+
+- precondition: Xloc(T, X) && Yloc(T, Y) && XlocB(X') && YlocB(Y) && adjacent(X,X')
+
+- add-list: Xloc(T, X') && XlocB(X)
+
+- delete-list: Xloc(T, X) && XlocB(X')
+
+Ymove(T, Y, Y'): move a tile T from row Y to row Y'
+
+- precondition: Xloc(T, X) && Yloc(T, Y) && XlocB(X) && YlocB(Y') && adjacent(Y, Y')
+
+- add-list: Yloc(T, Y') && YlocB(Y)
+
+- delete-list: Yloc(T, Y) & YlocB(Y')
+
+From this representation, one can derive two independent relaxed sub-problems, one for each dimension, such that one has the duty to put each tile in its correct column, while the other has to put them in the right row. These two problems are independent sub-problems, meaning they do not share any move, so the following condition holds
+
+dist(s, g1 U g2) >= dist(s, g1) + dist(s, g2)
+
+where dist(s, G) denotes the distance of state s from the goal for the original problem, for which G = g1 U g2 is the goal which is the union of the goals of the sub-problems.
+
+Now, one can relax the subproblems by removing not the empty tile information, which is what all the other heuristics do - therefore losing accuracy -, but by removing the X information from the Y problem and vice versa.
+
+The two operators would now look like this
+
+Xmove(T, X, X'): move tile T from column X to column X'
+
+- precondition: Xloc(T, X) && XlocB(X') && adjacent(X, X')
+
+- add-list: Xloc(T, X') && XlocB(X)
+
+- delete-list: Xloc(T, X) && XlocB(X')
+
+Ymove(T, Y, Y'): move a tile T from row Y to row Y'
+
+- precondition: Yloc(T, Y) && YlocB(Y') && adjacent(Y, Y')
+
+- add-list: Yloc(T, Y') && YlocB(Y)
+
+- delete-list: Yloc(T, Y) & YlocB(Y')
+
+These two subproblems are independent from each other because they treat rows and columns like if they were sets. You can move a tile from one row to another adjacent row, as long as the adjacent row has the blank somewhere. It doesn't matter whether the empty tile is in the same column or not, so the merging of the two solutions can be taken as a lower bound for the original solution.
+
+The algorithm consists of 2 separate parts - for rows and columns.
+
+|   |   |  | 
+|---|---|---|
+| 8  | 1  | 2  
+| 7  |  3 |  6 
+|  0 | 5  | 4 
+
+1) Rows. Divide the input matrix by rows - elements from each row go to separate set.
+
+(1, 2, 8) - (3, 6, 7) - (0, 4, 5)
+
+The only available move is swaping 0 with an element from adjacent set. You finish, when each element is in the proper set.
+
+swap 0 and 7 -> (1, 2, 8) - (0, 3, 6) - (4, 5, 7)
+
+swap 0 and 8 -> (0, 1, 2) - (3, 6, 8) - (4, 5, 7)
+
+swap 0 and 3 -> (1, 2, 3) - (0, 6, 8) - (4, 5, 7)
+
+swap 0 and 4 -> (1, 2, 3) - (4, 6, 8) - (0, 5, 7)
+
+swap 0 and 8 -> (1, 2, 3) - (0, 4, 6) - (5, 7, 8)
+
+swap 0 and 5 -> (1, 2, 3) - (4, 5, 6) - (0, 7, 8)
+
+Number of required steps = 6.
+
+2) Similarly for columns. You start with:
+
+(0, 7, 8) - (1, 3, 5) - (2, 4 ,6)
+
+And then
+
+(1, 7, 8) - (0, 3, 5) - (2, 4, 6)
+
+(0, 1, 7) - (3, 5, 8) - (2, 4, 6)
+
+(1, 3, 7) - (0, 5, 8) - (2, 4, 6)
+
+(1, 3, 7) - (2, 5, 8) - (0, 4, 6)
+
+(1, 3, 7) - (0, 2, 5) - (4, 6, 8)
+
+(0, 1, 3) - (2, 5, 7) - (4, 6, 8)
+
+(1, 2, 3) - (0, 5, 7) - (4, 6, 8)
+
+(1, 2, 3) - (4, 5, 7) - (0, 6, 8)
+
+(1, 2, 3) - (0, 4, 5) - (6, 7, 8)
+
+(1, 2, 3) - (4, 5, 6) - (0, 7, 8)
+
+Number of required steps = 10
+
+3) Total number of steps: 6 + 10 = 16
+
+</br>
+
 TODO...
-- ABSOLVER new X-Y heuristic
 - taking the max of many heuristic with proof of validity
 
 ## The N-Puzzle
