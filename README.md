@@ -201,6 +201,7 @@ Moreover, *A\** is optimally efficient for any given heuristic. That is because 
 We just proved A* is complete, optimal and optimally efficient. That does not mean it is the answer to all our needs, as most problems have a number of states within the goal contour that is exponential in the length of the solution.
 
 Regarding *A\** complexity analysis, it can be proven that the growth in run time as a function of the optimal solution depth d is correlated with the the **absolute error** or the **relative error** of the heuristic. The absolute error is defined as Δ ≡ h* − h, where h* is the actual cost of getting from the root to the goal, and the relative error is defined as epsilon ≡ (h* − h)/h*.
+In the case of *A\** solving the N-Puzzle, it can be proven that the run time is **exponential** in the maximum absolute error, so a good heuristic is the only patch one can apply to make the algorithm faster (even though, being that the branching factor cannot be < 1, the complexity would still be asymptotically exponential).
 Computation time is not, however, A∗’s main drawback. Because it keeps all generated
 nodes in memory,  A∗ usually runs out of space long before it runs out of time. For this reason, A∗ is not practical for many large-scale problems. There are, however, algorithms that overcome the space problem without sacrificing
 optimality or completeness, at a small cost in execution time.
@@ -288,14 +289,33 @@ We can now observe that
 - from the second: we obtain an heuristic we'll discuss soon
 - from the last: we obtain the *Misplaced Tiles*
 
-Regarding the second of the three derived heuristics, ...TODO
+Regarding the second of the three derived heuristics, this is called ***Gaschnig's Heuristic*** and can be proven to be at least as accurate as *Misplaced Tiles* and, in some instances, more accurate than *Manhattan Distance*.
 
-Of much importance is the fact that the relaxed problems are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive. Supposing a relaxed problem derived heuristic reduces the branching factor from b to c, and optimal solution depth of the original problem is d, a total of c^d nodes will be generated. If the heuristic were not immediately calculable, a search algorithm on the relaxed problem would cost λ^δ, where λ is the branching factor and δ the optimal solution depth for the relaxed problem. It follows that the use of the heuristic is really useful only when (c^d)*(λ^δ) < b^d. So, only when λ^δ < (b/c)^d. Most of the times though, it's difficult to verify such a condition holds for a relaxed problem, except for the ones from which immediately calculable heuristics are derived.
+To prove this, let's consider two cases where the empty tile can appear
+
+- in one of its non goal positions: in this case, the minimum number of moves to get to the solution is the following; if there is an out of place tile that does not reside in the empty tile goal position, swap such tile with the empty one and repeat the procedure, otheriwse, swap the out of place tile residing in the empty tile goal position and then stop. Clearly, if there is at least one out of place tile but none that do not reside in the empty tile goal position, then there is only one out place tile. So we can stop after moving such tile. In this case, the number of moves is exactly the same as the one of *Misplaced Tiles* heuristic.
+
+- in its goal position: in this case, the only first move one can perform is a move that does not put a tile in its goal position. So, the moved tile will need at least two moves to be put in its right place. The minimum number of moves, in this case, consists in putting one of the misplaced tiles in the empty tile position (and there will be at least two out of place tiles since the empty tile is already in its goal position), and then repeating the same procedure of *case 1*. The minimum number of moves will be the same of *Misplaced Tiles* + 1.
+
+So, *Gaschnig's Heuristic* >= *Misplaced Tiles*, hence is at least as accurate. To prove that is sometimes better than *Manhattan Distance*, let's take a look at the following board
+
+
+|   |   |  | 
+|---|---|---|
+| 2  | 1  | 6  
+| 5  |  4 |  3 
+|  8 | 7  | 0  
+
+In this case, *Manhattan Distance* has the same value of *Misplaced Tiles*, so *Gaschnig's* is a more accurate heuristic. This observation is crucial for the final part of this section, where we describe how to make *A\** use not just one heuristic, but a set of heuristics where the best one of them is chosen each time, based on each encountered configuration. We will prove that this method leads to an heuristic that is both admissible and consistent.
+
+</br>
+
+Of much importance is the fact that the relaxed problems, from which we derive heurisitcs, are *easy* to solve. More precisely, they must be solved without search. That is because we will have to calculate the heuristic value for each node generated with each iteration of the *A\** search algorithm, so the calculation cannot be expensive. Supposing a relaxed problem derived heuristic reduces the branching factor from b to c, and optimal solution depth of the original problem is d, a total of c^d nodes will be generated. If the heuristic were not immediately calculable, a search algorithm on the relaxed problem would cost λ^δ, where λ is the branching factor and δ the optimal solution depth for the relaxed problem. It follows that the use of the heuristic is really useful only when (c^d)*(λ^δ) < b^d. So, only when λ^δ < (b/c)^d. Most of the times though, it's difficult to verify such a condition holds for a relaxed problem, except for the ones from which immediately calculable heuristics are derived.
 Researchers developed a program called ABSOLVER that can generate heuristics automatically from formal problem descriptions by deriving relaxed problems. This program was able to find a new, better heuristic than the *Manhattan Distance* called the *X-Y Heuristic*, but the time it takes to calculate the values of such heuristic for each node would make *A\** worse when comparing it with the use of only the *Manhattan Distance* (which is an immediately calculable heuristic).
 
 TODO...
-- provide some numbers on the 8-Puzzle and N-Puzzle
-- Gashnig's heuristic
+- ABSOLVER new X-Y heuristic
+- Nilsson Heuristic
 - taking the max of many heuristic with proof of validity
 
 ## The N-Puzzle
