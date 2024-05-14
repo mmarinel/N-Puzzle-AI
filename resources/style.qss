@@ -37,12 +37,12 @@ QPushButton#forwardBtn:disabled
 }
 
 /* Regular Tile */
-QLabel[text]#Tile
+QLabel#Tile
 {
 	background-color: #91ACF2;
 }
 /* EMPTY Tile --- Highlighted */
-QLabel#Tile
+QLabel[Empty="true"]#Tile
 {
 	background-color: #91acf2c9;
 }

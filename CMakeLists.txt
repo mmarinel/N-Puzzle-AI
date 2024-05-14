@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_NAME npuzzle)
 
 project(${EXECUTABLE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
@@ -18,7 +19,7 @@ set(CMAKE_AUTOUIC on) # NON parsa il file xml per generare l'UI
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 add_subdirectory(gui)
-add_subdirectory(heuristics)
+add_subdirectory(ai)
 add_subdirectory(utils)
 
 qt_add_executable(
@@ -26,7 +27,7 @@ qt_add_executable(
 	main.cpp
 	resources/styleResources.qrc
 	${GUILIB_SRCS}
-	${HEURISTICSLIB_SRCS}
+	${AI_SRCS}
 	${UTILS_SRCS}
 )
 
@@ -44,7 +45,8 @@ target_include_directories(
 	"./gui/"
 	"./gui/gui_utils"
 	"./gui/gui_state"
-	"./heuristics"
+	"./ai/"
+	"./ai/heuristics"
 	"./utils"
 )
 

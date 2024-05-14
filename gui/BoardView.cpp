@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/25 23:57:57 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/11 12:08:41 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,25 +64,42 @@ void	BoardView::reset()
 }
 
 void	BoardView::paintEvent(QPaintEvent* event)
-{
+{qDebug() << "BoardView::paintEvent(QPaintEvent* event)";
+	bool	empty;
+	
 	for (int i = 0; i < status.size; i++)
 	{
 		for (int j = 0; j < status.size; j++)
 		{
-			static_cast<QLabel*>(
+			QLabel*	tile = static_cast<QLabel*>(
 				grid->itemAtPosition(i, j)->widget()
-			)->setText(
+			);
+			tile->setText(
 				static_cast<std::string>(
 					status.board[i][j]
 				).c_str()
 			);
+			empty = false;
+			if (
+				status.x_empty == j &&
+				status.y_empty == i
+			)
+				empty = true;
+			tile->setProperty("Empty", empty);
 		}
 	}
+	qDebug()
+		<< "ui_status.x_empty, ui_status.y_empty: "
+		<< ui_status.x_empty << " " << ui_status.y_empty;
+	qDebug()
+		<< "status.x_empty, status.y_empty: "
+		<< status.x_empty << " " << status.y_empty;
 	if (
-		ui_status.x_empty != status.x_empty &&
+		ui_status.x_empty != status.x_empty ||
 		ui_status.y_empty != status.y_empty
 	)
 	{//Empty tile moved
+		qDebug() << "Updating stylesheet";
 		qApp->setStyleSheet("");
 		NPuzzle::addStyleSheet(*qApp);
 		ui_status.x_empty = status.x_empty;

@@ -2,5 +2,7 @@ set(
 	UTILS_SRCS
 	"${CMAKE_CURRENT_LIST_DIR}/utils.h"
 	"${CMAKE_CURRENT_LIST_DIR}/utils.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Tile.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Tile.cpp"
 	PARENT_SCOPE
 )

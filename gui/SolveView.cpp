@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/26 00:17:07 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/11 19:14:59 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 #include <QDialogButtonBox>
 
 //? EXPERIMENT FOR AI ACTUATION
-// #include <QTimer>
+#include <QTimer>
+#include <functional>
 
 SolveView::SolveView(QWidget* parent): QVBoxLayout{parent},
 solving{false},
@@ -151,9 +152,23 @@ SolveView::~SolveView()
 
 void	SolveView::startSolving()
 {
+	qDebug() << "SolveView::startSolving";
 	this->solving = true;
 
 	btns_stacked->setCurrentIndex(1);
+
+	agent = new NPuzzle::Agent(
+		BoardState::getInstance().board,
+		BoardState::getInstance().size,
+		BoardState::getInstance().x_empty,
+		BoardState::getInstance().y_empty,
+		UIState::getInstance().h
+	);
+	agent->run();
+	agent->wait();
+	QTimer::singleShot(
+		1000, std::bind(&SolveView::moveTile, this)
+	);
 	//TODO
 	//TODO 1. disable inappropriate buttons &&  Add Loading gif
 	//TODO 1.1 	only leave buttons like the "close" button to not freeze the app
@@ -166,6 +181,65 @@ void	SolveView::startSolving()
 	// 	? 0 : 1
 	// 	, play_box
 	// );
+}
+
+void			SolveView::moveTile()
+{
+	qDebug() << "Moving Tile";
+	if (agent->solution.empty())
+		return ;
+	auto		a = agent->solution.top();
+	qDebug() << "action: " << actionToString(a).c_str() ;
+	BoardState&	state = BoardState::getInstance();
+	Tile&		empty_tile = (
+			state.board[state.y_empty][state.x_empty]
+	);
+	agent->solution.pop();
+	
+	if ( t_action::UP == a )
+	{
+		Tile&	tile = (
+			state.board[state.y_empty - 1][state.x_empty]
+		);
+		state.y_empty = state.y_empty - 1;
+		state.x_empty = state.x_empty;
+		empty_tile = tile;
+		tile = 0;
+	}
+	if ( t_action::DOWN == a )
+	{
+		Tile&	tile = (
+			state.board[state.y_empty + 1][state.x_empty]
+		);
+		state.y_empty = state.y_empty + 1;
+		state.x_empty = state.x_empty;
+		empty_tile = tile;
+		tile = 0;
+	}
+	if ( t_action::LEFT == a )
+	{
+		Tile&	tile = (
+			state.board[state.y_empty][state.x_empty - 1]
+		);
+		state.y_empty = state.y_empty;
+		state.x_empty = state.x_empty - 1;
+		empty_tile = tile;
+		tile = 0;
+	}
+	if ( t_action::RIGHT == a )
+	{
+		Tile&	tile = (
+			state.board[state.y_empty][state.x_empty + 1]
+		);
+		state.y_empty = state.y_empty;
+		state.x_empty = state.x_empty + 1;
+		empty_tile = tile;
+		tile = 0;
+	}
+	this->board->repaint();
+	QTimer::singleShot(
+		1000, std::bind(&SolveView::moveTile, this)
+	);
 }
 
 void	SolveView::play_stop()

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/04 20:11:17 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/05 11:26:18 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,12 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 		static_cast<QWidget*>(parent)
 	};
 	
-	choose_heuristic->addItem(
-		NPuzzle::to_string(NPuzzle::t_heuristic::MANHATTAN_DISTANCE).c_str()
-	);
+	for (auto& hName: NPuzzle::hfromString)
+	{
+		choose_heuristic->addItem(
+			hName.first.c_str()
+		);
+	}
 	choose_heuristic->setPlaceholderText("--Select Heuristic--");
 	choose_heuristic->setCurrentIndex(-1);
 
@@ -160,16 +163,9 @@ void	MenuView::setRandomGeneratedSize(int n)
 
 void	MenuView::setHeuristic(int index)
 {
-	if (
-		NPuzzle::to_string(
-			NPuzzle::t_heuristic::MANHATTAN_DISTANCE
-		) ==
+	UIState::getInstance().h = NPuzzle::hfromString.at(
 		choose_heuristic->itemText(
 			choose_heuristic->currentIndex()
 		).toStdString()
-	)
-	{
-		qDebug() << "Chosen Manhattan Distance";
-		UIState::getInstance().h = NPuzzle::t_heuristic::MANHATTAN_DISTANCE;
-	}
+	);
 }

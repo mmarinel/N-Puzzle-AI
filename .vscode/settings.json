@@ -92,6 +92,9 @@
 		"qvboxlayout": "cpp",
 		"qdialog": "cpp",
 		"qapplication": "cpp",
-		"qtalgorithms": "cpp"
+		"qtalgorithms": "cpp",
+		"set": "cpp",
+		"qregularexpression": "cpp",
+		"unordered_set": "cpp"
 	}
 }

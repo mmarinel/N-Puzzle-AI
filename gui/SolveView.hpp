@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/24 13:11:27 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/10 18:48:48 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <QTextEdit>
 
 #include "Content.hpp"
+#include "AStar.hpp"
 
 #define THRESHOLD_FOR_NEW_WINDOW 9
 #define THRESHOLD_FOR_NO_GRID 96
@@ -46,6 +47,9 @@ private:
 	QStackedWidget*	btns_stacked;
 	QWidget*		solve_btn_box;
 	QWidget*		play_box;
+	NPuzzle::Agent*	agent;
+
+	void			moveTile();
 public:
 	SolveView(QWidget* parent=nullptr);
 	~SolveView();

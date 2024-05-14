@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/25 20:07:42 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/11 11:15:04 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ bool	NPuzzle::parse_file(QString filepath)
 			BoardState::getInstance().board[i][j] = tile;
 			if (BoardState::getInstance().board[i][j].isEmpty())
 			{
-				BoardState::getInstance().x_empty = i;
-				BoardState::getInstance().y_empty = j;
+				BoardState::getInstance().y_empty = i;
+				BoardState::getInstance().x_empty = j;
 			}
 			parsed_elements_count++;
 			j++;
@@ -129,8 +129,8 @@ void	NPuzzle::generate_board()
 			BoardState::getInstance().board[i][j] = *it;
 			if (BoardState::getInstance().board[i][j].isEmpty())
 			{
-				BoardState::getInstance().x_empty = i;
-				BoardState::getInstance().y_empty = j;
+				BoardState::getInstance().y_empty = i;
+				BoardState::getInstance().x_empty = j;
 			}
 			it++;
 		}
