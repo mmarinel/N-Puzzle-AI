@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/11 19:14:59 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 20:27:45 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,11 @@ void	SolveView::startSolving()
 	);
 	agent->run();
 	agent->wait();
+	if (agent->solution.empty())
+	{
+		qDebug() << "Not Solvable";
+		return ;
+	}
 	QTimer::singleShot(
 		1000, std::bind(&SolveView::moveTile, this)
 	);
@@ -187,7 +192,10 @@ void			SolveView::moveTile()
 {
 	qDebug() << "Moving Tile";
 	if (agent->solution.empty())
+	{
+		qDebug() << agent->moves << " moves";
 		return ;
+	}
 	auto		a = agent->solution.top();
 	qDebug() << "action: " << actionToString(a).c_str() ;
 	BoardState&	state = BoardState::getInstance();

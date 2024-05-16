@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/14 21:53:08 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 22:24:44 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ State::State(const State& s)
 	this->i_empty = s.i_empty;
 	this->j_empty = s.j_empty;
 	this->configuration = s.configuration;
+	this->hCost = -1;
 }
 
 bool	operator==(const State& s1, const State& s2)
@@ -62,7 +63,7 @@ bool	operator<(const State& s1, const State& s2)
 
 Problem::Problem(): initial{}, goal{} {}
 
-const std::vector<t_action>
+std::vector<t_action>
 Problem::actions(const State& s) const
 {
 	std::vector<t_action>	_actions;
@@ -154,20 +155,12 @@ Problem::result(const State& s, t_action a) const
 bool
 Problem::goalTest(const State* s) const
 {
-	for (int i = 0; i < s->size; i++) {
-		for (int j = 0; j < s->size; j++) {
-			if (std::make_pair(i, j) != goal.at(s->configuration[i][j]))
-				return false;
-		}
-	}
-	return true;
+	return 0 == s->hCost;
 }
-#include <QDebug>
+
 std::stack<t_action>
 Problem::solution(const Node* n) const
 {
-	qDebug() << "Found Solution !";
-	
 	std::stack<t_action>	sol;
 	const Node*				current;
 
@@ -176,7 +169,6 @@ Problem::solution(const Node* n) const
 		sol.push(current->a);
 		current = current->parent;
 	}
-	qDebug() << "Returning solution";
 	return sol;
 }
 

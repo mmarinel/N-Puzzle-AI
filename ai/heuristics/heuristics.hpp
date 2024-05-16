@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:01:18 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/14 22:18:42 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:56:06 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class	t_Iordering_func
 {
 public:
 	virtual int		f_val(const Node* n) const = 0;
+	virtual int		h(const Node* n) const = 0;
 	virtual bool	cmp(const Node* n1, const Node* n2) const = 0;
 };
 
@@ -50,6 +51,10 @@ public:
 	virtual int			f_val(const Node* n) const override {
 		return n->pCost + H::getInstance()(n);
 		// return H::getInstance()(n);
+	}
+
+	virtual int	h(const Node* n) const override {
+		return H::getInstance()(n);
 	}
 
 	virtual bool	cmp(const Node* n1, const Node* n2) const override {

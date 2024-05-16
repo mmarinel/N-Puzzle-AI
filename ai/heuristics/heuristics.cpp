@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/13 23:07:18 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:58:13 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 	int					score;
 	std::pair<int, int>	goalPosition;
 	
-	if (-1 != n->hCost)
-		score = n->hCost;
+	if (-1 != n->s->hCost)
+		score = n->s->hCost;
 	else
 	{
 		if (nullptr == n->parent)
@@ -60,9 +60,8 @@ int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 				std::abs(y_movedTile - goalPosition.first) +
 				std::abs(x_movedTile - goalPosition.second)
 			);
-			score = n->parent->hCost - oldScore_movedTile + newScore_movedTile;
+			score = n->parent->s->hCost - oldScore_movedTile + newScore_movedTile;
 		}
-		const_cast<Node*>(n)->hCost = score;
 		const_cast<Node*>(n)->s->hCost = score;
 	}
 	return score;

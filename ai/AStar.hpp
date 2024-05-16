@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/13 19:34:57 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 22:07:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,13 @@ private:
 	ordering_criteria		worse;
 
 	void	aStar();
+	bool	solvable(State* initial);
+	int		polarity(State* initial);
+	const std::vector<t_action>
+			usefulActions(
+				const Node* node,
+				std::vector<t_action>&& actions
+			);
 
 public:
 	Agent(
@@ -147,5 +154,6 @@ public:
 	void	run() override;
 
 	std::stack<t_action>	solution;
+	int						moves;
 };
 }

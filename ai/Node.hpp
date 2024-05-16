@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 10:06:05 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/12 19:41:08 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:57:42 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ public:
 	Node*			parent;
 	t_action		a;
 	int				pCost;
-	int				hCost;
 
 			/**
 			 * @brief Creates a root node without state.

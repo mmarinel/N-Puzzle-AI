@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/13 23:06:58 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 22:05:09 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ public:
 	 * 
 	 * @return const std::vector<t_action> 
 	 */
-	const std::vector<t_action>
+	std::vector<t_action>
 			actions(const State& s) const;
 	State*
 			result(const State& s, t_action a) const;
