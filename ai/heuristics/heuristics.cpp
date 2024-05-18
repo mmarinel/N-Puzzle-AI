@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 21:58:13 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 11:26:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include <algorithm>
 #include <cmath>
 
-int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
+uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 {
-	int					score;
-	std::pair<int, int>	goalPosition;
+	uint8_t					score;
+	std::pair<uint8_t, uint8_t>	goalPosition;
 	
 	if (-1 != n->s->hCost)
 		score = n->s->hCost;
@@ -27,9 +27,9 @@ int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 		if (nullptr == n->parent)
 		{
 			score = 0;
-			for (int i = 0; i < n->s->size; i++)
+			for (uint8_t i = 0; i < n->s->size; i++)
 			{
-				for (int j = 0; j < n->s->size; j++)
+				for (uint8_t j = 0; j < n->s->size; j++)
 				{
 					if (0 != n->s->configuration[i][j])
 					{
@@ -45,12 +45,12 @@ int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 		}
 		else
 		{
-			int		x_movedTile = n->parent->s->j_empty;
-			int		y_movedTile = n->parent->s->i_empty;
-			int		movedTile = n->s->configuration[y_movedTile][x_movedTile];
-					goalPosition = n->p.goal.at(n->s->configuration[y_movedTile][x_movedTile]);
-			int		oldScore_movedTile;
-			int		newScore_movedTile;
+			uint8_t		x_movedTile = n->parent->s->j_empty;
+			uint8_t		y_movedTile = n->parent->s->i_empty;
+			uint8_t		movedTile = n->s->configuration[y_movedTile][x_movedTile];
+						goalPosition = n->p.goal.at(movedTile);
+			uint8_t		oldScore_movedTile;
+			uint8_t		newScore_movedTile;
 
 			oldScore_movedTile = (
 				std::abs(n->s->i_empty - goalPosition.first) +
@@ -67,14 +67,14 @@ int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 	return score;
 }
 
-int	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
+uint8_t	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 {
-	int					score = 0;
-	std::pair<int, int>	goalPosition;
+	uint8_t					score = 0;
+	std::pair<uint8_t, uint8_t>	goalPosition;
 	
-	for (int i = 0; i < n->s->size; i++)
+	for (uint8_t i = 0; i < n->s->size; i++)
 	{
-		for (int j = 0; j < n->s->size; j++)
+		for (uint8_t j = 0; j < n->s->size; j++)
 		{
 			if (0 == n->s->configuration[i][j])
 				continue ;
@@ -90,7 +90,7 @@ int	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 	return score;
 }
 
-int	NPuzzle::t_gaschnig_score::operator()(const Node* n) const
+uint8_t	NPuzzle::t_gaschnig_score::operator()(const Node* n) const
 {
 	auto	blank_goal_pos = n->p.goal.at(0);
 	
@@ -108,11 +108,11 @@ int	NPuzzle::t_gaschnig_score::operator()(const Node* n) const
 	}
 }
 
-int	NPuzzle::t_coalesce_score::operator()(const Node* n) const
+uint8_t	NPuzzle::t_coalesce_score::operator()(const Node* n) const
 {
-	int	_manhattan_score = t_manhattan_score::getInstance() (n);
-	int	_misplaced_tiles = t_misplaced_tiles_score::getInstance() (n);
-	int	_gaschnig_score = t_gaschnig_score::getInstance() (n);
+	uint8_t	_manhattan_score = t_manhattan_score::getInstance() (n);
+	uint8_t	_misplaced_tiles = t_misplaced_tiles_score::getInstance() (n);
+	uint8_t	_gaschnig_score = t_gaschnig_score::getInstance() (n);
 
 	return (
 		std::max(

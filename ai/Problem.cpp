@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 22:24:44 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 13:20:33 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ State::State(const State& s)
 	this->i_empty = s.i_empty;
 	this->j_empty = s.j_empty;
 	this->configuration = s.configuration;
+	this->initial_empty_col = s.initial_empty_col;
+	this->col_sum = s.col_sum;
 	this->hCost = -1;
 }
 
@@ -33,12 +35,10 @@ bool	operator==(const State& s1, const State& s2)
 	else
 		// return true;
 		return s1.configuration == s2.configuration;
-		// return s1.cmp_score == s2.cmp_score;
 }
 
 bool	operator<(const State& s1, const State& s2)
 {
-	// return s1.cmp_score < s2.cmp_score;
 	if (s1.i_empty != s2.i_empty || s1.j_empty != s2.j_empty)
 		return (
 			s1.i_empty < s2.i_empty ||
@@ -46,12 +46,14 @@ bool	operator<(const State& s1, const State& s2)
 		);
 	else if (s1.hCost != s2.hCost)
 		return s1.hCost < s2.hCost;
+	else if (s1.col_sum != s2.col_sum)
+		return s1.col_sum < s2.col_sum;
 	else
 	{
-		for (int i = 0; i < s1.size; i++) {
-			for (int j = 0; j < s1.size; j++) {
-				int	t1 = static_cast<int>(s1.configuration[i][j]);
-				int	t2 = static_cast<int>(s2.configuration[i][j]);
+		for (uint8_t i = 0; i < s1.size; i++) {
+			for (uint8_t j = 0; j < s1.size; j++) {
+				uint8_t	t1 = static_cast<uint8_t>(s1.configuration[i][j]);
+				uint8_t	t2 = static_cast<uint8_t>(s2.configuration[i][j]);
 				if ( t1 != t2 )
 					return t1 < t2;
 			}
@@ -98,12 +100,19 @@ Problem::result(const State& s, t_action a) const
 			configuration
 			[result->i_empty - 1][result->j_empty]
 		);
+
+		if (result->initial_empty_col == result->j_empty)
+		{
+			result->col_sum = (
+				result->col_sum -
+				(tile << (result->i_empty - 1)*8) +
+				(tile << (result->i_empty)*8)
+			);
+		}
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty - 1;
 		result->j_empty = result->j_empty;
-		// result->cmp_score = s.cmp_score - result->size;
-		result->cmp_score = s.cmp_score - tile*(s.i_empty) + tile*(result->i_empty);
 	}
 	if ( t_action::DOWN == a )
 	{
@@ -112,12 +121,19 @@ Problem::result(const State& s, t_action a) const
 			configuration
 			[result->i_empty + 1][result->j_empty]
 		);
+
+		if (result->initial_empty_col == result->j_empty)
+		{
+			result->col_sum = (
+				result->col_sum -
+				(tile << (result->i_empty + 1)*8) +
+				(tile << (result->i_empty)*8)
+			);
+		}
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty + 1;
 		result->j_empty = result->j_empty;
-		// result->cmp_score = s.cmp_score + result->size;
-		result->cmp_score = s.cmp_score - tile*(s.i_empty) + tile*(result->i_empty);
 	}
 	if ( t_action::LEFT == a )
 	{
@@ -126,12 +142,18 @@ Problem::result(const State& s, t_action a) const
 			configuration
 			[result->i_empty][result->j_empty - 1]
 		);
+
+		if (result->initial_empty_col == result->j_empty - 1)
+		{
+			result->col_sum = (
+				result->col_sum -
+				(tile << (result->i_empty)*8)
+			);
+		}
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty;
 		result->j_empty = result->j_empty - 1;
-		// result->cmp_score = s.cmp_score - 1;
-		result->cmp_score = s.cmp_score - tile*(s.j_empty) + tile*(result->j_empty);
 	}
 	if ( t_action::RIGHT == a )
 	{
@@ -140,12 +162,18 @@ Problem::result(const State& s, t_action a) const
 			configuration
 			[result->i_empty][result->j_empty + 1]
 		);
+
+		if (result->initial_empty_col == result->j_empty + 1)
+		{
+			result->col_sum = (
+				result->col_sum -
+				(tile << (result->i_empty)*8)
+			);
+		}
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty;
 		result->j_empty = result->j_empty + 1;
-		// result->cmp_score = s.cmp_score + 1;
-		result->cmp_score = s.cmp_score - tile*(s.j_empty) + tile*(result->j_empty);
 	}
 	return (
 		result

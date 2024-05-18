@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 22:05:09 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:28:33 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,11 @@ class State
 public:
 	typedef std::vector<std::vector<Tile> >	t_configuration;
 public:
-	int				size;
-	int				i_empty;
-	int				j_empty;
-	long long		cmp_score;
+	uint8_t			size;
+	uint8_t			i_empty;
+	uint8_t			j_empty;
+	__uint128_t		col_sum;
+	uint8_t			initial_empty_col;
 	int				hCost;
 	t_configuration	configuration;
 
@@ -57,7 +58,7 @@ class Problem
 {
 public:
 	State		initial;
-	std::map<int, std::pair<int, int> >
+	std::map<uint8_t, std::pair<uint8_t, uint8_t> >
 				goal;//TODO make it const?
 
 	/**

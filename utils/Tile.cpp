@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 18:13:12 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/11 11:35:32 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 22:44:29 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Tile::Tile(): nbr(0)
 	empty = true;
 }
 
-Tile::Tile(int _nbr): nbr{_nbr}
+Tile::Tile(uint8_t _nbr): nbr{_nbr}
 {
 	empty = (0 == nbr);
 }
@@ -52,7 +52,7 @@ bool	Tile::isEmpty() const
 	return empty;
 }
 
-Tile::operator int() const
+Tile::operator uint8_t() const
 {
 	return nbr;
 }

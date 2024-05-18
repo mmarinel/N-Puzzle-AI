@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 10:06:05 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 21:57:42 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/17 19:27:21 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ public:
 			 * 
 			 */
 			Node(const Problem& p);
+			~Node();
 			Node(const Node& n) = delete;
 	Node&	operator=(const Node& n) = delete;
 			Node(Node&& n) = delete;

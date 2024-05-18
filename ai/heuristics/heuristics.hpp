@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:01:18 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 21:56:06 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/16 23:04:51 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ hfromString = {
 class	t_Iordering_func
 {
 public:
-	virtual int		f_val(const Node* n) const = 0;
-	virtual int		h(const Node* n) const = 0;
+	virtual uint8_t		f_val(const Node* n) const = 0;
+	virtual uint8_t		h(const Node* n) const = 0;
 	virtual bool	cmp(const Node* n1, const Node* n2) const = 0;
 };
 
@@ -48,12 +48,12 @@ template <typename H>
 class t_ordering_func: public t_Iordering_func
 {
 public:
-	virtual int			f_val(const Node* n) const override {
+	virtual uint8_t			f_val(const Node* n) const override {
 		return n->pCost + H::getInstance()(n);
 		// return H::getInstance()(n);
 	}
 
-	virtual int	h(const Node* n) const override {
+	virtual uint8_t	h(const Node* n) const override {
 		return H::getInstance()(n);
 	}
 
@@ -75,7 +75,7 @@ public:
 class t_manhattan_score: public t_ordering_func<t_manhattan_score>
 {
 public:
-	int	operator() (const Node* n) const;
+	uint8_t	operator() (const Node* n) const;
 	
 	static const t_manhattan_score&	getInstance();
 private:
@@ -86,7 +86,7 @@ class t_misplaced_tiles_score:
 	public t_ordering_func<t_misplaced_tiles_score>
 {
 public:
-	int	operator() (const Node* n) const;
+	uint8_t	operator() (const Node* n) const;
 	
 	static const t_misplaced_tiles_score&	getInstance();
 private:
@@ -96,7 +96,7 @@ private:
 class t_gaschnig_score: public t_ordering_func<t_gaschnig_score>
 {
 public:
-	int	operator() (const Node* n) const;
+	uint8_t	operator() (const Node* n) const;
 
 	static const t_gaschnig_score&	getInstance();
 private:
@@ -106,7 +106,7 @@ private:
 class t_coalesce_score: public t_ordering_func<t_coalesce_score>
 {
 public:
-	int	operator() (const Node* n) const;
+	uint8_t	operator() (const Node* n) const;
 
 	static const t_coalesce_score& getInstance();
 private:

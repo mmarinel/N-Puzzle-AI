@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 10:14:26 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 22:24:47 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/17 19:27:38 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@ Node::Node(const Problem& p): p(p)
 	this->parent = nullptr;
 	this->a = t_action::NONE;
 	this->pCost = 0;
+}
+
+Node::~Node()
+{
+	delete this->s;
 }
 
 Node*  NPuzzle::child_node(Node* parent, t_action a)

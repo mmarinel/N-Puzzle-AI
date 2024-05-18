@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AStar.cpp                                          :+:      :+:    :+:   */
+/*   Agent.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 22:40:03 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 14:15:13 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "AStar.hpp"
+#include "Agent.hpp"
 
 #include <queue>
 #include <vector>
@@ -20,8 +20,8 @@
 NPuzzle::Agent::Agent(
 		const std::vector<std::vector<Tile> >& config,
 		const size_t size,
-		int	x_empty,
-		int	y_empty,
+		uint8_t	x_empty,
+		uint8_t	y_empty,
 		t_heuristic h
 )
 : p{}, solution{}, criteria(nullptr), moves{0}
@@ -29,13 +29,24 @@ NPuzzle::Agent::Agent(
 	// setting up Problem(s)
 		// initial state
 	p.initial.configuration = config;
-	p.initial.cmp_score = 0;
 	p.initial.size = size;
 	p.initial.i_empty = y_empty;
 	p.initial.j_empty = x_empty;
+	p.initial.initial_empty_col = x_empty;
+	p.initial.col_sum = 0;
+	qDebug() << "p.initial.col_sum";
+	for (int i = 0; i < size; i++)
+	{
+		qDebug() << "summing " << (p.initial.configuration[i][p.initial.initial_empty_col] << (i*8));
+		p.initial.col_sum += (
+			p.initial.configuration[i][p.initial.initial_empty_col] << (i*8)
+		);
+	}
+	
+	
 		// goal state
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (uint8_t i = 0; i < size; i++) {
+		for (uint8_t j = 0; j < size; j++) {
 			p.goal[(i*size) + (j+1)] = std::make_pair(i, j);
 		}
 	}
@@ -69,7 +80,8 @@ NPuzzle::Agent::Agent(
 
 void	NPuzzle::Agent::run()
 {
-	this->aStar();
+	// this->aStar();
+	this->idaStar();
 }
 
 void	NPuzzle::Agent::aStar()
@@ -107,6 +119,96 @@ void	NPuzzle::Agent::aStar()
 			frontier.push(child);
 		}
 	}
+}
+
+void	NPuzzle::Agent::idaStar()
+{
+	// OpenSetNodeQueue		path{
+	// 	[](const Node* n1, const Node* n2){return n1->pCost < n2->pCost;},
+	// 	t_frontierNodesEquals{}
+	// };
+	std::stack<Node*>		path;
+	ClosedSetNodeQueue		explored;
+	Node*					initial = new Node{p};
+	initial->s 				 	 	= new State{p.initial};
+	initial->s->hCost 			 	= this->criteria->h(initial);
+	int						bound 	= initial->s->hCost;
+	t_idaStarIterResult		result;
+	
+	if (false == solvable(initial->s))
+		return ;
+	// qDebug() << "NPuzzle::Agent::idaStar() --- Solving...";
+	path.push(initial);
+	explored.insert(initial);
+	// path.insert(initial);
+	while (true)
+	{
+		// qDebug() << "before aStarDepthLimited(path, bound)";
+		result = aStarDepthLimited(path, explored, bound);
+		// qDebug() << "After aStarDepthLimited(path, bound)";
+		if (result.solutionFound)
+		{
+			solution = std::move(p.solution(path.top()));
+			qDebug() << "returning solution";
+			// Node*	last = *(path.end()--);
+			// solution = std::move(p.solution(path.top()));
+			// solution = std::move(p.solution(last));
+			moves = solution.size();
+			qDebug() << "with " << moves << " moves";
+			return;
+		}
+		bound = result.cutoff;
+	}
+}
+
+NPuzzle::Agent::t_idaStarIterResult
+NPuzzle::Agent::aStarDepthLimited(
+				std::stack<Node*>& path,
+				ClosedSetNodeQueue& explored,
+				int bound
+)
+{
+	Node*				node = path.top();
+	int					f_val;
+	int					min;
+	t_idaStarIterResult	result;
+	
+	f_val = this->criteria->f_val(node);
+	if (f_val > bound)
+		return (t_idaStarIterResult){f_val, false};
+	if (p.goalTest(node->s))
+		return (t_idaStarIterResult){f_val, true};
+	
+	min = std::numeric_limits<int>::max();
+	OpenSetNodeQueue	fringe{worse, t_frontierNodesEquals{}};
+	// qDebug() << "Before filling fringe";
+	for (const t_action& a: usefulActions(node,  p.actions(*(node->s))))
+	{
+		Node*	child = child_node(node, a);
+		
+		// auto	existing = path.find(child);
+		child->s->hCost = this->criteria->h(child);
+		if (explored.end() != explored.find(child)) //existing.first)
+			continue ;
+		fringe.push(child);
+	}
+	// qDebug() << "After filling fringe";
+	for (Node* child: fringe)
+	{
+		path.push(child);
+		explored.insert(child);
+		// path.insert(child);
+		result = aStarDepthLimited(path, explored, bound);
+		if (result.solutionFound)
+			return result;
+		if (result.cutoff < min)
+			min = result.cutoff;
+		// qDebug() << "before deleting";
+		path.pop();
+		explored.erase(child);
+		delete child;
+	}
+	return (t_idaStarIterResult){min, false};
 }
 
 bool	NPuzzle::Agent::solvable(State* initial)
@@ -193,7 +295,7 @@ NPuzzle::Agent::usefulActions(
 		break;
 	}
 
-	for (int i = 0; i < actions.size(); i++)
+	for (uint8_t i = 0; i < actions.size(); i++)
 	{
 		if (inverse_a == actions[i])
 		{

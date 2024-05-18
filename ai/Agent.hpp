@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AStar.hpp                                          :+:      :+:    :+:   */
+/*   Agent.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 22:07:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 13:02:48 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <queue>
 #include <vector>
 #include <functional>
+#include <limits>
 
 class t_frontierNodesEquals;
 
@@ -92,6 +93,9 @@ public:
 	iterator	end() noexcept{
 		return this->c.end();
 	}
+	iterator	begin() noexcept{
+		return this->c.begin();
+	}
 };
 
 class	Agent: public QThread
@@ -107,6 +111,13 @@ public:
 			return *s1 < *s2;
 		}
 	}	t_exploredSet_cmp;
+	typedef struct s_path_cmp
+	{
+		bool	operator()(const Node* n1, const Node* n2) const
+		{
+			return *(n1->s) < *(n2->s);
+		}
+	}	t_path_cmp;
 	
 	typedef struct s_frontierNodesEquals
 	{
@@ -123,6 +134,15 @@ public:
 
 	typedef std::set<State*, t_exploredSet_cmp>
 	ClosedSetStateQueue;
+
+	typedef std::set<Node*, t_path_cmp>
+	ClosedSetNodeQueue;
+
+	typedef struct	s_idaStarIterResult
+	{
+		int		cutoff;
+		bool	solutionFound;
+	}	t_idaStarIterResult;
 	
 private:
 	Problem					p;
@@ -134,6 +154,13 @@ private:
 	ordering_criteria		worse;
 
 	void	aStar();
+	void	idaStar();
+	t_idaStarIterResult
+			aStarDepthLimited(
+				std::stack<Node*>& path,
+				ClosedSetNodeQueue& explored,
+				int bound
+			);
 	bool	solvable(State* initial);
 	int		polarity(State* initial);
 	const std::vector<t_action>
@@ -146,8 +173,8 @@ public:
 	Agent(
 		const std::vector<std::vector<Tile> >& config,
 		const size_t size,
-		int	x_empty,
-		int	y_empty,
+		uint8_t	x_empty,
+		uint8_t	y_empty,
 		t_heuristic h
 	);
 	
