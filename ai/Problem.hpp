@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/18 12:28:33 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 16:45:59 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,15 @@ class State
 {
 public:
 	typedef std::vector<std::vector<Tile> >	t_configuration;
+	typedef std::vector<__uint128_t>		t_cols;
 public:
 	uint8_t			size;
 	uint8_t			i_empty;
 	uint8_t			j_empty;
-	__uint128_t		col_sum;
-	uint8_t			initial_empty_col;
+	uint8_t			affected_col;
 	int				hCost;
 	t_configuration	configuration;
+	t_cols			cols;//integer representation of columns
 
 	friend bool	operator==(const State& s1, const State& s2);
 	friend bool	operator<(const State& s1, const State& s);

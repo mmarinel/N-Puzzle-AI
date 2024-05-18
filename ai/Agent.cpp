@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/18 14:15:13 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 16:47:14 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,22 @@ NPuzzle::Agent::Agent(
 	p.initial.size = size;
 	p.initial.i_empty = y_empty;
 	p.initial.j_empty = x_empty;
-	p.initial.initial_empty_col = x_empty;
-	p.initial.col_sum = 0;
+	p.initial.affected_col = -1;
+	p.initial.cols.reserve(size);
 	qDebug() << "p.initial.col_sum";
-	for (int i = 0; i < size; i++)
+	for (int j = 0; j < size; j++)
 	{
-		qDebug() << "summing " << (p.initial.configuration[i][p.initial.initial_empty_col] << (i*8));
-		p.initial.col_sum += (
-			p.initial.configuration[i][p.initial.initial_empty_col] << (i*8)
-		);
+		p.initial.cols[j] = 0;
+		for (int i = 0; i < size; i++)
+		{
+			p.initial.cols[j] += (
+				p.initial.configuration[i][j] << (i*8)
+			);
+			// qDebug() << "summing " << (p.initial.configuration[i][p.initial.initial_empty_col] << (i*8));
+			// p.initial.col_sum += (
+			// 	p.initial.configuration[i][p.initial.initial_empty_col] << (i*8)
+			// );
+		}
 	}
 	
 	

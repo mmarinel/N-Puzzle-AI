@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/18 13:20:33 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/18 16:47:00 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ State::State(const State& s)
 	this->i_empty = s.i_empty;
 	this->j_empty = s.j_empty;
 	this->configuration = s.configuration;
-	this->initial_empty_col = s.initial_empty_col;
-	this->col_sum = s.col_sum;
+	this->affected_col = s.affected_col;
+	this->cols.reserve(s.size);
+	this->cols = s.cols;
 	this->hCost = -1;
 }
 
@@ -46,20 +47,28 @@ bool	operator<(const State& s1, const State& s2)
 		);
 	else if (s1.hCost != s2.hCost)
 		return s1.hCost < s2.hCost;
-	else if (s1.col_sum != s2.col_sum)
-		return s1.col_sum < s2.col_sum;
+	// else if (s1.col_sum != s2.col_sum)
+	// 	return s1.col_sum < s2.col_sum;
 	else
 	{
-		for (uint8_t i = 0; i < s1.size; i++) {
-			for (uint8_t j = 0; j < s1.size; j++) {
-				uint8_t	t1 = static_cast<uint8_t>(s1.configuration[i][j]);
-				uint8_t	t2 = static_cast<uint8_t>(s2.configuration[i][j]);
-				if ( t1 != t2 )
-					return t1 < t2;
-			}
+		for (uint8_t i = 0; i < s1.size; i++)
+		{
+			if (s1.cols[i] != s2.cols[i])
+				return s1.cols[i] < s2.cols[i];
 		}
 		return false;
 	}
+	// {
+	// 	for (uint8_t i = 0; i < s1.size; i++) {
+	// 		for (uint8_t j = 0; j < s1.size; j++) {
+	// 			uint8_t	t1 = static_cast<uint8_t>(s1.configuration[i][j]);
+	// 			uint8_t	t2 = static_cast<uint8_t>(s2.configuration[i][j]);
+	// 			if ( t1 != t2 )
+	// 				return t1 < t2;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
 }
 
 
@@ -101,14 +110,20 @@ Problem::result(const State& s, t_action a) const
 			[result->i_empty - 1][result->j_empty]
 		);
 
-		if (result->initial_empty_col == result->j_empty)
-		{
-			result->col_sum = (
-				result->col_sum -
-				(tile << (result->i_empty - 1)*8) +
-				(tile << (result->i_empty)*8)
-			);
-		}
+		result->affected_col = result->j_empty;
+		result->cols[result->affected_col] = (
+			result->cols[result->affected_col] -
+			(tile << (result->i_empty - 1)*8) +
+			(tile << (result->i_empty)*8)
+		);
+		// if (result->initial_empty_col == result->j_empty)
+		// {
+		// 	result->col_sum = (
+		// 		result->col_sum -
+		// 		(tile << (result->i_empty - 1)*8) +
+		// 		(tile << (result->i_empty)*8)
+		// 	);
+		// }
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty - 1;
@@ -122,14 +137,20 @@ Problem::result(const State& s, t_action a) const
 			[result->i_empty + 1][result->j_empty]
 		);
 
-		if (result->initial_empty_col == result->j_empty)
-		{
-			result->col_sum = (
-				result->col_sum -
-				(tile << (result->i_empty + 1)*8) +
-				(tile << (result->i_empty)*8)
-			);
-		}
+		result->affected_col = result->j_empty;
+		result->cols[result->affected_col] = (
+			result->cols[result->affected_col] -
+			(tile << (result->i_empty + 1)*8) +
+			(tile << (result->i_empty)*8)
+		);
+		// if (result->initial_empty_col == result->j_empty)
+		// {
+		// 	result->col_sum = (
+		// 		result->col_sum -
+		// 		(tile << (result->i_empty + 1)*8) +
+		// 		(tile << (result->i_empty)*8)
+		// 	);
+		// }
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty + 1;
@@ -143,13 +164,18 @@ Problem::result(const State& s, t_action a) const
 			[result->i_empty][result->j_empty - 1]
 		);
 
-		if (result->initial_empty_col == result->j_empty - 1)
-		{
-			result->col_sum = (
-				result->col_sum -
-				(tile << (result->i_empty)*8)
-			);
-		}
+		result->affected_col = result->j_empty - 1;
+		result->cols[result->affected_col] = (
+			result->cols[result->affected_col] -
+			(tile << (result->i_empty)*8)
+		);
+		// if (result->initial_empty_col == result->j_empty - 1)
+		// {
+		// 	result->col_sum = (
+		// 		result->col_sum -
+		// 		(tile << (result->i_empty)*8)
+		// 	);
+		// }
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty;
@@ -163,13 +189,18 @@ Problem::result(const State& s, t_action a) const
 			[result->i_empty][result->j_empty + 1]
 		);
 
-		if (result->initial_empty_col == result->j_empty + 1)
-		{
-			result->col_sum = (
-				result->col_sum -
-				(tile << (result->i_empty)*8)
-			);
-		}
+		result->affected_col = result->j_empty + 1;
+		result->cols[result->affected_col] = (
+			result->cols[result->affected_col] -
+			(tile << (result->i_empty)*8)
+		);
+		// if (result->initial_empty_col == result->j_empty + 1)
+		// {
+		// 	result->col_sum = (
+		// 		result->col_sum -
+		// 		(tile << (result->i_empty)*8)
+		// 	);
+		// }
 		empty_tile = tile;
 		tile = 0;
 		result->i_empty = result->i_empty;
