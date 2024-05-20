@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/18 13:02:48 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/20 22:13:19 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,11 @@ public:
 
 	void	replace(iterator oldEl, T* newEl)
 	{
-		// if (oldEl == this->c.begin())
-		// 	this->pop();
-		// else
 		this->c.erase(oldEl);
 		std::make_heap(this->c.begin(), this->c.end(), comp);
 		this->push(newEl);
 	}
 
-	// void	push(T* value)
-	// {
-	// 	// if (false == this->empty() && comp(this->top(), value))
-	// 	// 	this->c.insert(this->c.begin(), value);
-	// 	// else
-	// 		std::priority_queue<T*, Container, Compare>::push(value);
-	// }
-	
 	iterator	end() noexcept{
 		return this->c.end();
 	}
@@ -113,7 +102,7 @@ public:
 	}	t_exploredSet_cmp;
 	typedef struct s_path_cmp
 	{
-		bool	operator()(const Node* n1, const Node* n2) const
+		bool	operator()(const Node* const& n1, const Node* const& n2) const
 		{
 			return *(n1->s) < *(n2->s);
 		}
@@ -138,6 +127,13 @@ public:
 	typedef std::set<Node*, t_path_cmp>
 	ClosedSetNodeQueue;
 
+	typedef struct	s_rbfsIterResult
+	{
+		int		cutoff;
+		bool	solutionFound;
+		Node*	leaf;
+	}	t_rbfsIterResult;
+	
 	typedef struct	s_idaStarIterResult
 	{
 		int		cutoff;
@@ -155,12 +151,30 @@ private:
 
 	void	aStar();
 	void	idaStar();
+	void	rbfs();
+	t_rbfsIterResult
+			rbfsRec(
+				Node* node,
+				ClosedSetStateQueue& explored,
+				int bound
+			);
 	t_idaStarIterResult
 			aStarDepthLimited(
 				std::stack<Node*>& path,
 				ClosedSetNodeQueue& explored,
 				int bound
 			);
+	
+	/**
+	 * @brief this function sets the given map as the normal goal state for the n-puzzle
+	 * 
+	 * @param state 
+	 */
+	void	setAsForwardGoal(
+		Problem& p,
+		std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
+		size_t size
+	);
 	bool	solvable(State* initial);
 	int		polarity(State* initial);
 	const std::vector<t_action>

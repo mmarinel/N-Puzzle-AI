@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/18 16:45:59 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/20 22:01:44 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ class State
 {
 public:
 	typedef std::vector<std::vector<Tile> >	t_configuration;
-	typedef std::vector<__uint128_t>		t_cols;
+	typedef std::vector<uint64_t>		t_cols;
 public:
 	uint8_t			size;
 	uint8_t			i_empty;
 	uint8_t			j_empty;
-	uint8_t			affected_col;
 	int				hCost;
+	int				hLinearConflict;
 	t_configuration	configuration;
 	t_cols			cols;//integer representation of columns
 
@@ -61,6 +61,9 @@ public:
 	State		initial;
 	std::map<uint8_t, std::pair<uint8_t, uint8_t> >
 				goal;//TODO make it const?
+	int			inversions_at_goal;//TODO move someplace elese ?
+	int			x_empty_at_goal;//TODO move someplace elese ?
+	int			y_empty_at_goal;//TODO move someplace elese ?
 
 	/**
 	 * @brief in state, empty tile is 0
