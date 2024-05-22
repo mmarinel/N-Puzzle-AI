@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/22 19:53:08 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/22 23:46:00 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,6 +216,206 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 	return score;
 }
 
+uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
+{
+	int		score;
+	int		adjustment;
+
+	if (-1 != n->s->hCornerTiles)
+		score = n->s->hCornerTiles;
+	else
+	{
+				score = 0;
+				adjustment = 0;
+		bool	conflict;
+		std::pair<uint8_t, uint8_t>
+				tileGoalPos;
+		
+		conflict = false;
+		//top-left corner
+		if ( n->p.goal.at(n->s->configuration[0][0]) != std::pair<uint8_t, uint8_t>(0, 0))
+		{
+			if (n->p.goal.at(n->s->configuration[1][0]) == std::pair<uint8_t, uint8_t>(1, 0))
+			{
+				for (int i = 0; i < n->s->size; i++) {
+					if (0 == n->s->configuration[i][0])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[i][0]);
+					if (0 != tileGoalPos.second)
+						continue ;
+					if (
+						(i < 1 &&  tileGoalPos.first > 1) ||
+						(i > 1 && tileGoalPos.first < 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+			if (n->p.goal.at(n->s->configuration[0][1]) == std::pair<uint8_t, uint8_t>(0, 1))
+			{
+				for (int j = 0; j < n->s->size; j++) {
+					if (0 == n->s->configuration[0][j])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[0][j]);
+					if (0 != tileGoalPos.first)
+						continue ;
+					if (
+						(j < 1 &&  tileGoalPos.second > 1) ||
+						(j > 1 && tileGoalPos.second < 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+		}
+		//bottom-left corner
+		if ( n->p.goal.at(n->s->configuration[n->s->size - 1][0]) != std::pair<uint8_t, uint8_t>(n->s->size - 1, 0))
+		{
+			if (n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][0]) == std::pair<uint8_t, uint8_t>((n->s->size - 1) - 1, 0))
+			{
+				for (int i = 0; i < n->s->size; i++) {
+					if (0 == n->s->configuration[i][0])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[i][0]);
+					if (0 != tileGoalPos.second)
+						continue ;
+					if (
+						(i < (n->s->size - 1) - 1 &&  tileGoalPos.first > (n->s->size - 1) - 1) ||
+						(i > (n->s->size - 1) - 1 && tileGoalPos.first < (n->s->size - 1) - 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+			if (n->p.goal.at(n->s->configuration[(n->s->size - 1)][1]) == std::pair<uint8_t, uint8_t>((n->s->size - 1), 1))
+			{
+				for (int j = 0; j < n->s->size; j++) {
+					if (0 == n->s->configuration[(n->s->size - 1)][j])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[(n->s->size - 1)][j]);
+					if ((n->s->size - 1) != tileGoalPos.first)
+						continue ;
+					if (
+						(j < 1 &&  tileGoalPos.second > 1) ||
+						(j > 1 && tileGoalPos.second < 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+		}
+		//top-right corner
+		if ( n->p.goal.at(n->s->configuration[0][n->s->size - 1]) != std::pair<uint8_t, uint8_t>(0, n->s->size - 1))
+		{
+			if (n->p.goal.at(n->s->configuration[0][(n->s->size - 1) - 1]) == std::pair<uint8_t, uint8_t>(0, (n->s->size - 1) - 1))
+			{
+				for (int j = 0; j < n->s->size; j++) {
+					if (0 == n->s->configuration[0][j])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[0][j]);
+					if (0 != tileGoalPos.first)
+						continue ;
+					if (
+						(j < 1 &&  tileGoalPos.second > (n->s->size - 1) - 1) ||
+						(j > 1 && tileGoalPos.second < (n->s->size - 1) - 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+			if (n->p.goal.at(n->s->configuration[1][(n->s->size - 1)]) == std::pair<uint8_t, uint8_t>(1, (n->s->size - 1)))
+			{
+				for (int i = 0; i < n->s->size; i++) {
+					if (0 == n->s->configuration[i][(n->s->size - 1)])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[i][(n->s->size - 1)]);
+					if ((n->s->size - 1) != tileGoalPos.second)
+						continue ;
+					if (
+						(i < 1 &&  tileGoalPos.first > 1) ||
+						(i > 1 && tileGoalPos.first < 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+		}
+		//bottom-right corner
+		if ( n->p.goal.at(n->s->configuration[(n->s->size - 1)][n->s->size - 1]) != std::pair<uint8_t, uint8_t>((n->s->size - 1), n->s->size - 1))
+		{
+			if (n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][n->s->size - 1]) == std::pair<uint8_t, uint8_t>((n->s->size - 1) - 1, n->s->size - 1))
+			{
+				for (int i = 0; i < n->s->size; i++) {
+					if (0 == n->s->configuration[i][(n->s->size - 1)])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[i][(n->s->size - 1)]);
+					if ((n->s->size - 1) != tileGoalPos.second)
+						continue ;
+					if (
+						(i < (n->s->size - 1) - 1 &&  tileGoalPos.first > (n->s->size - 1) - 1) ||
+						(i > (n->s->size - 1) - 1 && tileGoalPos.first < (n->s->size - 1) - 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+			if (n->p.goal.at(n->s->configuration[(n->s->size - 1)][(n->s->size - 1) - 1]) == std::pair<uint8_t, uint8_t>((n->s->size - 1), (n->s->size - 1) - 1))
+			{
+				for (int j = 0; j < n->s->size; j++) {
+					if (0 == n->s->configuration[(n->s->size - 1)][j])
+						continue ;
+					tileGoalPos = n->p.goal.at(n->s->configuration[(n->s->size - 1)][j]);
+					if ((n->s->size - 1) != tileGoalPos.first)
+						continue ;
+					if (
+						(j < (n->s->size - 1) - 1 &&  tileGoalPos.second > (n->s->size - 1) - 1) ||
+						(j > (n->s->size - 1) - 1 && tileGoalPos.second < (n->s->size - 1) - 1)
+					) {
+						conflict = true;
+						break ;
+					}
+				}
+				if (false == conflict)
+					adjustment += 2;
+				conflict = false;
+			}
+		}
+
+		score = t_linear_conflict_score::getInstance()(n) + adjustment;
+		const_cast<Node*>(n)->s->hCornerTiles = score;
+		const_cast<Node*>(n)->s->hCost = n->s->hCornerTiles;
+	}
+	return score;
+}
+
 uint8_t	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 {
 	uint8_t					score = 0;
@@ -294,6 +494,15 @@ const NPuzzle::t_linear_conflict_score&	NPuzzle::t_linear_conflict_score::getIns
 }
 
 NPuzzle::t_linear_conflict_score::t_linear_conflict_score() {}
+
+const NPuzzle::t_corner_tiles_score&	NPuzzle::t_corner_tiles_score::getInstance()
+{
+	static NPuzzle::t_corner_tiles_score	i{};
+
+	return i;
+}
+
+NPuzzle::t_corner_tiles_score::t_corner_tiles_score() {}
 
 const NPuzzle::t_misplaced_tiles_score&	NPuzzle::t_misplaced_tiles_score::getInstance()
 {

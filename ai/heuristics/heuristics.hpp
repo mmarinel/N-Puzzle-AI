@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:01:18 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/20 19:26:12 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/23 00:04:46 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ enum class t_heuristic
 {
 	MANHATTAN_DISTANCE,
 	LINEAR_CONFLICT,
+	CORNER_TILES,
 	MISPLACED_TILES,
 	GASCHNIG,
 	MAX,
@@ -33,6 +34,7 @@ const std::map<std::string, t_heuristic>
 hfromString = {
 	{"Manhattan Distance", t_heuristic::MANHATTAN_DISTANCE},
 	{"Linear Conflict", t_heuristic::LINEAR_CONFLICT},
+	{"Corner Tiles", t_heuristic::CORNER_TILES},
 	{"Misplaced Tiles", t_heuristic::MISPLACED_TILES},
 	{"Gaschnig's heurisitc", t_heuristic::GASCHNIG},
 	{"Coalesce All", t_heuristic::MAX}
@@ -43,7 +45,7 @@ class	t_Iordering_func
 public:
 	virtual uint8_t		f_val(const Node* n) const = 0;
 	virtual uint8_t		h(const Node* n) const = 0;
-	virtual bool	cmp(const Node* n1, const Node* n2) const = 0;
+	virtual bool		cmp(const Node* n1, const Node* n2) const = 0;
 };
 
 template <typename H>
@@ -52,7 +54,6 @@ class t_ordering_func: public t_Iordering_func
 public:
 	virtual uint8_t			f_val(const Node* n) const override {
 		return n->pCost + H::getInstance()(n);
-		// return H::getInstance()(n);
 	}
 
 	virtual uint8_t	h(const Node* n) const override {
@@ -61,14 +62,6 @@ public:
 
 	virtual bool	cmp(const Node* n1, const Node* n2) const override {
 		return f_val(n1) > f_val(n2);
-		// auto	f1 = f_val(n1);
-		// auto	f2 = f_val(n2);
-
-		// if (f1 != f2)
-		// 	return f1 > f2;
-		// else
-		// 	return H::getInstance()(n1) > H::getInstance()(n2);
-		// 	// return (f1 - n1->pCost) > (f2 - n2->pCost);
 	}
 };
 
@@ -92,6 +85,16 @@ public:
 	static const t_linear_conflict_score&	getInstance();
 private:
 	t_linear_conflict_score();
+};
+
+class t_corner_tiles_score: public t_ordering_func<t_corner_tiles_score>
+{
+public:
+	uint8_t	operator() (const Node* n) const;
+	
+	static const t_corner_tiles_score&	getInstance();
+private:
+	t_corner_tiles_score();
 };
 
 class t_misplaced_tiles_score:
@@ -130,6 +133,7 @@ const std::map<t_heuristic, const t_Iordering_func*>
 hToFunc = {
 	{t_heuristic::MANHATTAN_DISTANCE, &t_manhattan_score::getInstance()},
 	{t_heuristic::LINEAR_CONFLICT, &t_linear_conflict_score::getInstance()},
+	{t_heuristic::CORNER_TILES, &t_corner_tiles_score::getInstance()},
 	{t_heuristic::MISPLACED_TILES, &t_misplaced_tiles_score::getInstance()},
 	{t_heuristic::GASCHNIG, &t_gaschnig_score::getInstance()},
 	{t_heuristic::MAX, &t_coalesce_score::getInstance()}
