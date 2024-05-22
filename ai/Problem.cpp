@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/19 21:13:48 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/22 17:44:26 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ State::State(const State& s)
 		this->cols[j] = s.cols[j];
 	this->cols = s.cols;
 	this->hCost = -1;
+	this->hManhattan = -1;
+	this->hLinearConflict = -1;
 }
 
 bool	operator==(const State& s1, const State& s2)

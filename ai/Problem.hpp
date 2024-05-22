@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/20 22:01:44 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/22 16:59:15 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ public:
 	uint8_t			j_empty;
 	int				hCost;
 	int				hLinearConflict;
+	int				hManhattan;
 	t_configuration	configuration;
 	t_cols			cols;//integer representation of columns
 

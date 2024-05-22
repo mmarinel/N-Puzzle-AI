@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/20 21:53:22 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/22 19:53:08 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 
 uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 {
-	uint8_t					score;
+	uint8_t						score;
 	std::pair<uint8_t, uint8_t>	goalPosition;
 	
-	if (-1 != n->s->hCost)
-		score = n->s->hCost;
+	if (-1 != n->s->hManhattan)
+		score = n->s->hManhattan;
 	else
 	{
 		if (nullptr == n->parent)
@@ -60,25 +60,29 @@ uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 				std::abs(y_movedTile - goalPosition.first) +
 				std::abs(x_movedTile - goalPosition.second)
 			);
-			score = n->parent->s->hCost - oldScore_movedTile + newScore_movedTile;
+			score = n->parent->s->hManhattan - oldScore_movedTile + newScore_movedTile;
 		}
-		const_cast<Node*>(n)->s->hCost = score;
+		const_cast<Node*>(n)->s->hManhattan = score;
+		const_cast<Node*>(n)->s->hCost = n->s->hManhattan;
 	}
 	return score;
 }
 
 uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 {
-	int					score;
+	int							score;
+	int							adjustment;
 	std::pair<uint8_t, uint8_t>	goalPosition;
+	int							manhattan_score;
 	
-	if (-1 != n->s->hCost)
-		score = n->s->hCost;
+	if (-1 != n->s->hLinearConflict)
+		score = n->s->hLinearConflict;
 	else
 	{
 		if (nullptr == n->parent)
 		{
-			score = 0;
+			adjustment = 0;
+			manhattan_score = 0;
 			for (uint8_t i = 0; i < n->s->size; i++)
 			{
 				for (uint8_t j = 0; j < n->s->size; j++)
@@ -86,8 +90,7 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 					if (0 != n->s->configuration[i][j])
 					{
 						goalPosition = n->p.goal.at(n->s->configuration[i][j]);
-
-						score += (
+						manhattan_score += (
 							std::abs(i - goalPosition.first) +
 							std::abs(j - goalPosition.second)
 						);
@@ -95,59 +98,47 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 						// Counting inversions...
 						if (goalPosition.first == i)//Counting inversions on row
 						{
-							for (int kj = 0; kj < n->s->size; kj++)
+							for (int kj = j + 1; kj < n->s->size; kj++)
 							{
 								int		goalRowforTile = n->p.goal.at(n->s->configuration[i][kj]).first;
 								int		goalColforTile = n->p.goal.at(n->s->configuration[i][kj]).second;
 								if (i != goalRowforTile)
 									continue ;
 								if (
-									(kj < j && goalColforTile > goalPosition.second ) ||
+									// (kj < j && goalColforTile > goalPosition.second ) ||
 									(kj > j && goalColforTile < goalPosition.second )
 								)
-									score += 1;
+									adjustment += 2;//for every pair we need to count two moves,
+													//one put one of the tiles out and then back in
+													//we split the count on the two tiles two avoid re-counting
 							}
 						}
 						else if (goalPosition.second == j)//Counting inversions on column
 						{
-							for (int ki = 0; ki < n->s->size; ki++)
+							for (int ki = i + 1; ki < n->s->size; ki++)
 							{
 								int		goalRowforTile = n->p.goal.at(n->s->configuration[ki][j]).first;
 								int		goalColforTile = n->p.goal.at(n->s->configuration[ki][j]).second;
 								if (j != goalColforTile)
 									continue ;
 								if (
-									(ki < i && goalRowforTile > goalPosition.first ) ||
+									// (ki < i && goalRowforTile > goalPosition.first ) ||
 									(ki > i && goalRowforTile < goalPosition.first )
 								)
-									score += 1;
+									adjustment += 2;
 							}
 						}
 					}
 				}
 			}
+			const_cast<Node*>(n)->s->hManhattan = manhattan_score;
 		}
 		else
 		{
-			uint8_t		x_movedTile = n->parent->s->j_empty;
-			uint8_t		y_movedTile = n->parent->s->i_empty;
-			uint8_t		movedTile = n->s->configuration[y_movedTile][x_movedTile];
-						goalPosition = n->p.goal.at(movedTile);
-			uint8_t		oldScore_movedTile;
-			uint8_t		newScore_movedTile;
-
-			oldScore_movedTile = (
-				std::abs(n->s->i_empty - goalPosition.first) +
-				std::abs(n->s->j_empty - goalPosition.second)
-			);
-			newScore_movedTile = (
-				std::abs(y_movedTile - goalPosition.first) +
-				std::abs(x_movedTile - goalPosition.second)
-			);
-			score = n->parent->s->hCost - oldScore_movedTile + newScore_movedTile;
-
 			// Adjusting linear conflict
-			int	adjustment = 0;
+				//old adjustment
+			adjustment = n->parent->s->hLinearConflict - n->parent->s->hManhattan;
+			goalPosition = n->p.goal.at(n->s->configuration[n->parent->s->i_empty][n->parent->s->j_empty]);
 			int	goalCol = goalPosition.second;
 			int	goalRow = goalPosition.first;
 			int	movedTileJ;
@@ -155,6 +146,14 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 			int	increment = 0;
 			if (n->parent->s->j_empty != n->s->j_empty)//Horizontal Move
 			{
+				/**
+				 * Horizontal adjustment for tile has not changed since moving one tile
+				 * horizontally onto the blank doesn't change the relative order
+				 * with respect to other tiles...
+				 * 
+				 * When moving horizontally/vertically, we only need to update the adjustment
+				 * relative to column/rows.
+				 */
 				if (n->parent->s->j_empty == goalCol)//Adding conflicts
 				{
 					movedTileJ = n->parent->s->j_empty;
@@ -207,9 +206,12 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 						adjustment = adjustment + increment;
 				}
 			}
-			score += adjustment;
+			manhattan_score = t_manhattan_score::getInstance()(n);
 		}
-		const_cast<Node*>(n)->s->hCost = score;
+		// manhattan_score = t_manhattan_score::getInstance()(n);
+		const_cast<Node*>(n)->s->hLinearConflict = manhattan_score + adjustment;
+		const_cast<Node*>(n)->s->hCost = n->s->hLinearConflict;
+		score = n->s->hLinearConflict;
 	}
 	return score;
 }
