@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/22 22:23:20 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/23 15:07:59 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ public:
 	int				hManhattan;
 	int				hLinearConflict;
 	int				hCornerTiles;
+	int				hMisplacedTiles;
+	int				hGaschnig;
+	int				hMax;
 	t_configuration	configuration;
 	t_cols			cols;//integer representation of columns
 
