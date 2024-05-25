@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/20 22:13:19 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/25 23:13:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,13 @@ public:
 			return *s1 < *s2;
 		}
 	}	t_exploredSet_cmp;
-	typedef struct s_path_cmp
+	typedef struct s_exploredSetNode_cmp
 	{
 		bool	operator()(const Node* const& n1, const Node* const& n2) const
 		{
 			return *(n1->s) < *(n2->s);
 		}
-	}	t_path_cmp;
+	}	t_exploredSetNode_cmp;
 	
 	typedef struct s_frontierNodesEquals
 	{
@@ -124,7 +124,7 @@ public:
 	typedef std::set<State*, t_exploredSet_cmp>
 	ClosedSetStateQueue;
 
-	typedef std::set<Node*, t_path_cmp>
+	typedef std::set<Node*, t_exploredSetNode_cmp>
 	ClosedSetNodeQueue;
 
 	typedef struct	s_rbfsIterResult
@@ -133,12 +133,6 @@ public:
 		bool	solutionFound;
 		Node*	leaf;
 	}	t_rbfsIterResult;
-	
-	typedef struct	s_idaStarIterResult
-	{
-		int		cutoff;
-		bool	solutionFound;
-	}	t_idaStarIterResult;
 	
 private:
 	Problem					p;
@@ -150,18 +144,11 @@ private:
 	ordering_criteria		worse;
 
 	void	aStar();
-	void	idaStar();
 	void	rbfs();
 	t_rbfsIterResult
 			rbfsRec(
 				Node* node,
 				ClosedSetStateQueue& explored,
-				int bound
-			);
-	t_idaStarIterResult
-			aStarDepthLimited(
-				std::stack<Node*>& path,
-				ClosedSetNodeQueue& explored,
 				int bound
 			);
 	
@@ -174,6 +161,12 @@ private:
 		Problem& p,
 		std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
 		size_t size
+	);
+	void	fillGrid(
+		std::vector<std::vector<uint8_t>>& grid,
+		int size,
+		size_t offset,
+		int nbr
 	);
 	bool	solvable(State* initial);
 	int		polarity(State* initial);

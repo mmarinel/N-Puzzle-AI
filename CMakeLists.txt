@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.18)
 
+# Set for a Debug Build
+# set(CMAKE_BUILD_TYPE DEBUG)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_NAME npuzzle)
 
@@ -7,8 +13,12 @@ project(${EXECUTABLE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
-# Set for a Debug Build
-# set(CMAKE_BUILD_TYPE DEBUG)
+
+# set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast")
+
 
 set(CMAKE_AUTOMOC on) # codice generato prima della compilazione
 set(CMAKE_AUTORCC on) # resource compiler (immagini icone, etc.)

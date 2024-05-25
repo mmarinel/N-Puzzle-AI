@@ -6,26 +6,11 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/25 15:02:34 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/25 23:44:56 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Agent.hpp"
-
-#include <queue>
-#include <vector>
-#include <set>
-#include <functional>
-
-// Static non-class (c-like) declarations
-static 
-void	fillGrid(
-	std::vector<std::vector<int>>& grid,
-	int size,
-	size_t offset,
-	int nbr
-);
-/*******************************************/
 
 NPuzzle::Agent::Agent(
 		const std::vector<std::vector<Tile> >& config,
@@ -56,15 +41,6 @@ NPuzzle::Agent::Agent(
 	
 		// goal state
 	setAsForwardGoal(p, p.goal, size);
-	// qDebug() << "p.goal";
-	// for(const auto& pair: p.goal)
-	// {
-	// 	qDebug()
-	// 		<< "nbr: " << pair.first
-	// 		<< "; (i, j): " << pair.second.first << ", " << pair.second.second;
-		
-	// }
-	
 	
 	// setting A* specific politics
 		// heuristic
@@ -85,7 +61,7 @@ void	NPuzzle::Agent::run()
 	// this->idaStar();
 	this->rbfs();
 }
-#include <iostream>
+
 void	NPuzzle::Agent::aStar()
 {
 	OpenSetNodeQueue	frontier{worse, t_frontierNodesEquals{}};
@@ -123,143 +99,12 @@ void	NPuzzle::Agent::aStar()
 			child->f = child->pCost + child->s->hCost;
 			if (explored.end() != explored.find(child->s))
 			{
-				auto	it = explored.find(child->s);
-
-				if ((*it)->configuration == child->s->configuration)
-					continue;
-				std::cout << "Found two equal states in explored" << std::endl;
-
-				std::cout << "Found one" << std::endl;
-				std::cout << "conf.size = " << (*it)->configuration.size() << std::endl;
-				for (int i = 0; i < child->s->size; i++)
-				{
-					for (int j = 0; j < child->s->size; j++)
-					{
-						std::cout << static_cast<int>((*it)->configuration[i][j]) << " ";
-					}
-					std::cout << std::endl;
-				}
-				std::cout << "cols" << std::endl;
-				for (int j = 0; j < child->s->size; j++)
-				{
-					std::cout << "col " << j << " " << (*it)->cols[j] << std::endl;
-				}
-				std::cout << std::endl;
-
-				std::cout << "child" << std::endl;
-				std::cout << "child conf.size = " << child->s->configuration.size() << std::endl;
-				for (int i = 0; i < child->s->size; i++)
-				{
-					for (int j = 0; j < child->s->size; j++)
-					{
-						std::cout << static_cast<int>(child->s->configuration[i][j]) << " ";
-					}
-					std::cout << std::endl;
-				}
-				std::cout << "cols" << std::endl;
-				for (int j = 0; j < child->s->size; j++)
-				{
-					std::cout << "col " << j << " " << child->s->cols[j] << std::endl;
-				}
-				std::cout << std::endl;
-				
 				continue ;
 			}
-			// qDebug() << "pushing to frontier...";
 			frontier.push(child);
 		}
 	}
 	qDebug() << "Frontier Empty";
-}
-
-void	NPuzzle::Agent::idaStar()
-{
-	// OpenSetNodeQueue		path{
-	// 	[](const Node* n1, const Node* n2){return n1->pCost < n2->pCost;},
-	// 	t_frontierNodesEquals{}
-	// };
-	std::stack<Node*>		path;
-	ClosedSetNodeQueue		explored;
-	Node*					initial = new Node{p};
-	initial->s 				 	 	= new State{p.initial};
-	initial->s->hCost 			 	= this->criteria->h(initial);
-	int						bound 	= initial->s->hCost;
-	t_idaStarIterResult		result;
-	
-	if (false == solvable(initial->s))
-		return ;
-	// qDebug() << "NPuzzle::Agent::idaStar() --- Solving...";
-	path.push(initial);
-	explored.insert(initial);
-	// path.insert(initial);
-	while (true)
-	{
-		// qDebug() << "before aStarDepthLimited(path, bound)";
-		result = aStarDepthLimited(path, explored, bound);
-		// qDebug() << "After aStarDepthLimited(path, bound)";
-		if (result.solutionFound)
-		{
-			solution = std::move(p.solution(path.top()));
-			qDebug() << "returning solution";
-			// Node*	last = *(path.end()--);
-			// solution = std::move(p.solution(path.top()));
-			// solution = std::move(p.solution(last));
-			moves = solution.size();
-			qDebug() << "with " << moves << " moves";
-			return;
-		}
-		bound = result.cutoff;
-	}
-}
-
-NPuzzle::Agent::t_idaStarIterResult
-NPuzzle::Agent::aStarDepthLimited(
-				std::stack<Node*>& path,
-				ClosedSetNodeQueue& explored,
-				int bound
-)
-{
-	Node*				node = path.top();
-	int					f_val;
-	int					min;
-	t_idaStarIterResult	result;
-	
-	f_val = this->criteria->f_val(node);
-	if (f_val > bound)
-		return (t_idaStarIterResult){f_val, false};
-	if (p.goalTest(node->s))
-		return (t_idaStarIterResult){f_val, true};
-	
-	min = std::numeric_limits<int>::max();
-	OpenSetNodeQueue	fringe{worse, t_frontierNodesEquals{}};
-	// qDebug() << "Before filling fringe";
-	for (const t_action& a: usefulActions(node,  p.actions(*(node->s))))
-	{
-		Node*	child = child_node(node, a);
-		
-		// auto	existing = path.find(child);
-		child->s->hCost = this->criteria->h(child);
-		if (explored.end() != explored.find(child)) //existing.first)
-			continue ;
-		fringe.push(child);
-	}
-	// qDebug() << "After filling fringe";
-	for (Node* child: fringe)
-	{
-		path.push(child);
-		explored.insert(child);
-		// path.insert(child);
-		result = aStarDepthLimited(path, explored, bound);
-		if (result.solutionFound)
-			return result;
-		if (result.cutoff < min)
-			min = result.cutoff;
-		// qDebug() << "before deleting";
-		path.pop();
-		explored.erase(child);
-		delete child;
-	}
-	return (t_idaStarIterResult){min, false};
 }
 
 void	NPuzzle::Agent::rbfs()
@@ -347,8 +192,8 @@ NPuzzle::Agent::rbfsRec(
 	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, nullptr};
 }
 
-void	fillGrid(
-	std::vector<std::vector<int>>& grid,
+void	NPuzzle::Agent::fillGrid(
+	std::vector<std::vector<uint8_t>>& grid,
 	int size,
 	size_t offset,
 	int nbr
@@ -356,65 +201,64 @@ void	fillGrid(
 {
 	if (size <= 1)
 		return ;
+
+	int	i, j;
+
 	//top row
-	for (int j = 0 + offset;			j < size + offset;	j++)
+	for (j = 0 + offset;			j < size + offset;	j++)
 	{
 		grid[0 + offset][j] = nbr++;
 	}
+		// Checking last element of the puzzle...(case N odd)-->in this case, after k iterations, the first element on the top row is the last one
+	if (p.initial.size*p.initial.size == grid[0 + offset][0 + offset])
+	{
+		grid[0 + offset][0 + offset] = 0;
+		p.x_empty_at_goal = 0 + offset;
+		p.y_empty_at_goal = 0 + offset;
+		return ;
+	}
 	// right column
-	for (int i = (0 + offset)			+ 1;			i < size + offset;	i++)
+	for (i = (0 + offset)			+ 1;			i < size + offset;	i++)
 	{
 		grid[i][size + offset - 1] = nbr++;
 	}
 	//bottom row
-	for (int j = (size + offset - 1)	- 1;		j >= static_cast<int>(0 + offset);	j--)
+	for (j = (size + offset - 1)	- 1;		j >= static_cast<int>(0 + offset);	j--)
 	{
 		grid[size + offset - 1][j] = nbr++;
 	}
+		// Checking last element of the puzzle...(case N even)-->-->in this case, after k iterations, the last element on the bottom row is the last one
+	if (p.initial.size*p.initial.size == grid[size + offset - 1][j + 1])
+	{
+		grid[size + offset - 1][j + 1] = 0;
+		p.x_empty_at_goal = j + 1;
+		p.y_empty_at_goal = size + offset - 1;
+		return ;
+	}
 	//left column
-	for (int i = (size + offset - 1)	- 1;		i >= static_cast<int>(0 + offset)	+ 1;	i--)
+	for (i = (size + offset - 1)	- 1;		i >= static_cast<int>(0 + offset)	+ 1;	i--)
 	{
 		grid[i][0 + offset] = nbr++;
 	}
 	fillGrid(grid, size - 2, offset + 1, nbr);
 }
 
-// #include <iostream>
 void	NPuzzle::Agent::setAsForwardGoal(
 	Problem& p,
 	std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
 	size_t size
 )
 {
-	std::vector<std::vector<int>>	grid;
+	std::vector<std::vector<uint8_t>>	grid;
 
 	grid.clear();
 	grid.resize(size);
 	for (int i = 0; i < size; i++) {
 		grid[i].resize(size);
-		for (int j = 0; j < size; j++) {
-			grid[i][j] = 0;
-		}
 	}
 
 	// filling as grid
 	fillGrid(grid, size, 0, 1);
-	
-	// qDebug() << "SNAIL solution";
-	bool	stop = false;
-	for (int i = 0; i < static_cast<int>(size) && false == stop; i++) {
-		for (int j = 0; j < static_cast<int>(size) && false == stop; j++) {
-			if (static_cast<int>(size*size) == grid[i][j])
-			{
-				p.x_empty_at_goal = j;
-				p.y_empty_at_goal = i;
-				grid[i][j] = 0;
-				stop = true;
-			}
-			// std::cout << static_cast<int>(grid[i][j]) << " ";
-		}
-		// std::cout << std::endl;
-	}
 	
 	// counting inversions at goal
 	p.inversions_at_goal = 0;
@@ -499,17 +343,11 @@ int		NPuzzle::Agent::polarity(State* initial)
 			for (; j < initial->size; j++) {
 				if (0 == conf[i][j])
 					continue ;
-				// qDebug() << "Checking "
-				// 	<< current_i << ", " << current_j
-				// 	<< " against "
-				// 	<< i << ", " << j;
-				// qDebug() << conf[current_i][current_j] << " > " << conf[i][j];
 				inversions += conf[current_i][current_j] > conf[i][j];
 			}
 			j = 0;
 		}
 	}
-	// qDebug() << "n° inversions: " << inversions;
 	return inversions;
 }
 
