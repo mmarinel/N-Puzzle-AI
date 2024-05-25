@@ -3,28 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/23 16:13:24 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/25 14:36:34 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Problem.hpp"
 #include "Node.hpp"
 
-State::State() {}
+State::State()
+{
+	// heuristic values init
+	this->hCost = -1;
+	this->hManhattan = -1;
+	this->hLinearConflict = -1;
+	this->hCornerTiles = -1;
+	this->hMisplacedTiles = -1;
+	this->hGaschnig = -1;
+	this->hMax = -1;
+}
 
 State::State(const State& s)
 {
+	// basic state info
 	this->size = s.size;
 	this->i_empty = s.i_empty;
 	this->j_empty = s.j_empty;
 	this->configuration = s.configuration;
+
+	// columns representation
 	this->cols.reserve(s.size);
 	for (int j = 0; j < s.size; j++)
 		this->cols[j] = s.cols[j];
-	this->cols = s.cols;
+	
+	// heuristic values init
 	this->hCost = -1;
 	this->hManhattan = -1;
 	this->hLinearConflict = -1;
@@ -41,7 +55,12 @@ bool	operator==(const State& s1, const State& s2)
 	else if (s1.hCost != s2.hCost)
 		return false;
 	else
-		return s1.cols == s2.cols;
+	{
+		for (int k = 0; k < s1.size; k++)
+			if (s1.cols[k] != s2.cols[k])
+				return false;
+		return true;
+	}
 }
 
 bool	operator<(const State& s1, const State& s2)
@@ -54,16 +73,12 @@ bool	operator<(const State& s1, const State& s2)
 	else if (s1.hCost != s2.hCost)
 		return s1.hCost < s2.hCost;
 	else
-		return s1.cols < s2.cols;
-	// for (int i = 0; i < s1.size; i++)
-	// {
-	// 	for (int j = 0; j < s1.size; j++)
-	// 	{
-	// 		if (s1.configuration[i][j] != s2.configuration[i][j])
-	// 			return s1.configuration[i][j] < s2.configuration[i][j];
-	// 	}
-	// }
-	// return false;
+	{
+		for (int k = 0; k < s1.size; k++)
+			if (s1.cols[k] != s2.cols[k])
+				return s1.cols[k] < s2.cols[k];
+		return false;
+	}
 }
 
 
@@ -90,111 +105,54 @@ Problem::actions(const State& s) const
 State*
 Problem::result(const State& s, t_action a) const
 {
-	State*		result = new State{s};
-	Tile&		empty_tile = (
-			result->
-			configuration
-			[result->i_empty][result->j_empty]
-	);
-	int		empty_tile_col;
-	int		new_empty_tile_col;
+	State*		result = new State{s};//exact copy of parent
+	Tile&		empty_tile = result->configuration[result->i_empty][result->j_empty];
+	std::pair<uint8_t,  uint8_t>
+				moveTileOldPos = {
+					// i
+					t_action::UP == a
+					? result->i_empty - 1
+					: (t_action::DOWN == a ? result->i_empty + 1 : result->i_empty),
+					// j
+					t_action::LEFT == a
+					? result->j_empty - 1
+					: (t_action::RIGHT == a ? result->j_empty + 1 : result->j_empty)
+				};
+	std::pair<uint8_t, uint8_t>
+				moveTileNewPos = {
+					result->i_empty, result->j_empty
+				};
+	Tile&		tile = result->configuration[moveTileOldPos.first][moveTileOldPos.second];
+
+	// Updating columns representation
+	if (moveTileOldPos.second == moveTileNewPos.second)//Vertical Move
+	{
+		result->cols[moveTileOldPos.second] = (
+			result->cols[moveTileOldPos.second] -// Up move means empty tile goes up, other tile goes down...
+			(static_cast<uint64_t>(tile) << (static_cast<int>(moveTileOldPos.first)*5) ) +
+			(static_cast<uint64_t>(tile) << (static_cast<int>(moveTileNewPos.first)*5) )
+		);
+	}
+	else//Horizontal Move
+	{
+		result->cols[moveTileOldPos.second] = (
+			result->cols[moveTileOldPos.second] -
+			(static_cast<uint64_t>(tile) << (( static_cast<int>(moveTileOldPos.first))*5) )
+		);
+		result->cols[moveTileNewPos.second] = (
+			result->cols[moveTileNewPos.second] +
+			(static_cast<uint64_t>(tile) << (( static_cast<int>(moveTileNewPos.first))*5) )
+		);
+	}
 	
-	if ( t_action::UP == a )
-	{
-		Tile&	tile = (
-			result->
-			configuration
-			[result->i_empty - 1][result->j_empty]
-		);
-
-		new_empty_tile_col = result->j_empty;
-		result->cols[new_empty_tile_col] = (
-			result->cols[new_empty_tile_col] -
-			(static_cast<uint64_t>(tile) << ((static_cast<int>(result->i_empty) - 1)*5) ) +
-			(static_cast<uint64_t>(tile) << ((static_cast<int>(result->i_empty))*5) )
-		);
-
-		empty_tile = tile;
-		tile = 0;
-		
-		result->i_empty = result->i_empty - 1;
-		result->j_empty = result->j_empty;
-	}
-	if ( t_action::DOWN == a )
-	{
-		Tile&	tile = (
-			result->
-			configuration
-			[result->i_empty + 1][result->j_empty]
-		);
-
-		new_empty_tile_col = result->j_empty;
-		result->cols[new_empty_tile_col] = (
-			result->cols[new_empty_tile_col] -
-			(static_cast<uint64_t>(tile) << ((static_cast<int>(result->i_empty) + 1)*5) ) +
-			(static_cast<uint64_t>(tile) << ((static_cast<int>(result->i_empty))*5) )
-		);
-		
-		empty_tile = tile;
-		tile = 0;
-		
-		result->i_empty = result->i_empty + 1;
-		result->j_empty = result->j_empty;
-	}
-	if ( t_action::LEFT == a )
-	{
-		Tile&	tile = (
-			result->
-			configuration
-			[result->i_empty][result->j_empty - 1]
-		);
-
-		new_empty_tile_col = result->j_empty - 1;
-		result->cols[new_empty_tile_col] = (
-			result->cols[new_empty_tile_col] -
-			(static_cast<uint64_t>(tile) << (( static_cast<int>(result->i_empty))*5) )
-		);
-		empty_tile_col = result->j_empty;
-		result->cols[empty_tile_col] = (
-			result->cols[empty_tile_col] +
-			(static_cast<uint64_t>(tile) << (( static_cast<int>(result->i_empty))*5) )
-		);
-		
-		empty_tile = tile;
-		tile = 0;
-		
-		result->i_empty = result->i_empty;
-		result->j_empty = result->j_empty - 1;
-	}
-	if ( t_action::RIGHT == a )
-	{
-		// Taking moved out tile
-		Tile&	tile = (
-			result->
-			configuration
-			[result->i_empty][result->j_empty + 1]
-		);
-
-		// Updating columns representation
-		new_empty_tile_col = result->j_empty + 1;
-		result->cols[new_empty_tile_col] = (
-			result->cols[new_empty_tile_col] -
-			(static_cast<uint64_t>(tile) << ((static_cast<int>(result->i_empty))*5) )
-		);
-		empty_tile_col = result->j_empty;
-		result->cols[empty_tile_col] = (
-			result->cols[empty_tile_col] +
-			(static_cast<uint64_t>(tile) << ((static_cast<int>(result->i_empty))*5) )
-		);
-
-		// swapping tiles
-		empty_tile = tile;
-		tile = 0;
-
-		// Updating empty tile status
-		result->i_empty = result->i_empty;
-		result->j_empty = result->j_empty + 1;
-	}
+	// Swapping tiles
+	empty_tile = tile;
+	tile = 0;
+	
+	// Updating empty tile info
+	result->i_empty = moveTileOldPos.first;
+	result->j_empty = moveTileOldPos.second;
+	
 	return (
 		result
 	);

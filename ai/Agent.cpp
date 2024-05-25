@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/20 22:15:33 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/25 15:02:34 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,16 @@
 #include <set>
 #include <functional>
 
+// Static non-class (c-like) declarations
+static 
+void	fillGrid(
+	std::vector<std::vector<int>>& grid,
+	int size,
+	size_t offset,
+	int nbr
+);
+/*******************************************/
+
 NPuzzle::Agent::Agent(
 		const std::vector<std::vector<Tile> >& config,
 		const size_t size,
@@ -26,59 +36,36 @@ NPuzzle::Agent::Agent(
 )
 : p{}, solution{}, criteria(nullptr), moves{0}
 {
-	// setting up Problem(s)
+	// setting up Problem
 		// initial state
 	p.initial.configuration = config;
 	p.initial.size = size;
 	p.initial.i_empty = y_empty;
 	p.initial.j_empty = x_empty;
 	p.initial.cols.reserve(size);
-	qDebug() << "p.initial.col_sum";
 	for (int j = 0; j < size; j++)
 	{
 		p.initial.cols[j] = 0;
 		for (int i = 0; i < size; i++)
 		{
-			qDebug() << "summing " << (static_cast<uint64_t>(p.initial.configuration[i][j]) << (i*5));
 			p.initial.cols[j] += (
 				static_cast<uint64_t>(p.initial.configuration[i][j]) << (i*5)//(i*8)
 			);
-			// qDebug() << "summing " << (p.initial.configuration[i][p.initial.initial_empty_col] << (i*8));
-			// p.initial.col_sum += (
-			// 	p.initial.configuration[i][p.initial.initial_empty_col] << (i*8)
-			// );
 		}
-		qDebug() << "Final sum: " << p.initial.cols[j];
 	}
-	
 	
 		// goal state
-	// for (uint8_t i = 0; i < size; i++) {
-	// 	for (uint8_t j = 0; j < size; j++) {
-	// 		p.goal[(i*size) + (j+1)] = std::make_pair(i, j);
-	// 	}
-	// }
-	// p.goal.erase(size*size);
-	// p.goal[0] = std::make_pair(size - 1, size - 1);
 	setAsForwardGoal(p, p.goal, size);
-
-
-	qDebug() << "p.goal";
-	for(const auto& pair: p.goal)
-	{
-		qDebug()
-			<< "nbr: " << pair.first
-			<< "; (i, j): " << pair.second.first << ", " << pair.second.second;
+	// qDebug() << "p.goal";
+	// for(const auto& pair: p.goal)
+	// {
+	// 	qDebug()
+	// 		<< "nbr: " << pair.first
+	// 		<< "; (i, j): " << pair.second.first << ", " << pair.second.second;
 		
-	}
-
-
-	// for (int i = 0; i < size; i++) {
-	// 	for (int j = 0; j < size; j++) {
-	// 		p.initial.cmp_score += p.initial.configuration[i][j]*
-	// 	}
 	// }
-
+	
+	
 	// setting A* specific politics
 		// heuristic
 	this->criteria = NPuzzle::hToFunc.at(h);
@@ -391,14 +378,14 @@ void	fillGrid(
 	}
 	fillGrid(grid, size - 2, offset + 1, nbr);
 }
-#include <iostream>
+
+// #include <iostream>
 void	NPuzzle::Agent::setAsForwardGoal(
 	Problem& p,
 	std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
 	size_t size
 )
 {
-	qDebug() << "NPuzzle::Agent::setAsForwardGoal";
 	std::vector<std::vector<int>>	grid;
 
 	grid.clear();
@@ -412,18 +399,21 @@ void	NPuzzle::Agent::setAsForwardGoal(
 
 	// filling as grid
 	fillGrid(grid, size, 0, 1);
-	qDebug() << "SNAIL solution";
-	for (int i = 0; i < static_cast<int>(size); i++) {
-		for (int j = 0; j < static_cast<int>(size); j++) {
+	
+	// qDebug() << "SNAIL solution";
+	bool	stop = false;
+	for (int i = 0; i < static_cast<int>(size) && false == stop; i++) {
+		for (int j = 0; j < static_cast<int>(size) && false == stop; j++) {
 			if (static_cast<int>(size*size) == grid[i][j])
 			{
 				p.x_empty_at_goal = j;
 				p.y_empty_at_goal = i;
 				grid[i][j] = 0;
+				stop = true;
 			}
-			std::cout << static_cast<int>(grid[i][j]) << " ";
+			// std::cout << static_cast<int>(grid[i][j]) << " ";
 		}
-		std::cout << std::endl;
+		// std::cout << std::endl;
 	}
 	
 	// counting inversions at goal
@@ -457,7 +447,7 @@ void	NPuzzle::Agent::setAsForwardGoal(
 			j = 0;
 		}
 	}
-	qDebug() << "Inversions at goal: " << p.inversions_at_goal;
+	// qDebug() << "Inversions at goal: " << p.inversions_at_goal;
 
 
 	// filling map
@@ -470,16 +460,17 @@ void	NPuzzle::Agent::setAsForwardGoal(
 
 bool	NPuzzle::Agent::solvable(State* initial)
 {
+	int		_polarity = polarity(initial);
 	if (0 != initial->size % 2)
-		return p.inversions_at_goal % 2 == polarity(initial) % 2;
+		return p.inversions_at_goal % 2 == _polarity % 2;
 	else
 		return (
 			(
-				p.inversions_at_goal % 2 == polarity(initial) % 2 &&
+				p.inversions_at_goal % 2 == _polarity % 2 &&
 				-(p.y_empty_at_goal - initial->size) % 2  == (-(initial->i_empty - initial->size)) % 2
 			) ||
 			(
-				p.inversions_at_goal % 2 != polarity(initial) % 2 &&
+				p.inversions_at_goal % 2 != _polarity % 2 &&
 				(-(p.y_empty_at_goal - initial->size)) % 2 != (-(initial->i_empty - initial->size)) % 2
 			)
 		);
@@ -508,17 +499,17 @@ int		NPuzzle::Agent::polarity(State* initial)
 			for (; j < initial->size; j++) {
 				if (0 == conf[i][j])
 					continue ;
-				qDebug() << "Checking "
-					<< current_i << ", " << current_j
-					<< " against "
-					<< i << ", " << j;
-				qDebug() << conf[current_i][current_j] << " > " << conf[i][j];
+				// qDebug() << "Checking "
+				// 	<< current_i << ", " << current_j
+				// 	<< " against "
+				// 	<< i << ", " << j;
+				// qDebug() << conf[current_i][current_j] << " > " << conf[i][j];
 				inversions += conf[current_i][current_j] > conf[i][j];
 			}
 			j = 0;
 		}
 	}
-	qDebug() << "n° inversions: " << inversions;
+	// qDebug() << "n° inversions: " << inversions;
 	return inversions;
 }
 

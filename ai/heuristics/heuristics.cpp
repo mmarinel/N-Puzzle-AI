@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/23 18:20:59 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/25 15:05:17 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 	}
 	return score;
 }
-
+//TODO ricordati che non è corretta per il caso 3x3 (forse)
 uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 {
 	int		score;
