@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 20:27:45 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/25 19:47:37 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,16 @@
 #include "CustomDialog.hpp"
 #include "UIState.hpp"
 #include "utils.h"
+#include "gui_utils.hpp"
 
 #include <QDialogButtonBox>
 
+#include <QApplication>
 //? EXPERIMENT FOR AI ACTUATION
 #include <QTimer>
+
 #include <functional>
+#include <sstream>
 
 SolveView::SolveView(QWidget* parent): QVBoxLayout{parent},
 solving{false},
@@ -149,7 +153,7 @@ SolveView::~SolveView()
 }
 
 // SLOTS
-
+#include <ctime>
 void	SolveView::startSolving()
 {
 	qDebug() << "SolveView::startSolving";
@@ -164,16 +168,45 @@ void	SolveView::startSolving()
 		BoardState::getInstance().y_empty,
 		UIState::getInstance().h
 	);
+	struct timespec	before;
+	clock_gettime(CLOCK_MONOTONIC, &before);
 	agent->run();
 	agent->wait();
+	struct timespec	after;
+	clock_gettime(CLOCK_MONOTONIC, &after);
+
+	uint64_t	before_ns = (before.tv_sec * 1000000000) + before.tv_nsec;
+	uint64_t	after_ns = (after.tv_sec * 1000000000) + after.tv_nsec;
+	int64_t		elapsed_sec = (after_ns - before_ns) / 1000000000;
+	int64_t		elapsed_ns = (after_ns - before_ns) % 1000000000;
+	int64_t		elapsed_ms = (elapsed_ns) / 1000000;
+				elapsed_ns = (elapsed_ns) % 1000000;
+
 	if (agent->solution.empty())
 	{
-		qDebug() << "Not Solvable";
-		return ;
+		auto color = output->textColor();
+		output->setTextColor(Qt::darkRed);
+		output->append("Not Solvable");
+		output->setTextColor(color);
 	}
-	QTimer::singleShot(
-		1000, std::bind(&SolveView::moveTile, this)
-	);
+	else
+	{
+		auto color = output->textColor();
+		output->setTextColor(Qt::darkGreen);
+		output->append("Solvable");
+		output->setTextColor(color);
+		QTimer::singleShot(
+			1000, std::bind(&SolveView::moveTile, this)
+		);
+	}
+	
+	std::stringstream	ss;
+	ss << "Elapsed time" << std::endl;
+	ss << "sec: " << elapsed_sec << std::endl;
+	ss << "ms: " << elapsed_ms << std::endl;
+	ss << "ns: " << elapsed_ns << std::endl;
+	output->append(ss.str().c_str());
+	
 	//TODO
 	//TODO 1. disable inappropriate buttons &&  Add Loading gif
 	//TODO 1.1 	only leave buttons like the "close" button to not freeze the app
@@ -282,6 +315,7 @@ bool	SolveView::abort()
 
 	//TODO handle reset of AI state? && BoardState
 	
+
 	this->solving = false;
 	this->executing = false;
 
