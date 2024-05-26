@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/25 14:36:34 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 15:08:19 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,11 +164,11 @@ Problem::goalTest(const State* s) const
 	return 0 == s->hCost;
 }
 
-std::stack<t_action>
+Problem::Actions
 Problem::solution(const Node* n) const
 {
-	std::stack<t_action>	sol;
-	const Node*				current;
+	Actions		sol;
+	const Node*	current;
 
 	current = n;
 	while (current->parent){

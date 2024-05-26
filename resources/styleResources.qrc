@@ -10,5 +10,6 @@
     </qresource>
     <qresource prefix="images">
         <file alias="icon">images/icons/shakey.jpg</file>
+        <file alias="loading">images/actions/loading.gif</file>
     </qresource>
 </RCC>

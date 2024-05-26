@@ -6,11 +6,14 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 10:14:26 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/17 19:27:38 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 17:46:51 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Node.hpp"
+
+unsigned long long		Node::instances = 0;
+unsigned long long		Node::max_instances = 0;
 
 Node::Node(const Problem& p): p(p)
 {
@@ -18,10 +21,15 @@ Node::Node(const Problem& p): p(p)
 	this->parent = nullptr;
 	this->a = t_action::NONE;
 	this->pCost = 0;
+
+	Node::instances += 1;
+	if (Node::instances > Node::max_instances)
+		Node::max_instances = Node::instances;
 }
 
 Node::~Node()
 {
+	Node::instances -= 1;
 	delete this->s;
 }
 

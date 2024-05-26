@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 14:37:24 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 15:07:55 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ public:
 class Problem
 {
 public:
+	typedef std::stack<t_action>	Actions;
+public:
 	State		initial;
 	std::map<uint8_t, std::pair<uint8_t, uint8_t> >
 				goal;//TODO make it const?
@@ -81,7 +83,7 @@ public:
 			result(const State& s, t_action a) const;
 	// int	step_cost(t_state s1, t_state s2) const;
 	bool	goalTest(const State* s) const;
-	std::stack<t_action>
+	Actions
 			solution(const Node* n) const;
 	
 				Problem();

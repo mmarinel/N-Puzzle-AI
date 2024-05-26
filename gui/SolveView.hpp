@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/17 18:51:56 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 22:52:25 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,12 @@
 #include <QStackedWidget>
 #include <BoardView.hpp>
 #include <QTextEdit>
+#include <QMovie>
 
 #include "Content.hpp"
 #include "Agent.hpp"
+
+#include <ctime>
 
 #define THRESHOLD_FOR_NEW_WINDOW 9
 #define THRESHOLD_FOR_NO_GRID 96
@@ -38,6 +41,8 @@ private:
 	QPushButton*	playback_btn;
 	QPushButton*	play_btn;
 	QPushButton*	playforward_btn;
+	QLabel*			loading_lbl;
+	QMovie*			gif;
 
 	bool			solving;
 	bool			executing;
@@ -47,7 +52,11 @@ private:
 	QStackedWidget*	btns_stacked;
 	QWidget*		solve_btn_box;
 	QWidget*		play_box;
+	QWidget*		loading_lbl_box;
+
 	NPuzzle::Agent*	agent;
+	struct timespec	before;
+	struct timespec	after;
 
 	void			moveTile();
 public:
@@ -60,4 +69,5 @@ public:
 public slots:
 	void	startSolving();
 	void	play_stop();
+	void	workDone();
 };

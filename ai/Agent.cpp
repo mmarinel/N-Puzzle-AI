@@ -6,11 +6,16 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 11:16:32 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 23:10:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Agent.hpp"
+
+#include <memory>
+
+template <>
+unsigned long long		NPuzzle::Agent::OpenSetNodeQueue::nbr_selected = 0;
 
 NPuzzle::Agent::Agent(
 		const std::vector<std::vector<Tile> >& config,
@@ -53,6 +58,11 @@ NPuzzle::Agent::Agent(
 	worse = [](const Node* n1, const Node* n2){
 		return n1->f > n2->f;
 	};
+}
+
+NPuzzle::Agent::~Agent()
+{
+	//TODO ...possible cleanup function to call ?
 }
 
 void	NPuzzle::Agent::run()
@@ -109,19 +119,19 @@ void	NPuzzle::Agent::aStar()
 
 void	NPuzzle::Agent::rbfs()
 {
-	Node*					initial = new Node{p};
-	initial->s 				 	 	= new State{p.initial};
-	initial->s->hCost 			 	= this->criteria->h(initial);
+	std::unique_ptr<Node>			initial{new Node{p}};
+	initial->s 						= new State{p.initial};
+	initial->s->hCost 				= this->criteria->h(initial.get());
 	initial->f						= 0 + initial->s->hCost;
-	int						bound 	= std::numeric_limits<int>::max();// initial->s->hCost;
+	int						bound	= std::numeric_limits<int>::max();// initial->s->hCost;
 	t_rbfsIterResult		result;
 	ClosedSetStateQueue		explored(t_exploredSet_cmp{});
 	
 	if (false == solvable(initial->s))
 		return ;
 	explored.insert(initial->s);
-	result = rbfsRec(initial, explored, bound);
-	solution = std::move(p.solution(result.leaf));
+	result = rbfsRec(initial.get(), explored, bound);
+	solution = std::move(result.actions);
 	qDebug() << "returning solution";
 	moves = solution.size();
 	qDebug() << "with " << moves << " moves";
@@ -137,15 +147,15 @@ NPuzzle::Agent::rbfsRec(
 	t_rbfsIterResult	result;
 	
 	if (p.goalTest(node->s))
-		return (t_rbfsIterResult){node->f, true, node};
+		return (t_rbfsIterResult){node->f, true, std::move(p.solution(node))};
 	
 	OpenSetNodeQueue	fringe{worse, t_frontierNodesEquals{}};
 	auto				actions = std::move(
-		usefulActions(
-			node,
-			std::move( p.actions(*(node->s)) )
-		)
-	);
+							usefulActions(
+								node,
+								std::move( p.actions(*(node->s)) )
+							)
+						);
 	for (const t_action& a: actions)
 	{
 		Node*	child = child_node(node, a);
@@ -165,31 +175,30 @@ NPuzzle::Agent::rbfsRec(
 	}
 	if (fringe.empty())
 		return (t_rbfsIterResult){
-			std::numeric_limits<int>::max(), false, nullptr
+			std::numeric_limits<int>::max(), false, Problem::Actions{}
 		};
+	std::unique_ptr<Node>	best;
 	while (true)
 	{
-		Node* best = fringe.top();
-		
+		best.reset(fringe.top());
 		fringe.pop();
+		
 		if (best->f > bound)
 		{
 			auto	cutoff = best->f;
-			delete best;
-			for (Node* leaf: fringe)
-				delete leaf;
-			return (t_rbfsIterResult){cutoff, false, nullptr};
+			return (t_rbfsIterResult){cutoff, false, Problem::Actions{}};
 		}
 		explored.insert(best->s);
 		Node*	alternative = fringe.top();
-		result = rbfsRec(best, explored, std::min(bound, alternative->f));
+		result = rbfsRec(best.get(), explored, std::min(bound, alternative->f));
 		if (result.solutionFound)
 			return result;
 		best->f = result.cutoff;
 		explored.erase(best->s);
-		fringe.push(best);
+		fringe.push(best.get());
+		best.release();
 	}
-	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, nullptr};
+	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, Problem::Actions{}};
 }
 
 void	NPuzzle::Agent::fillGrid(

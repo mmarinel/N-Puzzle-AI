@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 11:16:42 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 20:09:45 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 #include <functional>
 #include <limits>
 
-class t_frontierNodesEquals;
-
 namespace NPuzzle
 {
+
+class t_frontierNodesEquals;
 
 template <
 	typename T,
@@ -52,11 +52,21 @@ public:
 			::value_type
 		value_type;
 	
+	static unsigned long long		nbr_selected;
+
 	OpenSetQueue(const Compare& cmp, const EqualCmp& equals):
 		std::priority_queue<T*, Container, Compare>{cmp},
 		equals{equals},
 		comp{cmp}
 	{}
+
+	~OpenSetQueue()
+	{
+		for (auto el: this->c)
+		{
+			delete el;
+		}
+	}
 
 	std::pair<iterator, const T*>	find(const T* val)
 	{
@@ -85,10 +95,20 @@ public:
 	iterator	begin() noexcept{
 		return this->c.begin();
 	}
+
+	void	pop()
+	{
+		nbr_selected += 1;
+		std::priority_queue<T*, Container, Compare>::pop();
+	}
 };
+
+
+
 
 class	Agent: public QThread
 {
+	Q_OBJECT
 public:
 
 	typedef std::function<bool(const Node*, const Node*)>	ordering_criteria;
@@ -129,9 +149,9 @@ public:
 
 	typedef struct	s_rbfsIterResult
 	{
-		int		cutoff;
-		bool	solutionFound;
-		Node*	leaf;
+		int					cutoff;
+		bool				solutionFound;
+		Problem::Actions	actions;
 	}	t_rbfsIterResult;
 	
 private:
@@ -143,8 +163,11 @@ private:
 	const t_Iordering_func*	criteria;
 	ordering_criteria		worse;
 
+private slots:
 	void	aStar();
 	void	rbfs();
+
+private:
 	t_rbfsIterResult
 			rbfsRec(
 				Node* node,
@@ -184,6 +207,7 @@ public:
 		uint8_t	y_empty,
 		t_heuristic h
 	);
+	~Agent();
 	
 	void	run() override;
 

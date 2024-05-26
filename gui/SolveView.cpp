@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/25 19:47:37 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 23:06:51 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "UIState.hpp"
 #include "utils.h"
 #include "gui_utils.hpp"
+#include "Node.hpp"
 
 #include <QDialogButtonBox>
 
@@ -91,8 +92,20 @@ executing{false}
 	play_box->layout()->addWidget(play_btn);
 	play_box->layout()->addWidget(playforward_btn);
 
+	loading_lbl_box = new QWidget{};
+	loading_lbl_box->setLayout(new QHBoxLayout{});
+	loading_lbl = new QLabel{loading_lbl_box};
+	loading_lbl->setFixedWidth(WIDTH / 18);
+	loading_lbl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+	loading_lbl->setObjectName("loadingLabel");
+	gif = new QMovie(":/images/loading", QByteArray(), loading_lbl_box);
+	loading_lbl->setMovie(gif);
+	gif->start();
+	loading_lbl_box->layout()->addWidget(loading_lbl);
+	
 	btns_stacked->addWidget(solve_btn_box);
 	btns_stacked->addWidget(play_box);
+	btns_stacked->addWidget(loading_lbl_box);
 
 	// Creating output log widget
 	output_box = new QHBoxLayout{};
@@ -153,27 +166,18 @@ SolveView::~SolveView()
 }
 
 // SLOTS
-#include <ctime>
-void	SolveView::startSolving()
+
+void	SolveView::workDone()
 {
-	qDebug() << "SolveView::startSolving";
-	this->solving = true;
-
-	btns_stacked->setCurrentIndex(1);
-
-	agent = new NPuzzle::Agent(
-		BoardState::getInstance().board,
-		BoardState::getInstance().size,
-		BoardState::getInstance().x_empty,
-		BoardState::getInstance().y_empty,
-		UIState::getInstance().h
-	);
-	struct timespec	before;
-	clock_gettime(CLOCK_MONOTONIC, &before);
-	agent->run();
-	agent->wait();
-	struct timespec	after;
 	clock_gettime(CLOCK_MONOTONIC, &after);
+	btns_stacked->setCurrentIndex(1);
+	agent->wait();
+
+	// disconnecting all events coming from (now terminated) thread
+	QObject::disconnect(
+		agent, nullptr,
+		nullptr, nullptr
+	);
 
 	uint64_t	before_ns = (before.tv_sec * 1000000000) + before.tv_nsec;
 	uint64_t	after_ns = (after.tv_sec * 1000000000) + after.tv_nsec;
@@ -182,6 +186,7 @@ void	SolveView::startSolving()
 	int64_t		elapsed_ms = (elapsed_ns) / 1000000;
 				elapsed_ns = (elapsed_ns) % 1000000;
 
+	std::stringstream	ss;
 	if (agent->solution.empty())
 	{
 		auto color = output->textColor();
@@ -194,18 +199,54 @@ void	SolveView::startSolving()
 		auto color = output->textColor();
 		output->setTextColor(Qt::darkGreen);
 		output->append("Solvable");
+		ss << "with " << agent->moves << " moves" << std::endl << std::endl;
 		output->setTextColor(color);
 		QTimer::singleShot(
 			1000, std::bind(&SolveView::moveTile, this)
 		);
 	}
 	
-	std::stringstream	ss;
 	ss << "Elapsed time" << std::endl;
 	ss << "sec: " << elapsed_sec << std::endl;
 	ss << "ms: " << elapsed_ms << std::endl;
-	ss << "ns: " << elapsed_ns << std::endl;
+	ss << "ns: " << elapsed_ns << std::endl << std::endl;
+	ss << "Space Complexity: " << Node::max_instances << " nodes" << std::endl;
+	ss << "Time Complexity: " << NPuzzle::Agent::OpenSetNodeQueue::nbr_selected << " nodes" << std::endl;
+	ss << "Nodes instances at end of program: " << Node::instances << std::endl;
 	output->append(ss.str().c_str());
+}
+
+void	SolveView::startSolving()
+{
+	qDebug() << "SolveView::startSolving";
+	this->solving = true;
+
+	// TODO modify to make loading GIF appear
+	// btns_stacked->setCurrentIndex(1);
+	btns_stacked->setCurrentIndex(2);
+
+	agent = new NPuzzle::Agent(
+		BoardState::getInstance().board,
+		BoardState::getInstance().size,
+		BoardState::getInstance().x_empty,
+		BoardState::getInstance().y_empty,
+		UIState::getInstance().h
+	);
+	QObject::connect(
+		agent, &QThread::finished,
+		this, &SolveView::workDone
+	);
+	// thrad will be terminated and memory will be reclaimed by the OS
+	// QObject::connect(
+	// 	qApp, &QCoreApplication::aboutToQuit,
+	// 	[this](){
+	// 		agent->terminate();
+	// 		agent->wait();
+	// 		delete agent;
+	// 	}
+	// );
+	clock_gettime(CLOCK_MONOTONIC, &before);
+	agent->start();
 	
 	//TODO
 	//TODO 1. disable inappropriate buttons &&  Add Loading gif

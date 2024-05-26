@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 10:06:05 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/18 16:48:36 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 17:46:48 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ public:
 	t_action		a;
 	int				pCost;
 	int				f;
+	static unsigned long long
+					instances;
+	static unsigned long long
+					max_instances;
 
 			/**
 			 * @brief Creates a root node without state.
