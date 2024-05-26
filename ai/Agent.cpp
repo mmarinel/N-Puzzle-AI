@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/25 23:44:56 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 11:16:32 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ NPuzzle::Agent::Agent(
 		uint8_t	y_empty,
 		t_heuristic h
 )
-: p{}, solution{}, criteria(nullptr), moves{0}
+: p{}, criteria(nullptr), solution{}, moves{0}
 {
 	// setting up Problem
 		// initial state
@@ -28,10 +28,10 @@ NPuzzle::Agent::Agent(
 	p.initial.i_empty = y_empty;
 	p.initial.j_empty = x_empty;
 	p.initial.cols.reserve(size);
-	for (int j = 0; j < size; j++)
+	for (size_t j = 0; j < size; j++)
 	{
 		p.initial.cols[j] = 0;
-		for (int i = 0; i < size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
 			p.initial.cols[j] += (
 				static_cast<uint64_t>(p.initial.configuration[i][j]) << (i*5)//(i*8)
@@ -195,7 +195,7 @@ NPuzzle::Agent::rbfsRec(
 void	NPuzzle::Agent::fillGrid(
 	std::vector<std::vector<uint8_t>>& grid,
 	int size,
-	size_t offset,
+	int offset,
 	int nbr
 )
 {
@@ -223,7 +223,7 @@ void	NPuzzle::Agent::fillGrid(
 		grid[i][size + offset - 1] = nbr++;
 	}
 	//bottom row
-	for (j = (size + offset - 1)	- 1;		j >= static_cast<int>(0 + offset);	j--)
+	for (j = (size + offset - 1)	- 1;		j >= (0 + offset);	j--)
 	{
 		grid[size + offset - 1][j] = nbr++;
 	}
@@ -236,7 +236,7 @@ void	NPuzzle::Agent::fillGrid(
 		return ;
 	}
 	//left column
-	for (i = (size + offset - 1)	- 1;		i >= static_cast<int>(0 + offset)	+ 1;	i--)
+	for (i = (size + offset - 1)	- 1;		i >= (0 + offset)	+ 1;	i--)
 	{
 		grid[i][0 + offset] = nbr++;
 	}
@@ -253,7 +253,7 @@ void	NPuzzle::Agent::setAsForwardGoal(
 
 	grid.clear();
 	grid.resize(size);
-	for (int i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		grid[i].resize(size);
 	}
 
@@ -262,12 +262,12 @@ void	NPuzzle::Agent::setAsForwardGoal(
 	
 	// counting inversions at goal
 	p.inversions_at_goal = 0;
-	int	k, i, j;
+	size_t	k, i, j;
 		// counting inversion for the k-th element...
 	for (k = 0; k < size*size; k++)
 	{
-		int		cur_i = k / size;
-		int		cur_j = k % size;
+		size_t		cur_i = k / size;
+		size_t		cur_j = k % size;
 		
 		if (0 == grid[cur_i][cur_j])
 			continue ;
@@ -295,8 +295,8 @@ void	NPuzzle::Agent::setAsForwardGoal(
 
 
 	// filling map
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (size_t i = 0; i < size; i++) {
+		for (size_t j = 0; j < size; j++) {
 			state[grid[i][j]] = std::make_pair(i, j);
 		}
 	}

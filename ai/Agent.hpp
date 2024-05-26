@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/25 23:13:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 11:16:42 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ private:
 	void	fillGrid(
 		std::vector<std::vector<uint8_t>>& grid,
 		int size,
-		size_t offset,
+		int offset,
 		int nbr
 	);
 	bool	solvable(State* initial);

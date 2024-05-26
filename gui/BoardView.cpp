@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/11 12:08:41 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 00:04:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ void	BoardView::reset()
 }
 
 void	BoardView::paintEvent(QPaintEvent* event)
-{qDebug() << "BoardView::paintEvent(QPaintEvent* event)";
+{
+	Q_UNUSED(event);
 	bool	empty;
 	
 	for (int i = 0; i < status.size; i++)

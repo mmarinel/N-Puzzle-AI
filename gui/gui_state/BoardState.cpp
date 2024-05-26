@@ -6,13 +6,13 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:59:35 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/25 18:35:54 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 11:05:16 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BoardState.hpp"
 
-BoardState::BoardState(): board{}, size(0), x_empty(-1), y_empty(-1)
+BoardState::BoardState(): size(0), x_empty(-1), y_empty(-1), board{}
 {
 	setSize(3);
 }

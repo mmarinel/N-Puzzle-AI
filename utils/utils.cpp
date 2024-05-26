@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/11 11:15:04 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 11:09:16 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ bool	NPuzzle::parse_file(QString filepath)
 		}
 		// parsing next row
 		// invalid row count
-		if (size != next_row.length())
+		if (size != static_cast<size_t>(next_row.length()))
 			return false;
 		for (QString nbr: next_row)
 		{
@@ -84,7 +84,7 @@ bool	NPuzzle::parse_file(QString filepath)
 				return false;
 			// already parsed or not within boundaries
 			if (
-				false == (0 <= tile && tile < size*size) ||
+				false == (tile < size*size) ||
 				BoardState::getInstance().contains(
 					tile, parsed_elements_count
 				)

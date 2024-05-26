@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/05 11:26:18 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 00:05:00 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <QSpacerItem>
 #include <QFileDialog>
 #include <QDebug>
+#include <QtGlobal>
 
 MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 {
@@ -163,6 +164,7 @@ void	MenuView::setRandomGeneratedSize(int n)
 
 void	MenuView::setHeuristic(int index)
 {
+	Q_UNUSED(index);
 	UIState::getInstance().h = NPuzzle::hfromString.at(
 		choose_heuristic->itemText(
 			choose_heuristic->currentIndex()
