@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/04 20:23:28 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 12:13:54 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,24 @@ void	Window::forward()
 			d.exec();
 			return ;
 		}
+
+		auto*	menu_view = static_cast<MenuView*>(
+			static_cast<Page*>(
+				this->content->currentWidget()
+			)->layout()
+		);
+		QString		msg;
+		if (false == menu_view->canGoForward(msg))
+		{
+			CustomDialog	d(
+				msg,
+				QDialogButtonBox::Cancel,
+				this
+			);
+			d.exec();
+			return ;
+		}
+
 		if (nullptr != notice)
 		{
 			//? Display the notice only the first time

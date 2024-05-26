@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/23 15:07:59 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/26 14:37:24 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ public:
 	State		initial;
 	std::map<uint8_t, std::pair<uint8_t, uint8_t> >
 				goal;//TODO make it const?
-	int			inversions_at_goal;//TODO move someplace elese ?
-	int			x_empty_at_goal;//TODO move someplace elese ?
-	int			y_empty_at_goal;//TODO move someplace elese ?
+	int			inversions_at_goal;
+	int			x_empty_at_goal;
+	int			y_empty_at_goal;
 
 	/**
 	 * @brief in state, empty tile is 0

@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 00:05:00 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 12:16:52 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,4 +170,20 @@ void	MenuView::setHeuristic(int index)
 			choose_heuristic->currentIndex()
 		).toStdString()
 	);
+}
+
+bool	MenuView::canGoForward(QString& msg)
+{
+	auto&	ui_state = UIState::getInstance();
+	auto&	board_state = BoardState::getInstance();
+	
+	if (
+		NPuzzle::t_heuristic::CORNER_TILES == ui_state.h &&
+		3 == board_state.size
+	)
+	{
+		msg = "Corner Tiles heuristic only available for sizes greater than 3";
+		return false;
+	}
+	return true;
 }

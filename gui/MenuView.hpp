@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:56:45 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/20 12:22:16 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 12:08:56 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ public slots:
 public:
 	MenuView(QWidget* parent=nullptr);
 	~MenuView();
+
+	bool	canGoForward(QString& msg);
 
 	friend class Window;
 };

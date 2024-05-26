@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/25 15:05:17 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/26 12:17:46 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 								)
 									adjustment += 2;//for every pair we need to count two moves,
 													//one put one of the tiles out and then back in
-													//we split the count on the two tiles two avoid re-counting
+													//We count each pair once since we always check
+													//against the tiles next to current
 							}
 						}
 						else if (goalPosition.second == j)//Counting inversions on column
@@ -208,14 +209,13 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 			}
 			manhattan_score = t_manhattan_score::getInstance()(n);
 		}
-		// manhattan_score = t_manhattan_score::getInstance()(n);
 		const_cast<Node*>(n)->s->hLinearConflict = manhattan_score + adjustment;
 		const_cast<Node*>(n)->s->hCost = n->s->hLinearConflict;
 		score = n->s->hLinearConflict;
 	}
 	return score;
 }
-//TODO ricordati che non è corretta per il caso 3x3 (forse)
+
 uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 {
 	int		score;
