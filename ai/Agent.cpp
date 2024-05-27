@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 23:10:20 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 20:54:51 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,10 +131,13 @@ void	NPuzzle::Agent::rbfs()
 		return ;
 	explored.insert(initial->s);
 	result = rbfsRec(initial.get(), explored, bound);
+	if (result.failure)
+		return ;
 	solution = std::move(result.actions);
 	qDebug() << "returning solution";
 	moves = solution.size();
 	qDebug() << "with " << moves << " moves";
+	emit workDone();
 }
 
 NPuzzle::Agent::t_rbfsIterResult
@@ -147,7 +150,7 @@ NPuzzle::Agent::rbfsRec(
 	t_rbfsIterResult	result;
 	
 	if (p.goalTest(node->s))
-		return (t_rbfsIterResult){node->f, true, std::move(p.solution(node))};
+		return (t_rbfsIterResult){node->f, true, std::move(p.solution(node)), false};
 	
 	OpenSetNodeQueue	fringe{worse, t_frontierNodesEquals{}};
 	auto				actions = std::move(
@@ -175,18 +178,22 @@ NPuzzle::Agent::rbfsRec(
 	}
 	if (fringe.empty())
 		return (t_rbfsIterResult){
-			std::numeric_limits<int>::max(), false, Problem::Actions{}
+			std::numeric_limits<int>::max(), false, Problem::Actions{}, false
 		};
 	std::unique_ptr<Node>	best;
 	while (true)
 	{
+		// TODO valutare se spostarlo nel successivo if perché calcolarlo ad ogni iterazione è costoso
+		// TODO (anche se più sicuro)
+		if (this->isInterruptionRequested())
+			return (t_rbfsIterResult){bound, false, Problem::Actions{}, true};
 		best.reset(fringe.top());
 		fringe.pop();
 		
 		if (best->f > bound)
 		{
 			auto	cutoff = best->f;
-			return (t_rbfsIterResult){cutoff, false, Problem::Actions{}};
+			return (t_rbfsIterResult){cutoff, false, Problem::Actions{}, false};
 		}
 		explored.insert(best->s);
 		Node*	alternative = fringe.top();
@@ -198,7 +205,7 @@ NPuzzle::Agent::rbfsRec(
 		fringe.push(best.get());
 		best.release();
 	}
-	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, Problem::Actions{}};
+	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, Problem::Actions{}, false};
 }
 
 void	NPuzzle::Agent::fillGrid(

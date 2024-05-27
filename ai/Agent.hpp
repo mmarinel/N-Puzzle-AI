@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 20:09:45 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 20:30:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ public:
 		int					cutoff;
 		bool				solutionFound;
 		Problem::Actions	actions;
+		bool				failure;
 	}	t_rbfsIterResult;
 	
 private:
@@ -213,5 +214,8 @@ public:
 
 	std::stack<t_action>	solution;
 	int						moves;
+
+signals:
+	void	workDone();
 };
 }

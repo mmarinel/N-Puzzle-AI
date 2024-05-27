@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:59:35 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 11:05:16 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 10:09:17 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,12 @@ void			BoardState::swap(int _x1, int _y1, int _x2, int _y2)
 	Tile	backup = board[_y1][_x1];
 	board[_y1][_x1] = board[_x2][_y2];
 	board[_x2][_y2] = backup;
+}
+
+void		BoardState::reset()
+{
+	size = 0;
+	x_empty = -1;
+	y_empty = -1;
+	board.clear();
 }

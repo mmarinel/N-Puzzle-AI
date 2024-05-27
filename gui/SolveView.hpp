@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 22:52:25 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 11:56:01 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <BoardView.hpp>
 #include <QTextEdit>
 #include <QMovie>
+#include <QTimer>
 
 #include "Content.hpp"
 #include "Agent.hpp"
@@ -57,6 +58,7 @@ private:
 	NPuzzle::Agent*	agent;
 	struct timespec	before;
 	struct timespec	after;
+	QTimer			timer;
 
 	void			moveTile();
 public:

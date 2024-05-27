@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 12:16:52 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 19:52:34 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,4 +186,17 @@ bool	MenuView::canGoForward(QString& msg)
 		return false;
 	}
 	return true;
+}
+
+void	MenuView::reset()
+{
+	choose_file->setText(CHOOSE_FILE_TEXT);
+	choose_file->setToolTip("");
+	if (choose_random->isChecked())
+	{
+		choose_random->setChecked(false);
+		setAtRandomFile();
+	}
+	choose_heuristic->setPlaceholderText("--Select Heuristic--");
+	choose_heuristic->setCurrentIndex(-1);
 }

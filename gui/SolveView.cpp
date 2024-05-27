@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 23:06:51 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 21:21:37 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@
 #include "Node.hpp"
 
 #include <QDialogButtonBox>
-
 #include <QApplication>
-//? EXPERIMENT FOR AI ACTUATION
-#include <QTimer>
 
 #include <functional>
 #include <sstream>
@@ -138,26 +135,24 @@ executing{false}
 		this->play_btn, &QPushButton::clicked,
 		this, &SolveView::play_stop
 	);
-
-	//? EXPERIMENT FOR AI ACTUATION
-	// QTimer::singleShot(
-	// 	3500, [this](){
-	// 		static_cast<QLabel*>(
-	// 			this->board->grid->itemAtPosition(6, 7)->widget()
-	// 		)->setFocus(Qt::FocusReason::ActiveWindowFocusReason);
-	// 		BoardState::getInstance().swap(7,6,7,7);
-	// 		QTimer::singleShot(
-	// 			2000, [this](){
-	// 				static_cast<QLabel*>(
-	// 					this->board->grid->itemAtPosition(6, 7)->widget()
-	// 				)->setFocus(Qt::FocusReason::NoFocusReason);
-	// 				static_cast<QLabel*>(
-	// 					this->board->grid->itemAtPosition(6, 6)->widget()
-	// 				)->setFocus(Qt::FocusReason::ActiveWindowFocusReason);
-	// 			}
-	// 		);
-	// 	}
-	// );
+	QObject::connect(
+		qApp, &QCoreApplication::aboutToQuit,
+		[this](){
+			if (agent)
+			{
+				agent->requestInterruption();
+				// agent->terminate();
+				agent->wait();
+				delete agent;
+				agent = nullptr;
+			}
+			timer.stop();
+			QObject::disconnect(
+				&timer, nullptr,
+				nullptr, nullptr
+			);
+		}
+	);
 }
 
 SolveView::~SolveView()
@@ -169,16 +164,12 @@ SolveView::~SolveView()
 
 void	SolveView::workDone()
 {
+	//Calculating Time
 	clock_gettime(CLOCK_MONOTONIC, &after);
 	btns_stacked->setCurrentIndex(1);
-	agent->wait();
+	agent->wait(QDeadlineTimer::Forever);
 
-	// disconnecting all events coming from (now terminated) thread
-	QObject::disconnect(
-		agent, nullptr,
-		nullptr, nullptr
-	);
-
+	//Calculating Metrics
 	uint64_t	before_ns = (before.tv_sec * 1000000000) + before.tv_nsec;
 	uint64_t	after_ns = (after.tv_sec * 1000000000) + after.tv_nsec;
 	int64_t		elapsed_sec = (after_ns - before_ns) / 1000000000;
@@ -201,9 +192,12 @@ void	SolveView::workDone()
 		output->append("Solvable");
 		ss << "with " << agent->moves << " moves" << std::endl << std::endl;
 		output->setTextColor(color);
-		QTimer::singleShot(
-			1000, std::bind(&SolveView::moveTile, this)
+		QObject::connect(
+			&timer, &QTimer::timeout,
+			this, &SolveView::moveTile
 		);
+		timer.setInterval(1000);
+		timer.start();
 	}
 	
 	ss << "Elapsed time" << std::endl;
@@ -214,6 +208,12 @@ void	SolveView::workDone()
 	ss << "Time Complexity: " << NPuzzle::Agent::OpenSetNodeQueue::nbr_selected << " nodes" << std::endl;
 	ss << "Nodes instances at end of program: " << Node::instances << std::endl;
 	output->append(ss.str().c_str());
+
+	// deleting the agent//TODO lo posso fare solo quando aggiungo
+	//TODO i 2 stack nella classe SolveView, mediante cui sarà possibile
+	//TODO implementare le funzionalità forward/backward 
+	// delete agent;
+	// agent = nullptr;
 }
 
 void	SolveView::startSolving()
@@ -233,18 +233,9 @@ void	SolveView::startSolving()
 		UIState::getInstance().h
 	);
 	QObject::connect(
-		agent, &QThread::finished,
+		agent, &NPuzzle::Agent::workDone,
 		this, &SolveView::workDone
 	);
-	// thrad will be terminated and memory will be reclaimed by the OS
-	// QObject::connect(
-	// 	qApp, &QCoreApplication::aboutToQuit,
-	// 	[this](){
-	// 		agent->terminate();
-	// 		agent->wait();
-	// 		delete agent;
-	// 	}
-	// );
 	clock_gettime(CLOCK_MONOTONIC, &before);
 	agent->start();
 	
@@ -268,6 +259,11 @@ void			SolveView::moveTile()
 	if (agent->solution.empty())
 	{
 		qDebug() << agent->moves << " moves";
+		timer.stop();
+		QObject::disconnect(
+			&timer, nullptr,
+			nullptr, nullptr
+		);
 		return ;
 	}
 	auto		a = agent->solution.top();
@@ -319,9 +315,6 @@ void			SolveView::moveTile()
 		tile = 0;
 	}
 	this->board->repaint();
-	QTimer::singleShot(
-		1000, std::bind(&SolveView::moveTile, this)
-	);
 }
 
 void	SolveView::play_stop()
@@ -355,10 +348,25 @@ bool	SolveView::abort()
 		return false ;
 
 	//TODO handle reset of AI state? && BoardState
-	
+	if (agent)
+	{
+		agent->requestInterruption();
+		agent->wait();
+		delete agent;
+		agent = nullptr;
+	}
+
+	timer.stop();
+	QObject::disconnect(
+		&timer, nullptr,
+		nullptr, nullptr
+	);
 
 	this->solving = false;
 	this->executing = false;
+
+	// Resetting line edit
+	output->clear();
 
 	//Resetting solve button
 	btns_stacked->setCurrentIndex(0);
@@ -371,7 +379,10 @@ bool	SolveView::abort()
 	//resetting boards
 	second_window->setVisible(false);
 	board->setVisible(false);
-
+	//Resetting state
+	BoardState::getInstance().reset();
+	UIState::getInstance().reset();
+	
 	return true;
 }
 

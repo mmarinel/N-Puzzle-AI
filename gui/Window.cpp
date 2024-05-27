@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 19:35:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 12:13:54 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 20:45:29 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void	Window::forward()
 			return ;
 		}
 
+		// Check consistency of input
 		auto*	menu_view = static_cast<MenuView*>(
 			static_cast<Page*>(
 				this->content->currentWidget()
@@ -147,6 +148,9 @@ void	Window::backward()
 		if (false == aborted)
 			return ;
 		// Changing page and status
+		static_cast<MenuView*>(
+			menu_page->layout()
+		)->reset();
 		this->content->setCurrentIndex(
 			menu_page->index
 		);

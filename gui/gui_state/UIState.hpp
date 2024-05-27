@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 19:42:39 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/25 20:08:56 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/27 09:53:21 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,5 @@ public:
 						
 						UIState(const UIState&) = delete;
 	UIState&			operator=(const UIState&) = delete;
+	void				reset();
 };
