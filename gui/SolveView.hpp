@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 11:56:01 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:11:09 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,33 +34,34 @@ class SolveView: public QVBoxLayout
 {
 	Q_OBJECT
 private:
-	BoardView*		board;
-	QWidget*		second_window;
-	BoardView*		new_win_board;
-	QTextEdit*		output;
-	QPushButton*	solve_btn;
-	QPushButton*	playback_btn;
-	QPushButton*	play_btn;
-	QPushButton*	playforward_btn;
-	QLabel*			loading_lbl;
-	QMovie*			gif;
+	BoardView*			board;
+	QWidget*			second_window;
+	BoardView*			new_win_board;
+	QTextEdit*			output;
+	QPushButton*		solve_btn;
+	QPushButton*		playback_btn;
+	QPushButton*		play_btn;
+	QPushButton*		playforward_btn;
+	QLabel*				loading_lbl;
+	QMovie*				gif;
 
-	bool			solving;
-	bool			executing;
+	bool				solving;
+	bool				executing;
 
-	QHBoxLayout*	board_box;
-	QHBoxLayout*	output_box;
-	QStackedWidget*	btns_stacked;
-	QWidget*		solve_btn_box;
-	QWidget*		play_box;
-	QWidget*		loading_lbl_box;
+	QHBoxLayout*		board_box;
+	QHBoxLayout*		output_box;
+	QStackedWidget*		btns_stacked;
+	QWidget*			solve_btn_box;
+	QWidget*			play_box;
+	QWidget*			loading_lbl_box;
 
-	NPuzzle::Agent*	agent;
-	struct timespec	before;
-	struct timespec	after;
-	QTimer			timer;
+	NPuzzle::Agent*		agent;
+	struct timespec		before;
+	struct timespec		after;
+	QTimer				timer;
+	Problem::Actions	doing;
+	Problem::Actions	undoing;
 
-	void			moveTile();
 public:
 	SolveView(QWidget* parent=nullptr);
 	~SolveView();
@@ -69,7 +70,11 @@ public:
 	void			start();
 	void			close();
 public slots:
-	void	startSolving();
-	void	play_stop();
-	void	workDone();
+	void			moveTile(
+						Problem::Actions& pop_queue,
+						Problem::Actions& push_queue
+					);
+	void			startSolving();
+	void			play_stop();
+	void			workDone();
 };

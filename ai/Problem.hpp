@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 15:07:55 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:31:24 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ public:
 	bool	goalTest(const State* s) const;
 	Actions
 			solution(const Node* n) const;
+	static t_action
+			inverseAction(const t_action& a);
 	
 				Problem();
 				Problem(const Problem& p) = delete;

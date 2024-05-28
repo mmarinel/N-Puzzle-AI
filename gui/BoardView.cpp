@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 00:04:20 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:36:01 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,18 +89,11 @@ void	BoardView::paintEvent(QPaintEvent* event)
 			tile->setProperty("Empty", empty);
 		}
 	}
-	qDebug()
-		<< "ui_status.x_empty, ui_status.y_empty: "
-		<< ui_status.x_empty << " " << ui_status.y_empty;
-	qDebug()
-		<< "status.x_empty, status.y_empty: "
-		<< status.x_empty << " " << status.y_empty;
 	if (
 		ui_status.x_empty != status.x_empty ||
 		ui_status.y_empty != status.y_empty
 	)
 	{//Empty tile moved
-		qDebug() << "Updating stylesheet";
 		qApp->setStyleSheet("");
 		NPuzzle::addStyleSheet(*qApp);
 		ui_status.x_empty = status.x_empty;

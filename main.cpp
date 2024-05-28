@@ -6,22 +6,15 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/20 22:00:31 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:43:27 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <QApplication>
 #include <QFontDatabase>
-#include <QDebug>
 
 #include "Window.hpp"
 #include "gui_utils.hpp"
-
-#if defined(CONFIG_ARCH_SUPPORTS_INT128) && defined(__SIZEOF_INT128__)
-#define IS_DEF 1
-#else
-#define IS_DEF 0
-#endif
 
 int main(int argc, char const* argv[])
 {
@@ -29,10 +22,6 @@ int main(int argc, char const* argv[])
 		argc, const_cast<char**>(argv)
 	};
 
-	qDebug() << "128-bit integers supported: " << IS_DEF;
-	qDebug() << "sizeof(uint64_t): " << sizeof(uint64_t);
-	qDebug() << "sizeof(__uint128_t): " << sizeof(__uint128_t);
-	qDebug() << "sizeof(int): " << sizeof(int);
 	// Set style
 	app.setWindowIcon(QIcon(":/images/icon"));
 

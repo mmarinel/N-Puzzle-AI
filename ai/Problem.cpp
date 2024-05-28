@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 15:08:19 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:30:15 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,4 +199,34 @@ std::string	actionToString(const t_action& a)
 		return "NONE";
 		break;
 	}
+}
+
+t_action
+Problem::inverseAction(const t_action& a)
+{
+	t_action	inverse_a = t_action::NONE;
+	
+	switch (a)
+	{
+	case t_action::UP:
+		inverse_a = t_action::DOWN;
+		break;
+
+	case t_action::DOWN:
+		inverse_a = t_action::UP;
+		break;
+
+	case t_action::LEFT:
+		inverse_a = t_action::RIGHT;
+		break;
+	
+	case t_action::RIGHT:
+		inverse_a = t_action::LEFT;
+		break;
+	
+	default:
+		break;
+	}
+
+	return inverse_a;
 }

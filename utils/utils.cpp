@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 11:09:16 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:44:29 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 
 bool	NPuzzle::parse_file(QString filepath)
 {
-	qDebug() << "NPuzzle::parse_file(QString filepath) --- START";
 	QFile		file(filepath);
 	QString		line;
 	QStringList	parts;
@@ -109,14 +108,7 @@ void	NPuzzle::generate_board()
 {
 	auto				size = BoardState::getInstance().size;
 	std::vector<int>	v(size*size);
-	qDebug() << "Random Generated Size: " << size;
 
-	qDebug() << "Vector before shuffling";
-	qDebug() << "Vector size: " << v.size() ;
-	for (auto it = v.begin(); it != v.end(); it++)
-	{
-		qDebug() << *it << " ";
-	}
 	std::iota(v.begin(), v.end(), 0);
 	std::random_shuffle(v.begin(), v.end());
 
@@ -125,7 +117,6 @@ void	NPuzzle::generate_board()
 	{
 		for (int j = 0; j < size; j++)
 		{
-			qDebug() << "generating number...";
 			BoardState::getInstance().board[i][j] = *it;
 			if (BoardState::getInstance().board[i][j].isEmpty())
 			{

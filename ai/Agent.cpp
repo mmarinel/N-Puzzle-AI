@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 20:54:51 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 20:31:39 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,29 +373,7 @@ NPuzzle::Agent::usefulActions(
 	std::vector<t_action>&& actions
 )
 {
-	t_action	inverse_a = t_action::NONE;
-
-	switch (node->a)
-	{
-	case t_action::UP:
-		inverse_a = t_action::DOWN;
-		break;
-
-	case t_action::DOWN:
-		inverse_a = t_action::UP;
-		break;
-
-	case t_action::LEFT:
-		inverse_a = t_action::RIGHT;
-		break;
-	
-	case t_action::RIGHT:
-		inverse_a = t_action::LEFT;
-		break;
-	
-	default:
-		break;
-	}
+	t_action	inverse_a = Problem::inverseAction(node->a);
 
 	for (uint8_t i = 0; i < actions.size(); i++)
 	{

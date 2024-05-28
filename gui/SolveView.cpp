@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 21:21:37 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/28 21:04:40 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@
 
 SolveView::SolveView(QWidget* parent): QVBoxLayout{parent},
 solving{false},
-executing{false}
+executing{false},
+doing{},
+undoing{}
 {
 	// Creating widgets
 	
@@ -132,8 +134,22 @@ executing{false}
 		this, &SolveView::startSolving
 	);
 	QObject::connect(
+		this->playback_btn, &QPushButton::clicked,
+		[this]() -> void {
+			executing = false;
+			moveTile(undoing, doing);
+		}
+	);
+	QObject::connect(
 		this->play_btn, &QPushButton::clicked,
 		this, &SolveView::play_stop
+	);
+	QObject::connect(
+		this->playforward_btn, &QPushButton::clicked,
+		[this]() -> void {
+			executing = false;
+			moveTile(doing, undoing);
+		}
 	);
 	QObject::connect(
 		qApp, &QCoreApplication::aboutToQuit,
@@ -192,12 +208,6 @@ void	SolveView::workDone()
 		output->append("Solvable");
 		ss << "with " << agent->moves << " moves" << std::endl << std::endl;
 		output->setTextColor(color);
-		QObject::connect(
-			&timer, &QTimer::timeout,
-			this, &SolveView::moveTile
-		);
-		timer.setInterval(1000);
-		timer.start();
 	}
 	
 	ss << "Elapsed time" << std::endl;
@@ -209,20 +219,19 @@ void	SolveView::workDone()
 	ss << "Nodes instances at end of program: " << Node::instances << std::endl;
 	output->append(ss.str().c_str());
 
-	// deleting the agent//TODO lo posso fare solo quando aggiungo
-	//TODO i 2 stack nella classe SolveView, mediante cui sarà possibile
-	//TODO implementare le funzionalità forward/backward 
-	// delete agent;
-	// agent = nullptr;
+	// deleting the agent
+	QObject::disconnect(
+		agent, nullptr,
+		nullptr, nullptr
+	);
+	this->doing = std::move(agent->solution);
+	delete agent;
+	agent = nullptr;
 }
 
 void	SolveView::startSolving()
 {
-	qDebug() << "SolveView::startSolving";
 	this->solving = true;
-
-	// TODO modify to make loading GIF appear
-	// btns_stacked->setCurrentIndex(1);
 	btns_stacked->setCurrentIndex(2);
 
 	agent = new NPuzzle::Agent(
@@ -253,26 +262,31 @@ void	SolveView::startSolving()
 	// );
 }
 
-void			SolveView::moveTile()
+void			SolveView::moveTile(
+		Problem::Actions& pop_queue,
+		Problem::Actions& push_queue
+)
 {
-	qDebug() << "Moving Tile";
-	if (agent->solution.empty())
+	if (pop_queue.empty())
 	{
-		qDebug() << agent->moves << " moves";
-		timer.stop();
-		QObject::disconnect(
-			&timer, nullptr,
-			nullptr, nullptr
-		);
+		if (executing)
+		{
+			timer.stop();
+			QObject::disconnect(
+				&timer, nullptr,
+				nullptr, nullptr
+			);
+			play_stop();
+		}
 		return ;
 	}
-	auto		a = agent->solution.top();
-	qDebug() << "action: " << actionToString(a).c_str() ;
 	BoardState&	state = BoardState::getInstance();
 	Tile&		empty_tile = (
 			state.board[state.y_empty][state.x_empty]
 	);
-	agent->solution.pop();
+	t_action		a = pop_queue.top();
+	pop_queue.pop();
+	push_queue.push(Problem::inverseAction(a));
 	
 	if ( t_action::UP == a )
 	{
@@ -324,6 +338,11 @@ void	SolveView::play_stop()
 		this->playforward_btn->setDisabled(false);
 		this->playback_btn->setDisabled(false);
 		this->play_btn->setText(">");
+		QObject::disconnect(
+			&timer, nullptr,
+			nullptr, nullptr
+		);
+		timer.stop();
 		executing = false;
 	}
 	else
@@ -331,6 +350,14 @@ void	SolveView::play_stop()
 		this->playforward_btn->setDisabled(true);
 		this->playback_btn->setDisabled(true);
 		this->play_btn->setText("||");
+		QObject::connect(
+			&timer, &QTimer::timeout,
+			[this]() -> void {
+				moveTile(doing, undoing);
+			}
+		);
+		timer.setInterval(500);
+		timer.start();
 		executing = true;
 	}
 }
@@ -362,8 +389,13 @@ bool	SolveView::abort()
 		nullptr, nullptr
 	);
 
+	//Resetting variables
 	this->solving = false;
 	this->executing = false;
+	while (false == doing.empty())
+		doing.pop();
+	while (false == undoing.empty())
+		undoing.pop();
 
 	// Resetting line edit
 	output->clear();
