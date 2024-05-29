@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 21:04:40 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/29 21:58:16 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,8 +180,9 @@ SolveView::~SolveView()
 
 void	SolveView::workDone()
 {
-	//Calculating Time
+		//Calculating Time
 	clock_gettime(CLOCK_MONOTONIC, &after);
+		// replacing loading animation with interactive buttons
 	btns_stacked->setCurrentIndex(1);
 	agent->wait(QDeadlineTimer::Forever);
 
@@ -200,6 +201,10 @@ void	SolveView::workDone()
 		output->setTextColor(Qt::darkRed);
 		output->append("Not Solvable");
 		output->setTextColor(color);
+		ss << "inversions at goal state: " << agent->problem().inversions_at_goal << std::endl;
+		ss << "inversions at initial state: " << agent->problem().inversions_at_initial << std::endl;
+		ss << "(read README.md NPuzzle chapter to understand why it is unsolvable)" << std::endl;
+		ss << std::endl;
 	}
 	else
 	{

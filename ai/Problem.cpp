@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:30:15 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/29 20:33:58 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,29 +178,6 @@ Problem::solution(const Node* n) const
 	return sol;
 }
 
-std::string	actionToString(const t_action& a)
-{
-	switch (a)
-	{
-	case t_action::UP :
-		return "UP";
-		break;
-	case t_action::DOWN :
-		return "DOWN";
-		break;
-	case t_action::LEFT :
-		return "LEFT";
-		break;
-	case t_action::RIGHT :
-		return "RIGHT";
-		break;
-	
-	default:
-		return "NONE";
-		break;
-	}
-}
-
 t_action
 Problem::inverseAction(const t_action& a)
 {
@@ -229,4 +206,41 @@ Problem::inverseAction(const t_action& a)
 	}
 
 	return inverse_a;
+}
+
+std::pair<int, Problem::t_polarity>
+Problem::polarity(const State::t_configuration& conf, int size)
+{
+	int				inversions = 0;
+	int				firstNext_i;
+	int				firstNext_j;
+	int				current_i;
+	int				current_j;
+	int				k, i, j;
+
+	for (k = 0; k < size * size; k++) {
+		// Taking coordinate for the k-th element in the gird
+		current_i = k / size;
+		current_j = k % size;
+		firstNext_i = (k + 1) / size;
+		firstNext_j = (k + 1) % size;
+		
+		if (0 == conf[current_i][current_j])
+			continue ;
+		j = firstNext_j;
+		for (i = firstNext_i; i < size; i++) {
+			for (; j < size; j++) {
+				if (0 == conf[i][j])
+					continue ;
+				inversions += (conf[current_i][current_j] > conf[i][j]);
+			}
+			j = 0;
+		}
+	}
+	return std::make_pair(
+		inversions,
+		inversions % 2 == 0
+			? t_polarity::EVEN
+			: t_polarity::ODD
+	);
 }

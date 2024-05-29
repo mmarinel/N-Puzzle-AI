@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:31:24 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/29 20:33:40 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ typedef enum e_action
 	LEFT,
 	NONE,
 }	t_action;
-
-std::string	actionToString(const t_action& a);
 
 class State
 {
@@ -64,11 +62,21 @@ class Problem
 {
 public:
 	typedef std::stack<t_action>	Actions;
+
+	typedef enum e_polarity
+	{
+		EVEN,
+		ODD
+	}	t_polarity;
+	
 public:
 	State		initial;
+	int			inversions_at_initial;
+	t_polarity	polarity_at_initial;
 	std::map<uint8_t, std::pair<uint8_t, uint8_t> >
 				goal;//TODO make it const?
 	int			inversions_at_goal;
+	t_polarity	polarity_at_goal;
 	int			x_empty_at_goal;
 	int			y_empty_at_goal;
 
@@ -78,16 +86,27 @@ public:
 	 * @return const std::vector<t_action> 
 	 */
 	std::vector<t_action>
-			actions(const State& s) const;
+				actions(const State& s) const;
 	State*
-			result(const State& s, t_action a) const;
-	// int	step_cost(t_state s1, t_state s2) const;
-	bool	goalTest(const State* s) const;
+				result(const State& s, t_action a) const;
+	// int		step_cost(t_state s1, t_state s2) const;
+	bool		goalTest(const State* s) const;
 	Actions
-			solution(const Node* n) const;
+				solution(const Node* n) const;
 	static t_action
-			inverseAction(const t_action& a);
-	
+				inverseAction(const t_action& a);
+	/**
+	 * @brief 
+	 * 
+	 * @param state 
+	 * @return n° inversions + polarity 
+	 */
+	static std::pair<int, t_polarity>
+				polarity(
+					const State::t_configuration& conf,
+					int size
+				);
+
 				Problem();
 				Problem(const Problem& p) = delete;
 				Problem(Problem&& p) = delete;

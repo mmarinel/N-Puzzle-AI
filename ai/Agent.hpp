@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 20:30:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/29 21:52:23 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,9 +175,11 @@ private:
 				ClosedSetStateQueue& explored,
 				int bound
 			);
+	bool	solvable(State* initial);
+	
 	
 	/**
-	 * @brief this function sets the given map as the normal goal state for the n-puzzle
+	 * @brief this function sets the given map as the SNAIL goal state for the n-puzzle
 	 * 
 	 * @param state 
 	 */
@@ -186,14 +188,21 @@ private:
 		std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
 		size_t size
 	);
-	void	fillGrid(
-		std::vector<std::vector<uint8_t>>& grid,
+	/**
+	 * @brief this function recursively fills a grid with the goal configuration.
+	 * It does its job by filling the external frame (up-bottom edge + left-right edge)
+	 * and then considering a smaller grid on the next iteration 
+	 * @param grid 
+	 * @param size 
+	 * @param offset offset of current iteration (current sub-grid)
+	 * @param nbr the next tile number to put
+	 */
+	void	fillGridAsGoal(
+		State::t_configuration& grid,
 		int size,
 		int offset,
 		int nbr
 	);
-	bool	solvable(State* initial);
-	int		polarity(State* initial);
 	const std::vector<t_action>
 			usefulActions(
 				const Node* node,
@@ -210,7 +219,8 @@ public:
 	);
 	~Agent();
 	
-	void	run() override;
+	void			run() override;
+	const Problem&	problem();
 
 	std::stack<t_action>	solution;
 	int						moves;

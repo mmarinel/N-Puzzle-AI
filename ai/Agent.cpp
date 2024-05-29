@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:31:39 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/29 21:53:12 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ NPuzzle::Agent::~Agent()
 {
 	//TODO ...possible cleanup function to call ?
 }
+
+
+
 
 void	NPuzzle::Agent::run()
 {
@@ -127,16 +130,17 @@ void	NPuzzle::Agent::rbfs()
 	t_rbfsIterResult		result;
 	ClosedSetStateQueue		explored(t_exploredSet_cmp{});
 	
-	if (false == solvable(initial->s))
-		return ;
-	explored.insert(initial->s);
-	result = rbfsRec(initial.get(), explored, bound);
-	if (result.failure)
-		return ;
-	solution = std::move(result.actions);
-	qDebug() << "returning solution";
-	moves = solution.size();
-	qDebug() << "with " << moves << " moves";
+	if (solvable(initial->s))
+	{
+		explored.insert(initial->s);
+		result = rbfsRec(initial.get(), explored, bound);
+		if (result.failure)
+			return ;
+		solution = std::move(result.actions);
+		qDebug() << "returning solution";
+		moves = solution.size();
+		qDebug() << "with " << moves << " moves";
+	}
 	emit workDone();
 }
 
@@ -208,15 +212,91 @@ NPuzzle::Agent::rbfsRec(
 	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, Problem::Actions{}, false};
 }
 
-void	NPuzzle::Agent::fillGrid(
-	std::vector<std::vector<uint8_t>>& grid,
+bool	NPuzzle::Agent::solvable(State* initial)
+{
+	auto
+	_inversions = Problem::polarity(initial->configuration, initial->size);
+	auto
+		size = initial->size;
+	uint8_t
+		blankAtGoal_row_bottom_based = size - p.y_empty_at_goal;//1-indexing
+	uint8_t
+		blankAtInitial_row_bottom_based = size - initial->i_empty;
+	
+	p.inversions_at_initial = _inversions.first;
+	p.polarity_at_initial = _inversions.second;
+	
+	if (0 != initial->size % 2)
+		return p.polarity_at_goal == p.polarity_at_initial;
+	else
+		return (
+			(
+				p.polarity_at_goal == p.polarity_at_initial &&
+				blankAtGoal_row_bottom_based % 2  == blankAtInitial_row_bottom_based % 2
+			) ||
+			(
+				p.polarity_at_goal != p.polarity_at_initial &&
+				blankAtGoal_row_bottom_based % 2 != blankAtInitial_row_bottom_based % 2
+			)
+		);
+}
+
+
+
+
+/* ******************************************** */
+/*                                              */
+/*            Secondary functions               */
+/*                                              */
+/* ******************************************** */
+void	NPuzzle::Agent::setAsForwardGoal(
+	Problem& p,
+	std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
+	size_t size
+)
+{
+	State::t_configuration	grid;
+
+	grid.clear();
+	grid.resize(size);
+	for (size_t i = 0; i < size; i++) {
+		grid[i].resize(size);
+	}
+
+	// filling as grid
+	fillGridAsGoal(grid, size, 0, 1);
+	
+	// counting inversions at goal
+	auto	_inversions = Problem::polarity(grid, size);
+	p.inversions_at_goal = _inversions.first;
+	p.polarity_at_goal = _inversions.second;
+	qDebug() << "Inversions at goal: " << p.inversions_at_goal;
+
+	// filling map
+	for (size_t i = 0; i < size; i++) {
+		for (size_t j = 0; j < size; j++) {
+			state[grid[i][j]] = std::make_pair(i, j);
+		}
+	}
+}
+
+void	NPuzzle::Agent::fillGridAsGoal(
+	State::t_configuration& grid,
 	int size,
 	int offset,
 	int nbr
 )
 {
 	if (size <= 1)
+	{
+		if (1 == size)
+		{
+			grid[0 + offset][0 + offset] = 0;
+			p.x_empty_at_goal = 0 + offset;
+			p.y_empty_at_goal = 0 + offset;
+		}
 		return ;
+	}
 
 	int	i, j;
 
@@ -224,14 +304,6 @@ void	NPuzzle::Agent::fillGrid(
 	for (j = 0 + offset;			j < size + offset;	j++)
 	{
 		grid[0 + offset][j] = nbr++;
-	}
-		// Checking last element of the puzzle...(case N odd)-->in this case, after k iterations, the first element on the top row is the last one
-	if (p.initial.size*p.initial.size == grid[0 + offset][0 + offset])
-	{
-		grid[0 + offset][0 + offset] = 0;
-		p.x_empty_at_goal = 0 + offset;
-		p.y_empty_at_goal = 0 + offset;
-		return ;
 	}
 	// right column
 	for (i = (0 + offset)			+ 1;			i < size + offset;	i++)
@@ -243,7 +315,8 @@ void	NPuzzle::Agent::fillGrid(
 	{
 		grid[size + offset - 1][j] = nbr++;
 	}
-		// Checking last element of the puzzle...(case N even)-->-->in this case, after k iterations, the last element on the bottom row is the last one
+		// Checking last element of the puzzle...(case N even)-->
+		// -->in this case, after k iterations, the last element on the bottom row is the last one
 	if (p.initial.size*p.initial.size == grid[size + offset - 1][j + 1])
 	{
 		grid[size + offset - 1][j + 1] = 0;
@@ -256,115 +329,7 @@ void	NPuzzle::Agent::fillGrid(
 	{
 		grid[i][0 + offset] = nbr++;
 	}
-	fillGrid(grid, size - 2, offset + 1, nbr);
-}
-
-void	NPuzzle::Agent::setAsForwardGoal(
-	Problem& p,
-	std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
-	size_t size
-)
-{
-	std::vector<std::vector<uint8_t>>	grid;
-
-	grid.clear();
-	grid.resize(size);
-	for (size_t i = 0; i < size; i++) {
-		grid[i].resize(size);
-	}
-
-	// filling as grid
-	fillGrid(grid, size, 0, 1);
-	
-	// counting inversions at goal
-	p.inversions_at_goal = 0;
-	size_t	k, i, j;
-		// counting inversion for the k-th element...
-	for (k = 0; k < size*size; k++)
-	{
-		size_t		cur_i = k / size;
-		size_t		cur_j = k % size;
-		
-		if (0 == grid[cur_i][cur_j])
-			continue ;
-		if (size - 1 == cur_j)
-		{
-			i = cur_i + 1;
-			j = 0;
-		}
-		else
-		{
-			i = cur_i;
-			j = cur_j + 1;
-		}
-		for (; i < size; i++)
-		{
-			for (; j < size; j++)
-			{
-				if (0 != grid[i][j])
-					p.inversions_at_goal += grid[cur_i][cur_j] > grid[i][j];
-			}
-			j = 0;
-		}
-	}
-	// qDebug() << "Inversions at goal: " << p.inversions_at_goal;
-
-
-	// filling map
-	for (size_t i = 0; i < size; i++) {
-		for (size_t j = 0; j < size; j++) {
-			state[grid[i][j]] = std::make_pair(i, j);
-		}
-	}
-}
-
-bool	NPuzzle::Agent::solvable(State* initial)
-{
-	int		_polarity = polarity(initial);
-	if (0 != initial->size % 2)
-		return p.inversions_at_goal % 2 == _polarity % 2;
-	else
-		return (
-			(
-				p.inversions_at_goal % 2 == _polarity % 2 &&
-				-(p.y_empty_at_goal - initial->size) % 2  == (-(initial->i_empty - initial->size)) % 2
-			) ||
-			(
-				p.inversions_at_goal % 2 != _polarity % 2 &&
-				(-(p.y_empty_at_goal - initial->size)) % 2 != (-(initial->i_empty - initial->size)) % 2
-			)
-		);
-}
-
-int		NPuzzle::Agent::polarity(State* initial)
-{
-	const auto&		conf = initial->configuration;
-	int				inversions = 0;
-	int				firstNext_i;
-	int				firstNext_j;
-	int				current_i;
-	int				current_j;
-	int				k, i, j;
-
-	for (k = 0; k < initial->size * initial->size; k++) {
-		current_i = k / initial->size;
-		current_j = k % initial->size;
-		firstNext_i = (k + 1) / initial->size;
-		firstNext_j = (k + 1) % initial->size;
-		
-		if (0 == conf[current_i][current_j])
-			continue ;
-		j = firstNext_j;
-		for (i = firstNext_i; i < initial->size; i++) {
-			for (; j < initial->size; j++) {
-				if (0 == conf[i][j])
-					continue ;
-				inversions += conf[current_i][current_j] > conf[i][j];
-			}
-			j = 0;
-		}
-	}
-	return inversions;
+	fillGridAsGoal(grid, size - 2, offset + 1, nbr);
 }
 
 const std::vector<t_action>
@@ -384,4 +349,9 @@ NPuzzle::Agent::usefulActions(
 		}
 	}
 	return actions;
+}
+
+const Problem&		NPuzzle::Agent::problem()
+{
+	return p;
 }
