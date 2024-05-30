@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:44:29 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 16:29:47 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,13 @@ bool	NPuzzle::parse_file(QString filepath)
 
 void	NPuzzle::generate_board()
 {
-	auto				size = BoardState::getInstance().size;
-	std::vector<int>	v(size*size);
+	auto					size = BoardState::getInstance().size;
+	std::vector<int>		v(size*size);
+	// std::vector<t_action>	v( NPuzzle::shuffle_moves);
 
 	std::iota(v.begin(), v.end(), 0);
-	std::random_shuffle(v.begin(), v.end());
+	std::srand(std::time(NULL));
+	std::random_shuffle(v.begin(), v.end(), NPuzzle::t_RNG{});
 
 	auto	it = v.begin();
 	for (int i = 0; i < size; i++)

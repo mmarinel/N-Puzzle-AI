@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/29 21:52:23 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 16:36:00 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,15 +189,17 @@ private:
 		size_t size
 	);
 	/**
-	 * @brief this function recursively fills a grid with the goal configuration.
+	 * @brief this function recursively fills a grid with the goal configuration (SNAIL solution).
 	 * It does its job by filling the external frame (up-bottom edge + left-right edge)
 	 * and then considering a smaller grid on the next iteration 
 	 * @param grid 
-	 * @param size 
-	 * @param offset offset of current iteration (current sub-grid)
+	 * @param size size of current (sub)grid
+	 * @param offset offset from the up-bottom and side edges of current iteration (current sub-grid)
 	 * @param nbr the next tile number to put
+	 * @return (i,j) coordinates of empty tile
 	 */
-	void	fillGridAsGoal(
+	std::pair<uint8_t, uint8_t>
+	fillGridAsGoal(
 		State::t_configuration& grid,
 		int size,
 		int offset,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/29 21:53:12 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 16:30:54 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,9 @@ void	NPuzzle::Agent::setAsForwardGoal(
 	}
 
 	// filling as grid
-	fillGridAsGoal(grid, size, 0, 1);
+	auto	blank_pos = fillGridAsGoal(grid, size, 0, 1);
+	p.y_empty_at_goal = blank_pos.first;
+	p.x_empty_at_goal = blank_pos.second;
 	
 	// counting inversions at goal
 	auto	_inversions = Problem::polarity(grid, size);
@@ -280,22 +282,19 @@ void	NPuzzle::Agent::setAsForwardGoal(
 	}
 }
 
-void	NPuzzle::Agent::fillGridAsGoal(
+std::pair<uint8_t, uint8_t>
+NPuzzle::Agent::fillGridAsGoal(
 	State::t_configuration& grid,
 	int size,
 	int offset,
 	int nbr
 )
 {
-	if (size <= 1)
+	if (1 == size)// Checking last element of the puzzle...(case N odd)
 	{
-		if (1 == size)
-		{
-			grid[0 + offset][0 + offset] = 0;
-			p.x_empty_at_goal = 0 + offset;
-			p.y_empty_at_goal = 0 + offset;
-		}
-		return ;
+		grid[0 + offset][0 + offset] = 0;
+		
+		return std::make_pair(0 + offset, 0 + offset);
 	}
 
 	int	i, j;
@@ -320,16 +319,15 @@ void	NPuzzle::Agent::fillGridAsGoal(
 	if (p.initial.size*p.initial.size == grid[size + offset - 1][j + 1])
 	{
 		grid[size + offset - 1][j + 1] = 0;
-		p.x_empty_at_goal = j + 1;
-		p.y_empty_at_goal = size + offset - 1;
-		return ;
+
+		return std::make_pair(size + offset - 1, j + 1);
 	}
 	//left column
 	for (i = (size + offset - 1)	- 1;		i >= (0 + offset)	+ 1;	i--)
 	{
 		grid[i][0 + offset] = nbr++;
 	}
-	fillGridAsGoal(grid, size - 2, offset + 1, nbr);
+	return fillGridAsGoal(grid, size - 2, offset + 1, nbr);
 }
 
 const std::vector<t_action>
