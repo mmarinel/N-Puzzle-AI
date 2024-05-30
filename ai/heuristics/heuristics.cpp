@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/26 12:17:46 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 21:26:34 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 						{
 							for (int kj = j + 1; kj < n->s->size; kj++)
 							{
+								if (0 == n->s->configuration[i][kj])
+									continue ;
 								int		goalRowforTile = n->p.goal.at(n->s->configuration[i][kj]).first;
 								int		goalColforTile = n->p.goal.at(n->s->configuration[i][kj]).second;
 								if (i != goalRowforTile)
@@ -108,16 +110,18 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 									// (kj < j && goalColforTile > goalPosition.second ) ||
 									(kj > j && goalColforTile < goalPosition.second )
 								)
-									adjustment += 2;//for every pair we need to count two moves,
-													//one put one of the tiles out and then back in
-													//We count each pair once since we always check
-													//against the tiles next to current
+								{
+									adjustment += 2;
+									break;
+								}
 							}
 						}
-						else if (goalPosition.second == j)//Counting inversions on column
+						if (goalPosition.second == j)//Counting inversions on column
 						{
 							for (int ki = i + 1; ki < n->s->size; ki++)
 							{
+								if (0 == n->s->configuration[ki][j])
+									continue ;
 								int		goalRowforTile = n->p.goal.at(n->s->configuration[ki][j]).first;
 								int		goalColforTile = n->p.goal.at(n->s->configuration[ki][j]).second;
 								if (j != goalColforTile)
@@ -126,7 +130,10 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 									// (ki < i && goalRowforTile > goalPosition.first ) ||
 									(ki > i && goalRowforTile < goalPosition.first )
 								)
+								{
 									adjustment += 2;
+									break;
+								}
 							}
 						}
 					}
@@ -169,6 +176,8 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 				}
 				for (int i = 0; i < n->s->size && increment != 0; i++)
 				{
+					if (0 == n->s->configuration[i][goalCol])
+						continue ;
 					int		goalRowforTile = n->p.goal.at(n->s->configuration[i][goalCol]).first;
 					int		goalColforTile = n->p.goal.at(n->s->configuration[i][goalCol]).second;
 					if (movedTileJ != goalColforTile)
@@ -177,7 +186,10 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 						(i < movedTileI && goalRowforTile > goalPosition.first ) ||
 						(i > movedTileI && goalRowforTile < goalPosition.first )
 					)
+					{
 						adjustment = adjustment + increment;
+						break;
+					}
 				}
 			}
 			else//vertical move
@@ -196,6 +208,8 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 				}
 				for (int j = 0; j < n->s->size && increment != 0; j++)
 				{
+					if (0 == n->s->configuration[goalRow][j])
+						continue ;
 					int		goalColforTile = n->p.goal.at(n->s->configuration[goalRow][j]).second;
 					int		goalRowforTile = n->p.goal.at(n->s->configuration[goalRow][j]).first;
 					if (movedTileI != goalRowforTile)
@@ -204,7 +218,10 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 						(j < movedTileJ && goalColforTile > goalPosition.second ) ||
 						(j > movedTileJ && goalColforTile < goalPosition.second )
 					)
+					{
 						adjustment = adjustment + increment;
+						break;
+					}
 				}
 			}
 			manhattan_score = t_manhattan_score::getInstance()(n);
