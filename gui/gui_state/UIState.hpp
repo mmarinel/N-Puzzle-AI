@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UIState.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 19:42:39 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 09:53:21 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:14:08 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ public:
 	CurrentPage				currentPage;
 	QString					boardFileName;
 	bool					atRandom;
+	bool					atRandomSolvable;
 	size_t					size;
 	int						x_empty;
 	int						y_empty;

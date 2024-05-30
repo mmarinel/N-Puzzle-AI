@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MenuView.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 19:52:34 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:22:05 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 		static_cast<QWidget*>(parent)
 	);
 	choose_size = new QSpinBox(
+		static_cast<QWidget*>(parent)
+	);
+	choose_solvability = new QRadioButton(
+		"Solvable",
 		static_cast<QWidget*>(parent)
 	);
 	size_lbl = new QLabel(
@@ -70,6 +74,7 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	choose_size_area->addWidget(size_lbl);
 	choose_size_area->addWidget(choose_size);
 	choose_at_random_area->addLayout(choose_size_area);
+	choose_at_random_area->addWidget(choose_solvability);
 	choose_at_random_area->setSpacing(50);
 	this->addLayout(choose_at_random_area);
 	heuristics_area->addWidget(heurstic_lbl);
@@ -79,6 +84,8 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	// Setting Visibilities
 	this->choose_size->setVisible(false);
 	this->choose_size->setDisabled(true);
+	this->choose_solvability->setVisible(false);
+	this->choose_solvability->setDisabled(true);
 	this->size_lbl->setVisible(false);
 	this->size_lbl->setDisabled(true);
 	
@@ -98,6 +105,10 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	QObject::connect(
 		choose_size, &QSpinBox::valueChanged,
 		this, &MenuView::setRandomGeneratedSize
+	);
+	QObject::connect(
+		choose_solvability, &QAbstractButton::clicked,
+		this, &MenuView::toggleRandomSolvable
 	);
 }
 
@@ -143,6 +154,8 @@ void	MenuView::setAtRandomFile()
 		this->choose_file->setDisabled(true);
 		this->choose_size->setVisible(true);
 		this->choose_size->setDisabled(false);
+		this->choose_solvability->setVisible(true);
+		this->choose_solvability->setDisabled(false);
 		this->size_lbl->setVisible(true);
 		this->size_lbl->setDisabled(false);
 	}
@@ -152,6 +165,8 @@ void	MenuView::setAtRandomFile()
 		this->choose_file->setDisabled(false);
 		this->choose_size->setVisible(false);
 		this->choose_size->setDisabled(true);
+		this->choose_solvability->setVisible(false);
+		this->choose_solvability->setDisabled(true);
 		this->size_lbl->setVisible(false);
 		this->size_lbl->setDisabled(true);
 	}
@@ -160,6 +175,11 @@ void	MenuView::setAtRandomFile()
 void	MenuView::setRandomGeneratedSize(int n)
 {
 	BoardState::getInstance().setSize(n);
+}
+
+void	MenuView::toggleRandomSolvable()
+{
+	UIState::getInstance().atRandomSolvable = ! UIState::getInstance().atRandomSolvable;
 }
 
 void	MenuView::setHeuristic(int index)
@@ -197,6 +217,7 @@ void	MenuView::reset()
 		choose_random->setChecked(false);
 		setAtRandomFile();
 	}
+	choose_solvability->setChecked(false);
 	choose_heuristic->setPlaceholderText("--Select Heuristic--");
 	choose_heuristic->setCurrentIndex(-1);
 }

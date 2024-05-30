@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MenuView.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:56:45 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/27 17:35:08 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:13:14 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QRadioButton>
 #include <QLabel>
 
 #include "heuristics.hpp"
@@ -31,6 +32,7 @@ private:
 	QPushButton*			choose_file;
 	QCheckBox*				choose_random;
 	QSpinBox*				choose_size;
+	QRadioButton*			choose_solvability;
 	QComboBox*				choose_heuristic;
 	QLabel*					heurstic_lbl;
 	QLabel*					size_lbl;
@@ -40,6 +42,7 @@ public slots:
 	void	setAtRandomFile();
 	void	setHeuristic(int index);
 	void	setRandomGeneratedSize(int n);
+	void	toggleRandomSolvable();
 
 public:
 	MenuView(QWidget* parent=nullptr);

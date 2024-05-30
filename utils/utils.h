@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:17:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 15:48:14 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/30 18:29:17 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 namespace NPuzzle
 {
 
-const int	shuffle_moves = 42;//TODO move in config file
+const int	shuffle_moves = 420;//TODO move in UNIFIED GLOBAL config file
 
 typedef struct s_RNG
 {
@@ -35,5 +35,26 @@ typedef struct s_RNG
 bool	parse_file(QString filepath);
 void	generate_board();
 
-}
+
+/**
+ * @brief this function recursively fills a grid with the goal configuration (SNAIL solution).
+ * It does its job by filling the external frame (up-bottom edge + left-right edge)
+ * and then considering a smaller grid on the next iteration 
+ * @param grid 
+ * @param size size of current (sub)grid
+ * @param offset offset from the up-bottom and side edges of current iteration (current sub-grid)
+ * @param nbr the next tile number to put
+ * @param nbr last tile number to put
+ * @return (i,j) coordinates of empty tile
+ */
+std::pair<uint8_t, uint8_t>
+fillGridAsGoal(
+	State::t_configuration& grid,
+	int size,
+	int offset,
+	int nbr,
+	int last_nbr
+);
+
+}//END of NPuzzle namespace
 

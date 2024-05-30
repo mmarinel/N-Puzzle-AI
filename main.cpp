@@ -3,21 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:40:48 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:43:27 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:30:25 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <QApplication>
 #include <QFontDatabase>
 
+#include <ctime>
+
 #include "Window.hpp"
 #include "gui_utils.hpp"
 
 int main(int argc, char const* argv[])
 {
+	// seeding rng
+	std::srand(std::time(NULL));
+	
 	QApplication	app{
 		argc, const_cast<char**>(argv)
 	};

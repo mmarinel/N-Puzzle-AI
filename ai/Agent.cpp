@@ -6,11 +6,12 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 16:30:54 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/30 16:59:11 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Agent.hpp"
+#include "utils.h"
 
 #include <memory>
 
@@ -264,7 +265,9 @@ void	NPuzzle::Agent::setAsForwardGoal(
 	}
 
 	// filling as grid
-	auto	blank_pos = fillGridAsGoal(grid, size, 0, 1);
+	auto	blank_pos = NPuzzle::fillGridAsGoal(
+		grid, size, 0, 1, p.initial.size*p.initial.size
+	);
 	p.y_empty_at_goal = blank_pos.first;
 	p.x_empty_at_goal = blank_pos.second;
 	
@@ -280,54 +283,6 @@ void	NPuzzle::Agent::setAsForwardGoal(
 			state[grid[i][j]] = std::make_pair(i, j);
 		}
 	}
-}
-
-std::pair<uint8_t, uint8_t>
-NPuzzle::Agent::fillGridAsGoal(
-	State::t_configuration& grid,
-	int size,
-	int offset,
-	int nbr
-)
-{
-	if (1 == size)// Checking last element of the puzzle...(case N odd)
-	{
-		grid[0 + offset][0 + offset] = 0;
-		
-		return std::make_pair(0 + offset, 0 + offset);
-	}
-
-	int	i, j;
-
-	//top row
-	for (j = 0 + offset;			j < size + offset;	j++)
-	{
-		grid[0 + offset][j] = nbr++;
-	}
-	// right column
-	for (i = (0 + offset)			+ 1;			i < size + offset;	i++)
-	{
-		grid[i][size + offset - 1] = nbr++;
-	}
-	//bottom row
-	for (j = (size + offset - 1)	- 1;		j >= (0 + offset);	j--)
-	{
-		grid[size + offset - 1][j] = nbr++;
-	}
-		// Checking last element of the puzzle...(case N even)-->
-		// -->in this case, after k iterations, the last element on the bottom row is the last one
-	if (p.initial.size*p.initial.size == grid[size + offset - 1][j + 1])
-	{
-		grid[size + offset - 1][j + 1] = 0;
-
-		return std::make_pair(size + offset - 1, j + 1);
-	}
-	//left column
-	for (i = (size + offset - 1)	- 1;		i >= (0 + offset)	+ 1;	i--)
-	{
-		grid[i][0 + offset] = nbr++;
-	}
-	return fillGridAsGoal(grid, size - 2, offset + 1, nbr);
 }
 
 const std::vector<t_action>

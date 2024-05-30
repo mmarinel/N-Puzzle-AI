@@ -6,12 +6,13 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 16:29:47 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/30 18:30:10 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include "BoardState.hpp"
+#include "UIState.hpp"
 
 #include <QFile>
 #include <QTextStream>
@@ -107,25 +108,125 @@ bool	NPuzzle::parse_file(QString filepath)
 void	NPuzzle::generate_board()
 {
 	auto					size = BoardState::getInstance().size;
-	std::vector<int>		v(size*size);
-	// std::vector<t_action>	v( NPuzzle::shuffle_moves);
+	std::vector<t_action>	v( NPuzzle::shuffle_moves);
+	bool					solvable = UIState::getInstance().atRandomSolvable;
+	State::t_configuration	goal_conf;
+	std::pair<uint8_t, uint8_t>
+							blank_pos;
 
-	std::iota(v.begin(), v.end(), 0);
-	std::srand(std::time(NULL));
-	std::random_shuffle(v.begin(), v.end(), NPuzzle::t_RNG{});
-
-	auto	it = v.begin();
+	goal_conf.clear();
+	goal_conf.resize(size);
+	for (int i = 0; i < size; i++) {
+		goal_conf[i].resize(size);
+	}
+	// Taking goal
+	blank_pos = fillGridAsGoal(goal_conf, size, 0, 1, size*size);
+	// Checking user-chosen solvability
+	if (false == solvable)
+	{
+		Tile	last = goal_conf[size - 1][size - 1];
+		goal_conf[size - 1][size - 1] = goal_conf[size - 1][size - 2];
+		goal_conf[size - 1][size - 2] = last;
+	}
+	// Generating random moves
+	for (t_action& a: v)
+	{
+		a = static_cast<t_action>(
+			std::rand() / (1.0f + RAND_MAX) * 4
+		);
+	}
+	// performing moves
+	State::t_configuration&		board = BoardState::getInstance().board;
 	for (int i = 0; i < size; i++)
 	{
 		for (int j = 0; j < size; j++)
 		{
-			BoardState::getInstance().board[i][j] = *it;
-			if (BoardState::getInstance().board[i][j].isEmpty())
-			{
-				BoardState::getInstance().y_empty = i;
-				BoardState::getInstance().x_empty = j;
-			}
-			it++;
+			board[i][j] = goal_conf[i][j];
 		}
 	}
+	// board = goal_conf;
+	for (t_action& a: v)
+	{
+		std::pair<int, int>
+		movedTilePos = blank_pos;
+
+		switch (a)
+		{
+		case t_action::UP:
+			movedTilePos.first -= 1;
+			break;
+		case t_action::DOWN:
+			movedTilePos.first += 1;
+			break;
+		case t_action::LEFT:
+			movedTilePos.second -= 1;
+			break;
+		case t_action::RIGHT:
+			movedTilePos.second += 1;
+			break;
+		
+		default:
+			break;
+		}
+
+		if (
+			(movedTilePos.first < 0 || movedTilePos.first >= size) ||
+			(movedTilePos.second < 0 || movedTilePos.second >= size)
+		)
+			continue ;
+		board[blank_pos.first][blank_pos.second] = board[movedTilePos.first][movedTilePos.second];
+		board[movedTilePos.first][movedTilePos.second] = 0;
+		blank_pos = movedTilePos;
+	}
+	BoardState::getInstance().y_empty = blank_pos.first;
+	BoardState::getInstance().x_empty = blank_pos.second;
+}
+
+std::pair<uint8_t, uint8_t>
+NPuzzle::fillGridAsGoal(
+	State::t_configuration& grid,
+	int size,
+	int offset,
+	int nbr,
+	int last_nbr
+)
+{
+	if (1 == size)// Checking last element of the puzzle...(case N odd)
+	{
+		grid[0 + offset][0 + offset] = 0;
+		
+		return std::make_pair(0 + offset, 0 + offset);
+	}
+
+	int	i, j;
+
+	//top row
+	for (j = 0 + offset;			j < size + offset;	j++)
+	{
+		grid[0 + offset][j] = nbr++;
+	}
+	// right column
+	for (i = (0 + offset)			+ 1;			i < size + offset;	i++)
+	{
+		grid[i][size + offset - 1] = nbr++;
+	}
+	//bottom row
+	for (j = (size + offset - 1)	- 1;		j >= (0 + offset);	j--)
+	{
+		grid[size + offset - 1][j] = nbr++;
+	}
+		// Checking last element of the puzzle...(case N even)-->
+		// -->in this case, after k iterations, the last element on the bottom row is the last one
+	if (last_nbr == grid[size + offset - 1][j + 1])
+	{
+		grid[size + offset - 1][j + 1] = 0;
+
+		return std::make_pair(size + offset - 1, j + 1);
+	}
+	//left column
+	for (i = (size + offset - 1)	- 1;		i >= (0 + offset)	+ 1;	i--)
+	{
+		grid[i][0 + offset] = nbr++;
+	}
+	return fillGridAsGoal(grid, size - 2, offset + 1, nbr, last_nbr);
 }
