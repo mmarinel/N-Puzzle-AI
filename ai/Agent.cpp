@@ -3,41 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 16:59:11 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/01 18:10:53 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Agent.hpp"
 #include "utils.h"
+#include "UIState.hpp"
+#include "BoardState.hpp"
 
 #include <memory>
 
 template <>
 unsigned long long		NPuzzle::Agent::OpenSetNodeQueue::nbr_selected = 0;
 
-NPuzzle::Agent::Agent(
-		const std::vector<std::vector<Tile> >& config,
-		const size_t size,
-		uint8_t	x_empty,
-		uint8_t	y_empty,
-		t_heuristic h
-)
+NPuzzle::Agent::Agent()
 : p{}, criteria(nullptr), solution{}, moves{0}
 {
 	// setting up Problem
 		// initial state
-	p.initial.configuration = config;
-	p.initial.size = size;
-	p.initial.i_empty = y_empty;
-	p.initial.j_empty = x_empty;
-	p.initial.cols.reserve(size);
-	for (size_t j = 0; j < size; j++)
+	p.initial.configuration = BoardState::getInstance().board;
+	p.initial.size = BoardState::getInstance().size;
+	p.initial.i_empty = BoardState::getInstance().y_empty;
+	p.initial.j_empty = BoardState::getInstance().x_empty;
+	p.initial.cols.reserve(BoardState::getInstance().size);
+	for (int j = 0; j < BoardState::getInstance().size; j++)
 	{
 		p.initial.cols[j] = 0;
-		for (size_t i = 0; i < size; i++)
+		for (int i = 0; i < BoardState::getInstance().size; i++)
 		{
 			p.initial.cols[j] += (
 				static_cast<uint64_t>(p.initial.configuration[i][j]) << (i*5)//(i*8)
@@ -46,19 +42,24 @@ NPuzzle::Agent::Agent(
 	}
 	
 		// goal state
-	setAsForwardGoal(p, p.goal, size);
+	setAsForwardGoal(p, p.goal, BoardState::getInstance().size);
 	
 	// setting A* specific politics
-		// heuristic
-	this->criteria = NPuzzle::hToFunc.at(h);
-	// worse = std::bind(
-	// 	&NPuzzle::t_Iordering_func::cmp,
-	// 	this->criteria,
-	// 	std::placeholders::_1, std::placeholders::_2
-	// );
-	worse = [](const Node* n1, const Node* n2){
-		return n1->f > n2->f;
-	};
+	this->criteria = (
+		NPuzzle::ISearchStrategy::getStrategy(
+			UIState::getInstance().search_strategy
+		)
+	);
+	this->criteria->setHeuristic(
+		const_cast<NPuzzle::t_Iordering_func*>(
+			NPuzzle::hToFunc.at(UIState::getInstance().h)
+		)
+	);
+	worse = std::bind(
+		&NPuzzle::ISearchStrategy::cmp,
+		this->criteria,
+		std::placeholders::_1, std::placeholders::_2
+	);
 }
 
 NPuzzle::Agent::~Agent()
@@ -81,10 +82,9 @@ void	NPuzzle::Agent::aStar()
 	OpenSetNodeQueue	frontier{worse, t_frontierNodesEquals{}};
 	ClosedSetStateQueue	explored;
 	Node*				node = new Node{p};
-	node->s 				 = new State{p.initial};
-	node->s->hCost 			 = this->criteria->h(node);
-	node->f					 = 0 + node->s->hCost;
 	
+	node->s 				 = new State{p.initial};
+	this->criteria->setScore(node);
 	if (false == solvable(node->s))
 	{
 		qDebug() << "This puzzle is not solvable";
@@ -102,6 +102,7 @@ void	NPuzzle::Agent::aStar()
 			solution = std::move(p.solution(node));
 			moves = solution.size();
 			qDebug() << "returning solution";
+			emit workDone();
 			return;
 		}
 		explored.insert(node->s);
@@ -109,8 +110,7 @@ void	NPuzzle::Agent::aStar()
 		{
 			Node*	child = child_node(node, a);
 
-			child->s->hCost = this->criteria->h(child);
-			child->f = child->pCost + child->s->hCost;
+			this->criteria->setScore(child);
 			if (explored.end() != explored.find(child->s))
 			{
 				continue ;
@@ -125,12 +125,11 @@ void	NPuzzle::Agent::rbfs()
 {
 	std::unique_ptr<Node>			initial{new Node{p}};
 	initial->s 						= new State{p.initial};
-	initial->s->hCost 				= this->criteria->h(initial.get());
-	initial->f						= 0 + initial->s->hCost;
 	int						bound	= std::numeric_limits<int>::max();// initial->s->hCost;
 	t_rbfsIterResult		result;
 	ClosedSetStateQueue		explored(t_exploredSet_cmp{});
 	
+	this->criteria->setScore(initial.get());
 	if (solvable(initial->s))
 	{
 		explored.insert(initial->s);
@@ -155,7 +154,10 @@ NPuzzle::Agent::rbfsRec(
 	t_rbfsIterResult	result;
 	
 	if (p.goalTest(node->s))
-		return (t_rbfsIterResult){node->f, true, std::move(p.solution(node)), false};
+		return (t_rbfsIterResult){
+			(t_cutoff){this->criteria->score(node), node->pCost},
+			true, std::move(p.solution(node)), false
+		};
 	
 	OpenSetNodeQueue	fringe{worse, t_frontierNodesEquals{}};
 	auto				actions = std::move(
@@ -168,22 +170,20 @@ NPuzzle::Agent::rbfsRec(
 	{
 		Node*	child = child_node(node, a);
 		
-		child->s->hCost = this->criteria->h(child);
+		this->criteria->setScore(child);
 		if (explored.end() != explored.find(child->s))
 		{
 			delete child;
 		}
 		else
 		{
-			child->f = std::max(
-				child->pCost + child->s->hCost, node->f
-			);
 			fringe.push(child);
 		}
 	}
 	if (fringe.empty())
 		return (t_rbfsIterResult){
-			std::numeric_limits<int>::max(), false, Problem::Actions{}, false
+			(t_cutoff){std::numeric_limits<int>::max(), node->pCost},
+			false, Problem::Actions{}, false
 		};
 	std::unique_ptr<Node>	best;
 	while (true)
@@ -191,26 +191,39 @@ NPuzzle::Agent::rbfsRec(
 		// TODO valutare se spostarlo nel successivo if perché calcolarlo ad ogni iterazione è costoso
 		// TODO (anche se più sicuro)
 		if (this->isInterruptionRequested())
-			return (t_rbfsIterResult){bound, false, Problem::Actions{}, true};
+			return (t_rbfsIterResult){
+				(t_cutoff){bound, node->pCost},
+				false, Problem::Actions{}, true
+			};
 		best.reset(fringe.top());
 		fringe.pop();
 		
-		if (best->f > bound)
+		if (this->criteria->score(best.get()) > bound)
 		{
-			auto	cutoff = best->f;
-			return (t_rbfsIterResult){cutoff, false, Problem::Actions{}, false};
+			auto	cutoff_val = this->criteria->score(best.get());
+			return (t_rbfsIterResult){
+				(t_cutoff){cutoff_val, best->pCost},
+				false, Problem::Actions{}, false
+			};
 		}
 		explored.insert(best->s);
 		Node*	alternative = fringe.top();
-		result = rbfsRec(best.get(), explored, std::min(bound, alternative->f));
+		result = rbfsRec(best.get(), explored, std::min(bound, this->criteria->score(alternative)));
 		if (result.solutionFound)
 			return result;
-		best->f = result.cutoff;
+		// this->criteria->score(best) = result.cutoff;//TODO update
+		this->criteria->updateScore(
+			best.get(),
+			result.cutoff.cutoff, result.cutoff.cutoff_node_pCost
+		);
 		explored.erase(best->s);
 		fringe.push(best.get());
 		best.release();
 	}
-	return (t_rbfsIterResult){std::numeric_limits<int>::max(), false, Problem::Actions{}, false};
+	return (t_rbfsIterResult){
+		(t_cutoff){std::numeric_limits<int>::max(), node->pCost},
+		false, Problem::Actions{}, false
+	};
 }
 
 bool	NPuzzle::Agent::solvable(State* initial)

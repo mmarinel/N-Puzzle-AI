@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 16:55:55 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/01 01:40:06 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "Problem.hpp"
 #include "heuristics.hpp"
+#include "SearchStrategy.hpp"
 
 #include <QThread>
 #include <QDebug>
@@ -147,9 +148,15 @@ public:
 	typedef std::set<Node*, t_exploredSetNode_cmp>
 	ClosedSetNodeQueue;
 
+	typedef struct s_cutoff
+	{
+		int	cutoff;
+		int	cutoff_node_pCost;
+	}	t_cutoff;
+	
 	typedef struct	s_rbfsIterResult
 	{
-		int					cutoff;
+		t_cutoff			cutoff;
 		bool				solutionFound;
 		Problem::Actions	actions;
 		bool				failure;
@@ -161,8 +168,8 @@ private:
 	 * @brief to initialize before calling run
 	 * 
 	 */
-	const t_Iordering_func*	criteria;
-	ordering_criteria		worse;
+	ISearchStrategy*	criteria;
+	ordering_criteria	worse;
 
 private slots:
 	void	aStar();
@@ -195,13 +202,7 @@ private:
 			);
 
 public:
-	Agent(
-		const std::vector<std::vector<Tile> >& config,
-		const size_t size,
-		uint8_t	x_empty,
-		uint8_t	y_empty,
-		t_heuristic h
-	);
+	Agent();
 	~Agent();
 	
 	void			run() override;

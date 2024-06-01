@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MenuView.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:56:45 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 18:13:14 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/31 19:51:48 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,13 @@ private:
 	QComboBox*				choose_heuristic;
 	QLabel*					heurstic_lbl;
 	QLabel*					size_lbl;
+	QComboBox*				choose_search_strategy;
+	QLabel*					search_strategy_lbl;
 
 public slots:
 	void	setBoardFile();
 	void	setAtRandomFile();
+	void	setSearchStrategy(int index);
 	void	setHeuristic(int index);
 	void	setRandomGeneratedSize(int n);
 	void	toggleRandomSolvable();

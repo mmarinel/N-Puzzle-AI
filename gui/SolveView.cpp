@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/29 21:58:16 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/01 18:28:58 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ void	SolveView::workDone()
 	clock_gettime(CLOCK_MONOTONIC, &after);
 		// replacing loading animation with interactive buttons
 	btns_stacked->setCurrentIndex(1);
-	agent->wait(QDeadlineTimer::Forever);
+	agent->wait();
 
 	//Calculating Metrics
 	uint64_t	before_ns = (before.tv_sec * 1000000000) + before.tv_nsec;
@@ -239,13 +239,7 @@ void	SolveView::startSolving()
 	this->solving = true;
 	btns_stacked->setCurrentIndex(2);
 
-	agent = new NPuzzle::Agent(
-		BoardState::getInstance().board,
-		BoardState::getInstance().size,
-		BoardState::getInstance().x_empty,
-		BoardState::getInstance().y_empty,
-		UIState::getInstance().h
-	);
+	agent = new NPuzzle::Agent();
 	QObject::connect(
 		agent, &NPuzzle::Agent::workDone,
 		this, &SolveView::workDone
@@ -361,7 +355,7 @@ void	SolveView::play_stop()
 				moveTile(doing, undoing);
 			}
 		);
-		timer.setInterval(500);
+		timer.setInterval(50);
 		timer.start();
 		executing = true;
 	}

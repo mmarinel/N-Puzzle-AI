@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UIState.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 19:45:40 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 18:16:33 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/31 19:53:53 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ atRandomSolvable{false},
 size{0},
 x_empty{-1},
 y_empty{-1},
+search_strategy{NPuzzle::t_search_strategy::NONE},
 h{NPuzzle::t_heuristic::NONE}
 {}
 
@@ -40,5 +41,6 @@ void	UIState::reset()
 	size = 0;
 	x_empty = -1;
 	y_empty = -1;
+	search_strategy = NPuzzle::t_search_strategy::NONE;
 	h = NPuzzle::t_heuristic::NONE;
 }

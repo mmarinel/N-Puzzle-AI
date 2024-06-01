@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MenuView.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:40:08 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 18:22:05 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/31 19:56:20 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	QHBoxLayout*	heuristics_area = new QHBoxLayout{};
 	QHBoxLayout*	choose_at_random_area = new QHBoxLayout{};
 	QHBoxLayout*	choose_size_area = new QHBoxLayout{};
+	QHBoxLayout*	choose_strategy_area = new QHBoxLayout{};
 	
 	choose_file = new QPushButton(
 		CHOOSE_FILE_TEXT,
@@ -47,6 +48,13 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 		"Size: ",
 		static_cast<QWidget*>(parent)
 	);
+	search_strategy_lbl = new QLabel(
+		"Choose search strategy: ",
+		static_cast<QWidget*>(parent)
+	);
+	choose_search_strategy = new QComboBox{
+		static_cast<QWidget*>(parent)
+	};
 	heurstic_lbl = new QLabel(
 		"Choose heuristic: ",
 		static_cast<QWidget*>(parent)
@@ -64,6 +72,15 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	choose_heuristic->setPlaceholderText("--Select Heuristic--");
 	choose_heuristic->setCurrentIndex(-1);
 
+	for (auto& strategyName: NPuzzle::strategyFromString)
+	{
+		choose_search_strategy->addItem(
+			strategyName.first.c_str()
+		);
+	}
+	choose_search_strategy->setPlaceholderText("--Select Search Strategy--");
+	choose_search_strategy->setCurrentIndex(-1);
+
 	choose_size->setMinimum(3);
 
 	// Adding to the vertical centered layout
@@ -80,6 +97,9 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	heuristics_area->addWidget(heurstic_lbl);
 	heuristics_area->addWidget(choose_heuristic);
 	this->addLayout(heuristics_area);
+	choose_strategy_area->addWidget(search_strategy_lbl);
+	choose_strategy_area->addWidget(choose_search_strategy);
+	this->addLayout(choose_strategy_area);
 
 	// Setting Visibilities
 	this->choose_size->setVisible(false);
@@ -97,6 +117,10 @@ MenuView::MenuView(QWidget* parent): QVBoxLayout{parent}
 	QObject::connect(
 		choose_random, &QCheckBox::clicked,
 		this, &MenuView::setAtRandomFile
+	);
+	QObject::connect(
+		choose_search_strategy, &QComboBox::activated,
+		this, &MenuView::setSearchStrategy
 	);
 	QObject::connect(
 		choose_heuristic, &QComboBox::activated,
@@ -182,6 +206,16 @@ void	MenuView::toggleRandomSolvable()
 	UIState::getInstance().atRandomSolvable = ! UIState::getInstance().atRandomSolvable;
 }
 
+void	MenuView::setSearchStrategy(int index)
+{
+	Q_UNUSED(index);
+	UIState::getInstance().search_strategy = NPuzzle::strategyFromString.at(
+		choose_search_strategy->itemText(
+			choose_search_strategy->currentIndex()
+		).toStdString()
+	);
+}
+
 void	MenuView::setHeuristic(int index)
 {
 	Q_UNUSED(index);
@@ -218,6 +252,8 @@ void	MenuView::reset()
 		setAtRandomFile();
 	}
 	choose_solvability->setChecked(false);
+	choose_search_strategy->setPlaceholderText("--Select Search Strategy--");
+	choose_search_strategy->setCurrentIndex(-1);
 	choose_heuristic->setPlaceholderText("--Select Heuristic--");
 	choose_heuristic->setCurrentIndex(-1);
 }

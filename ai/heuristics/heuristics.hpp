@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:01:18 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/23 00:04:46 by matteo           ###   ########.fr       */
+/*   Updated: 2024/05/31 20:10:11 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,14 @@ enum class t_heuristic
 	NONE
 };
 
+enum class t_search_strategy
+{
+	INFORMED,
+	GREEDY,
+	UNIFORM_COST,
+	NONE
+};
+
 const std::map<std::string, t_heuristic>
 hfromString = {
 	{"Manhattan Distance", t_heuristic::MANHATTAN_DISTANCE},
@@ -40,11 +48,19 @@ hfromString = {
 	{"Coalesce All", t_heuristic::MAX}
 };
 
+const std::map<std::string, t_search_strategy>
+strategyFromString = {
+	{"Informed (A* standard)", t_search_strategy::INFORMED},
+	{"Greedy", t_search_strategy::GREEDY},
+	{"Uniform Cost - like", t_search_strategy::UNIFORM_COST}
+};
+
 class	t_Iordering_func
 {
 public:
 	virtual uint8_t		f_val(const Node* n) const = 0;
 	virtual uint8_t		h(const Node* n) const = 0;
+	virtual uint8_t		g(const Node* n) const = 0;
 	virtual bool		cmp(const Node* n1, const Node* n2) const = 0;
 };
 
@@ -58,6 +74,10 @@ public:
 
 	virtual uint8_t	h(const Node* n) const override {
 		return H::getInstance()(n);
+	}
+
+	virtual uint8_t	g(const Node* n) const override {
+		return n->pCost;
 	}
 
 	virtual bool	cmp(const Node* n1, const Node* n2) const override {

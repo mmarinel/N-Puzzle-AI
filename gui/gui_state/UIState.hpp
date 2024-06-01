@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UIState.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 19:42:39 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 18:14:08 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/05/31 19:52:52 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,15 @@ typedef enum
 class UIState
 {
 public:
-	CurrentPage				currentPage;
-	QString					boardFileName;
-	bool					atRandom;
-	bool					atRandomSolvable;
-	size_t					size;
-	int						x_empty;
-	int						y_empty;
-	NPuzzle::t_heuristic	h;
+	CurrentPage					currentPage;
+	QString						boardFileName;
+	bool						atRandom;
+	bool						atRandomSolvable;
+	size_t						size;
+	int							x_empty;
+	int							y_empty;
+	NPuzzle::t_search_strategy	search_strategy;
+	NPuzzle::t_heuristic		h;
 
 private:
 	UIState();
