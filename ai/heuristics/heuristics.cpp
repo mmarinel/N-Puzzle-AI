@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 21:26:34 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/02 22:45:55 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 								)
 								{
 									adjustment += 2;
-									break;
+									break;//I just need to know if I gotta move
+										//(i.e.: if there is at least one conflict ahead)
 								}
 							}
 						}
@@ -132,7 +133,8 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 								)
 								{
 									adjustment += 2;
-									break;
+									break;//I just need to know if I gotta move
+										//(i.e.: if there is at least one conflict ahead)
 								}
 							}
 						}
@@ -174,7 +176,9 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 					movedTileI = n->s->i_empty;
 					increment = -2;
 				}
-				for (int i = 0; i < n->s->size && increment != 0; i++)
+				// STEP 1: I need to know how many tiles behind me need/needed to move to make place for me
+				int	i;
+				for (i = 0; i < movedTileI && increment != 0; i++)
 				{
 					if (0 == n->s->configuration[i][goalCol])
 						continue ;
@@ -183,7 +187,25 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 					if (movedTileJ != goalColforTile)
 						continue ;
 					if (
-						(i < movedTileI && goalRowforTile > goalPosition.first ) ||
+						(i < movedTileI && goalRowforTile > goalPosition.first )// ||
+						// (i > movedTileI && goalRowforTile < goalPosition.first )
+					)
+					{
+						adjustment = adjustment + increment;
+					}
+				}
+				// STEP 2: I need to know if I need/needed to move to make place for some tiles currently ahead of me
+						//(i.e.: if there is at least one conflict ahead)
+				for (; i < n->s->size && increment != 0; i++)
+				{
+					if (0 == n->s->configuration[i][goalCol])
+						continue ;
+					int		goalRowforTile = n->p.goal.at(n->s->configuration[i][goalCol]).first;
+					int		goalColforTile = n->p.goal.at(n->s->configuration[i][goalCol]).second;
+					if (movedTileJ != goalColforTile)
+						continue ;
+					if (
+						// (i < movedTileI && goalRowforTile > goalPosition.first ) ||
 						(i > movedTileI && goalRowforTile < goalPosition.first )
 					)
 					{
@@ -206,7 +228,9 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 					movedTileI = n->s->i_empty;
 					increment = -2;
 				}
-				for (int j = 0; j < n->s->size && increment != 0; j++)
+				// STEP 1: I need to know how many tiles behind me need/needed to move to make place for me
+				int	j;
+				for (j = 0; j < movedTileJ && increment != 0; j++)
 				{
 					if (0 == n->s->configuration[goalRow][j])
 						continue ;
@@ -215,7 +239,25 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 					if (movedTileI != goalRowforTile)
 						continue ;
 					if (
-						(j < movedTileJ && goalColforTile > goalPosition.second ) ||
+						(j < movedTileJ && goalColforTile > goalPosition.second ) //||
+						// (j > movedTileJ && goalColforTile < goalPosition.second )
+					)
+					{
+						adjustment = adjustment + increment;
+					}
+				}
+				// STEP 2: I need to know if I need/needed to move to make place for some tiles currently ahead of me
+						//(i.e.: if there is at least one conflict ahead)
+				for (; j < n->s->size && increment != 0; j++)
+				{
+					if (0 == n->s->configuration[goalRow][j])
+						continue ;
+					int		goalColforTile = n->p.goal.at(n->s->configuration[goalRow][j]).second;
+					int		goalRowforTile = n->p.goal.at(n->s->configuration[goalRow][j]).first;
+					if (movedTileI != goalRowforTile)
+						continue ;
+					if (
+						// (j < movedTileJ && goalColforTile > goalPosition.second ) ||
 						(j > movedTileJ && goalColforTile < goalPosition.second )
 					)
 					{
@@ -254,12 +296,15 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 		score = 0;
 		adjustment = 0;
 		//top-left corner
-		if (tileInTopLeftGoalPos != std::pair<uint8_t, uint8_t>(0, 0))
+		if (std::pair<uint8_t, uint8_t>(0, 0) != tileInTopLeftGoalPos)
 		{
 			if (
 				std::pair<uint8_t, uint8_t>{0, 1} == n->p.goal.at(n->s->configuration[0][1]) &&
 				0 != tileInTopLeftGoalPos.first
 			)//next-to tile in next col cannot have row conflicts because is in its goal pos
+			//and the only conflict that can have is if the tile behind was in its goal row but wrong column
+			//since the tile behind is the corner tile, if it is in the right row it cannot be in its right column
+			//since the corner tile is not in its goal position.
 				adjustment += 2;
 			if (
 				std::pair<uint8_t, uint8_t>{1, 0} == n->p.goal.at(n->s->configuration[1][0]) &&
@@ -268,7 +313,7 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 				adjustment += 2;
 		}
 		//top-right corner
-		if (tileInTopRightGoalPos != std::pair<uint8_t, uint8_t>(0, n->s->size - 1))
+		if (std::pair<uint8_t, uint8_t>(0, n->s->size - 1) != tileInTopRightGoalPos)
 		{
 			if (
 				std::pair<uint8_t, uint8_t>{0, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[0][(n->s->size - 1) - 1]) &&
@@ -282,7 +327,7 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 				adjustment += 2;
 		}
 		//bottom-left corner
-		if (tileInBottomLeftGoalPos != std::pair<uint8_t, uint8_t>(n->s->size - 1, 0))
+		if (std::pair<uint8_t, uint8_t>(n->s->size - 1, 0) != tileInBottomLeftGoalPos)
 		{
 			if (
 				std::pair<uint8_t, uint8_t>{(n->s->size - 1) - 1, 0} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][0]) &&
@@ -291,12 +336,12 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 				adjustment += 2;
 			if (
 				std::pair<uint8_t, uint8_t>{n->s->size - 1, 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][1]) &&
-				n->s->size -1 != tileInBottomLeftGoalPos.first
+				n->s->size - 1 != tileInBottomLeftGoalPos.first
 			)//next-to tile in next col cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 		}
 		//bottom-right corner
-		if (tileInBottomRightGoalPos != std::pair<uint8_t, uint8_t>(n->s->size - 1, n->s->size - 1))
+		if (std::pair<uint8_t, uint8_t>(n->s->size - 1, n->s->size - 1) != tileInBottomRightGoalPos)
 		{
 			if (
 				std::pair<uint8_t, uint8_t>{(n->s->size - 1) - 1, n->s->size - 1} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][n->s->size - 1]) &&

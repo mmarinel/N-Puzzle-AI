@@ -3,36 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 16:59:11 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/02 22:48:25 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Agent.hpp"
 #include "utils.h"
 
+#include "UIState.hpp"
+#include "BoardState.hpp"
+
 #include <memory>
 
 template <>
 unsigned long long		NPuzzle::Agent::OpenSetNodeQueue::nbr_selected = 0;
 
-NPuzzle::Agent::Agent(
-		const std::vector<std::vector<Tile> >& config,
-		const size_t size,
-		uint8_t	x_empty,
-		uint8_t	y_empty,
-		t_heuristic h
-)
-: p{}, criteria(nullptr), solution{}, moves{0}
+NPuzzle::Agent::Agent(): p{}, criteria(nullptr), solution{}, moves{0}
 {
+	size_t	size = BoardState::getInstance().size;
+	
 	// setting up Problem
 		// initial state
-	p.initial.configuration = config;
+	p.initial.configuration = BoardState::getInstance().board;
 	p.initial.size = size;
-	p.initial.i_empty = y_empty;
-	p.initial.j_empty = x_empty;
+	p.initial.i_empty = BoardState::getInstance().y_empty;
+	p.initial.j_empty = BoardState::getInstance().x_empty;
+		// compatct representation of state
 	p.initial.cols.reserve(size);
 	for (size_t j = 0; j < size; j++)
 	{
@@ -49,16 +48,12 @@ NPuzzle::Agent::Agent(
 	setAsForwardGoal(p, p.goal, size);
 	
 	// setting A* specific politics
-		// heuristic
-	this->criteria = NPuzzle::hToFunc.at(h);
-	// worse = std::bind(
-	// 	&NPuzzle::t_Iordering_func::cmp,
-	// 	this->criteria,
-	// 	std::placeholders::_1, std::placeholders::_2
-	// );
-	worse = [](const Node* n1, const Node* n2){
-		return n1->f > n2->f;
-	};
+	this->criteria = NPuzzle::hToFunc.at(UIState::getInstance().h);
+	worse = std::bind(
+		&t_Iordering_func::cmp,
+		this->criteria,
+		std::placeholders::_1, std::placeholders::_2
+	);
 }
 
 NPuzzle::Agent::~Agent()
@@ -87,7 +82,7 @@ void	NPuzzle::Agent::aStar()
 	
 	if (false == solvable(node->s))
 	{
-		qDebug() << "This puzzle is not solvable";
+		// qDebug() << "This puzzle is not solvable";
 		return ;
 	}
 	frontier.push(node);
@@ -101,7 +96,8 @@ void	NPuzzle::Agent::aStar()
 		{
 			solution = std::move(p.solution(node));
 			moves = solution.size();
-			qDebug() << "returning solution";
+			// qDebug() << "returning solution";
+			emit workDone();
 			return;
 		}
 		explored.insert(node->s);
@@ -118,7 +114,7 @@ void	NPuzzle::Agent::aStar()
 			frontier.push(child);
 		}
 	}
-	qDebug() << "Frontier Empty";
+	// qDebug() << "Frontier Empty";
 }
 
 void	NPuzzle::Agent::rbfs()
@@ -138,9 +134,9 @@ void	NPuzzle::Agent::rbfs()
 		if (result.failure)
 			return ;
 		solution = std::move(result.actions);
-		qDebug() << "returning solution";
+		// qDebug() << "returning solution";
 		moves = solution.size();
-		qDebug() << "with " << moves << " moves";
+		// qDebug() << "with " << moves << " moves";
 	}
 	emit workDone();
 }
@@ -275,7 +271,7 @@ void	NPuzzle::Agent::setAsForwardGoal(
 	auto	_inversions = Problem::polarity(grid, size);
 	p.inversions_at_goal = _inversions.first;
 	p.polarity_at_goal = _inversions.second;
-	qDebug() << "Inversions at goal: " << p.inversions_at_goal;
+	// qDebug() << "Inversions at goal: " << p.inversions_at_goal;
 
 	// filling map
 	for (size_t i = 0; i < size; i++) {

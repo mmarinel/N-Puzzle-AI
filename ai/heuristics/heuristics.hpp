@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:01:18 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/23 00:04:46 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/02 20:04:42 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,28 @@ class	t_Iordering_func
 public:
 	virtual uint8_t		f_val(const Node* n) const = 0;
 	virtual uint8_t		h(const Node* n) const = 0;
+	virtual uint8_t		g(const Node* n) const = 0;
 	virtual bool		cmp(const Node* n1, const Node* n2) const = 0;
 };
 
 template <typename H>
-class t_ordering_func: public t_Iordering_func
+class t_RbsOrdering_func: public t_Iordering_func
 {
 public:
 	virtual uint8_t			f_val(const Node* n) const override {
-		return n->pCost + H::getInstance()(n);
+		if (-1 == n->f)
+			const_cast<Node*>(n)->f = g(n) + H::getInstance()(n);
+		return n->f;
 	}
 
 	virtual uint8_t	h(const Node* n) const override {
 		return H::getInstance()(n);
 	}
 
+	virtual uint8_t	g(const Node* n) const override {
+		return n->pCost;
+	}
+	
 	virtual bool	cmp(const Node* n1, const Node* n2) const override {
 		return f_val(n1) > f_val(n2);
 	}
@@ -67,7 +74,7 @@ public:
 
 
 
-class t_manhattan_score: public t_ordering_func<t_manhattan_score>
+class t_manhattan_score: public t_RbsOrdering_func<t_manhattan_score>
 {
 public:
 	uint8_t	operator() (const Node* n) const;
@@ -77,7 +84,7 @@ private:
 	t_manhattan_score();
 };
 
-class t_linear_conflict_score: public t_ordering_func<t_linear_conflict_score>
+class t_linear_conflict_score: public t_RbsOrdering_func<t_linear_conflict_score>
 {
 public:
 	uint8_t	operator() (const Node* n) const;
@@ -87,7 +94,7 @@ private:
 	t_linear_conflict_score();
 };
 
-class t_corner_tiles_score: public t_ordering_func<t_corner_tiles_score>
+class t_corner_tiles_score: public t_RbsOrdering_func<t_corner_tiles_score>
 {
 public:
 	uint8_t	operator() (const Node* n) const;
@@ -98,7 +105,7 @@ private:
 };
 
 class t_misplaced_tiles_score:
-	public t_ordering_func<t_misplaced_tiles_score>
+	public t_RbsOrdering_func<t_misplaced_tiles_score>
 {
 public:
 	uint8_t	operator() (const Node* n) const;
@@ -108,7 +115,7 @@ private:
 	t_misplaced_tiles_score();
 };
 
-class t_gaschnig_score: public t_ordering_func<t_gaschnig_score>
+class t_gaschnig_score: public t_RbsOrdering_func<t_gaschnig_score>
 {
 public:
 	uint8_t	operator() (const Node* n) const;
@@ -118,7 +125,7 @@ private:
 	t_gaschnig_score();
 };
 
-class t_coalesce_score: public t_ordering_func<t_coalesce_score>
+class t_coalesce_score: public t_RbsOrdering_func<t_coalesce_score>
 {
 public:
 	uint8_t	operator() (const Node* n) const;

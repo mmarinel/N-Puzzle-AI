@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 16:55:55 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/02 12:28:56 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,13 +195,7 @@ private:
 			);
 
 public:
-	Agent(
-		const std::vector<std::vector<Tile> >& config,
-		const size_t size,
-		uint8_t	x_empty,
-		uint8_t	y_empty,
-		t_heuristic h
-	);
+	Agent();
 	~Agent();
 	
 	void			run() override;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/29 20:33:58 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/02 22:47:26 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,15 @@ Problem::result(const State& s, t_action a) const
 	// Updating empty tile info
 	result->i_empty = moveTileOldPos.first;
 	result->j_empty = moveTileOldPos.second;
+	
+	// heuristic values init
+	result->hCost = -1;
+	result->hManhattan = -1;
+	result->hLinearConflict = -1;
+	result->hCornerTiles = -1;
+	result->hMisplacedTiles = -1;
+	result->hGaschnig = -1;
+	result->hMax = -1;
 	
 	return (
 		result

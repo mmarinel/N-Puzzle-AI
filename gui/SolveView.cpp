@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SolveView.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/29 21:58:16 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/02 16:53:46 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 SolveView::SolveView(QWidget* parent): QVBoxLayout{parent},
 solving{false},
 executing{false},
+agent{nullptr},
 doing{},
 undoing{}
 {
@@ -239,13 +240,7 @@ void	SolveView::startSolving()
 	this->solving = true;
 	btns_stacked->setCurrentIndex(2);
 
-	agent = new NPuzzle::Agent(
-		BoardState::getInstance().board,
-		BoardState::getInstance().size,
-		BoardState::getInstance().x_empty,
-		BoardState::getInstance().y_empty,
-		UIState::getInstance().h
-	);
+	agent = new NPuzzle::Agent();
 	QObject::connect(
 		agent, &NPuzzle::Agent::workDone,
 		this, &SolveView::workDone
