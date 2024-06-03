@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/02 22:45:55 by mmarinel         ###   ########.fr       */
+/*   Updated: 2024/06/03 22:04:49 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,22 @@
 
 #include <algorithm>
 #include <cmath>
+
+/******STATIC NON-CLASS DECLARATIONS***************/
+int		calculateConflictsOnRow(
+			const State::t_configuration& configuration,
+			int size,
+			int row,
+			const Problem& p
+		);
+int		calculateConflictsOnColumn(
+			const State::t_configuration& configuration,
+			int size,
+			int column,
+			const Problem& p
+		);
+/******END of static non-clas declarations*******/
+
 
 uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 {
@@ -71,6 +87,7 @@ uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 {
 	int							score;
+	int							old_adjustment;
 	int							adjustment;
 	std::pair<uint8_t, uint8_t>	goalPosition;
 	int							manhattan_score;
@@ -146,126 +163,51 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 		else
 		{
 			// Adjusting linear conflict
-				//old adjustment
-			adjustment = n->parent->s->hLinearConflict - n->parent->s->hManhattan;
-			goalPosition = n->p.goal.at(n->s->configuration[n->parent->s->i_empty][n->parent->s->j_empty]);
-			int	goalCol = goalPosition.second;
-			int	goalRow = goalPosition.first;
-			int	movedTileJ;
-			int	movedTileI;
-			int	increment = 0;
+			old_adjustment			= n->parent->s->hLinearConflict - n->parent->s->hManhattan;
+			int	oldAdjustmentOnLine	= 0;
+			int	newAdjustmentOnLine	= 0;
+
+			/**
+			 * horizontal/vertical moves preserve the relative order on row/columns
+			 * (since we are just moving the tile into the adjacent horizontal/vertical spot without touching
+			 * the other horizontally/vertically neighbouring tiles)
+			 * 
+			 * The only order which gets messed up, is the one on columns for horizontal movements,
+			 * and the one on rows for vertical movements.
+			 * 
+			 */
 			if (n->parent->s->j_empty != n->s->j_empty)//Horizontal Move
 			{
-				/**
-				 * Horizontal adjustment for tile has not changed since moving one tile
-				 * horizontally onto the blank doesn't change the relative order
-				 * with respect to other tiles...
-				 * 
-				 * When moving horizontally/vertically, we only need to update the adjustment
-				 * relative to column/rows.
-				 */
-				if (n->parent->s->j_empty == goalCol)//Adding conflicts
-				{
-					movedTileJ = n->parent->s->j_empty;
-					movedTileI = n->parent->s->i_empty;
-					increment = +2;
-				}
-				else if (n->s->j_empty == goalCol)//Removing conflicts
-				{
-					movedTileJ = n->s->j_empty;
-					movedTileI = n->s->i_empty;
-					increment = -2;
-				}
-				// STEP 1: I need to know how many tiles behind me need/needed to move to make place for me
-				int	i;
-				for (i = 0; i < movedTileI && increment != 0; i++)
-				{
-					if (0 == n->s->configuration[i][goalCol])
-						continue ;
-					int		goalRowforTile = n->p.goal.at(n->s->configuration[i][goalCol]).first;
-					int		goalColforTile = n->p.goal.at(n->s->configuration[i][goalCol]).second;
-					if (movedTileJ != goalColforTile)
-						continue ;
-					if (
-						(i < movedTileI && goalRowforTile > goalPosition.first )// ||
-						// (i > movedTileI && goalRowforTile < goalPosition.first )
-					)
-					{
-						adjustment = adjustment + increment;
-					}
-				}
-				// STEP 2: I need to know if I need/needed to move to make place for some tiles currently ahead of me
-						//(i.e.: if there is at least one conflict ahead)
-				for (; i < n->s->size && increment != 0; i++)
-				{
-					if (0 == n->s->configuration[i][goalCol])
-						continue ;
-					int		goalRowforTile = n->p.goal.at(n->s->configuration[i][goalCol]).first;
-					int		goalColforTile = n->p.goal.at(n->s->configuration[i][goalCol]).second;
-					if (movedTileJ != goalColforTile)
-						continue ;
-					if (
-						// (i < movedTileI && goalRowforTile > goalPosition.first ) ||
-						(i > movedTileI && goalRowforTile < goalPosition.first )
-					)
-					{
-						adjustment = adjustment + increment;
-						break;
-					}
-				}
+				oldAdjustmentOnLine = calculateConflictsOnColumn(
+					n->parent->s->configuration,
+					n->s->size,
+					n->s->j_empty,//where there was the moved tile, now we have an empty spot
+					n->p
+				);
+				newAdjustmentOnLine = calculateConflictsOnColumn(
+					n->s->configuration,
+					n->s->size,
+					n->parent->s->j_empty,
+					n->p
+				);
+
 			}
 			else//vertical move
 			{
-				if (n->parent->s->i_empty == goalRow)//Adding conflicts
-				{
-					movedTileJ = n->parent->s->j_empty;
-					movedTileI = n->parent->s->i_empty;
-					increment = +2;
-				}
-				else if (n->s->i_empty == goalRow)//Removing conflicts
-				{
-					movedTileJ = n->s->j_empty;
-					movedTileI = n->s->i_empty;
-					increment = -2;
-				}
-				// STEP 1: I need to know how many tiles behind me need/needed to move to make place for me
-				int	j;
-				for (j = 0; j < movedTileJ && increment != 0; j++)
-				{
-					if (0 == n->s->configuration[goalRow][j])
-						continue ;
-					int		goalColforTile = n->p.goal.at(n->s->configuration[goalRow][j]).second;
-					int		goalRowforTile = n->p.goal.at(n->s->configuration[goalRow][j]).first;
-					if (movedTileI != goalRowforTile)
-						continue ;
-					if (
-						(j < movedTileJ && goalColforTile > goalPosition.second ) //||
-						// (j > movedTileJ && goalColforTile < goalPosition.second )
-					)
-					{
-						adjustment = adjustment + increment;
-					}
-				}
-				// STEP 2: I need to know if I need/needed to move to make place for some tiles currently ahead of me
-						//(i.e.: if there is at least one conflict ahead)
-				for (; j < n->s->size && increment != 0; j++)
-				{
-					if (0 == n->s->configuration[goalRow][j])
-						continue ;
-					int		goalColforTile = n->p.goal.at(n->s->configuration[goalRow][j]).second;
-					int		goalRowforTile = n->p.goal.at(n->s->configuration[goalRow][j]).first;
-					if (movedTileI != goalRowforTile)
-						continue ;
-					if (
-						// (j < movedTileJ && goalColforTile > goalPosition.second ) ||
-						(j > movedTileJ && goalColforTile < goalPosition.second )
-					)
-					{
-						adjustment = adjustment + increment;
-						break;
-					}
-				}
+				oldAdjustmentOnLine = calculateConflictsOnRow(
+					n->parent->s->configuration,
+					n->s->size,
+					n->s->i_empty,
+					n->p
+				);
+				newAdjustmentOnLine = calculateConflictsOnRow(
+					n->s->configuration,
+					n->s->size,
+					n->parent->s->i_empty,
+					n->p
+				);
 			}
+			adjustment = old_adjustment - oldAdjustmentOnLine + newAdjustmentOnLine;
 			manhattan_score = t_manhattan_score::getInstance()(n);
 		}
 		const_cast<Node*>(n)->s->hLinearConflict = manhattan_score + adjustment;
@@ -532,3 +474,96 @@ const NPuzzle::t_coalesce_score&	NPuzzle::t_coalesce_score::getInstance()
 }
 
 NPuzzle::t_coalesce_score::t_coalesce_score() {}
+
+
+/*****STATIC NON-CLASS DECLARATIONS*****/
+
+int		calculateConflictsOnRow(
+			const State::t_configuration& configuration,
+			int size,
+			int row,
+			const Problem& p
+		)
+{
+	int								adjustment = 0;
+	int								k, t;
+	std::pair<uint8_t, uint8_t>		goalPos;
+	uint8_t							goalRow;
+	uint8_t							goalCol;
+	std::pair<uint8_t, uint8_t>		goalPosForTile;
+	uint8_t							goalRowForTile;
+	uint8_t							goalColForTile;
+
+	for (k = 0; k < size; k++)
+	{
+		if (0 == configuration[row][k])
+			continue ;
+		goalPos = p.goal.at(configuration[row][k]);
+		goalRow = goalPos.first;
+		goalCol = goalPos.second;
+		if (row != goalRow)
+			continue ;
+		for (t = k + 1; t < size; t++)
+		{
+			if (0 == configuration[row][t])
+				continue ;
+			goalPosForTile = p.goal.at(configuration[row][t]);
+			goalRowForTile = goalPosForTile.first;
+			goalColForTile = goalPosForTile.second;
+			if (row != goalRowForTile)
+				continue ;
+			
+			if (goalCol > goalColForTile)
+			{//tile configuration[row][k] needs to move to make place for tile configuration[row][t]
+				adjustment += 2;
+				break ;
+			}
+		}
+	}
+	return adjustment;
+}
+
+int		calculateConflictsOnColumn(
+			const State::t_configuration& configuration,
+			int size,
+			int column,
+			const Problem& p
+		)
+{
+	int								adjustment = 0;
+	int								k, t;
+	std::pair<uint8_t, uint8_t>		goalPos;
+	uint8_t							goalRow;
+	uint8_t							goalCol;
+	std::pair<uint8_t, uint8_t>		goalPosForTile;
+	uint8_t							goalRowForTile;
+	uint8_t							goalColForTile;
+
+	for (k = 0; k < size; k++)
+	{
+		if (0 == configuration[k][column])
+			continue ;
+		goalPos = p.goal.at(configuration[k][column]);
+		goalRow = goalPos.first;
+		goalCol = goalPos.second;
+		if (column != goalCol)
+			continue ;
+		for (t = k + 1; t < size; t++)
+		{
+			if (0 == configuration[t][column])
+				continue ;
+			goalPosForTile = p.goal.at(configuration[t][column]);
+			goalRowForTile = goalPosForTile.first;
+			goalColForTile = goalPosForTile.second;
+			if (column != goalColForTile)
+				continue ;
+			
+			if (goalRow > goalRowForTile)
+			{//tile configuration[k][column] needs to move to make place for tile configuration[t][column]
+				adjustment += 2;
+				break ;
+			}
+		}
+	}
+	return adjustment;
+}
