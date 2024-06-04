@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SolveView.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/02 16:53:46 by mmarinel         ###   ########.fr       */
+/*   Updated: 2024/06/04 20:11:08 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,18 @@
 
 #include <functional>
 #include <sstream>
+
+/**
+ * @brief key=Velocity value=Interval length
+ * 
+ */
+std::map<std::string, int>
+SolveView::velocities = {
+	{"SLOW", 1000},
+	{"NORMAL", 500},
+	{"FAST", 250},
+	{"SUPER FAST", 100},
+};
 
 SolveView::SolveView(QWidget* parent): QVBoxLayout{parent},
 solving{false},
@@ -120,14 +132,33 @@ undoing{}
 	output		->setMidLineWidth(3);
 	output_box->addWidget(output);
 
+	speedBox = new QWidget{};
+	speedBox->setLayout(new QHBoxLayout{});
+	speed_combo = new QComboBox{
+		static_cast<QWidget*>(parent)
+	};
+
+	for (auto& pair: SolveView::velocities)
+	{
+		speed_combo->addItem(
+			pair.first.c_str()
+		);
+	}
+	speed_combo->setFixedWidth(WIDTH / 8);
+	speed_combo->setCurrentIndex(0);
+	speedBox->layout()->addWidget(speed_combo);
+	speedBox->layout()->setAlignment(Qt::AlignCenter);
+	
 	// Adding to the vertical centered layout
 	this->addLayout(board_box);
 	this->addWidget(btns_stacked);
+	this->addWidget(speedBox);
 	this->addLayout(output_box);
 
 	// Setting visibilities
 	second_window->setVisible(false);
 	board->setVisible(false);
+	speed_combo->setVisible(false);
 	
 	// Controller
 	QObject::connect(
@@ -150,6 +181,18 @@ undoing{}
 		[this]() -> void {
 			executing = false;
 			moveTile(doing, undoing);
+		}
+	);
+	QObject::connect(
+		speed_combo, &QComboBox::activated,
+		[this]() {
+			int		new_interval = SolveView::velocities.at(
+				speed_combo->itemText(
+					speed_combo->currentIndex()
+				).toStdString()
+			);
+
+			timer.setInterval(new_interval);
 		}
 	);
 	QObject::connect(
@@ -186,12 +229,21 @@ void	SolveView::workDone()
 		// replacing loading animation with interactive buttons
 	btns_stacked->setCurrentIndex(1);
 	agent->wait(QDeadlineTimer::Forever);
+		// showing velocity combo box
+	speed_combo->setVisible(true);
+
+	QString		oldText = output->toPlainText();
+	output->setText("");
 
 	//Calculating Metrics
 	uint64_t	before_ns = (before.tv_sec * 1000000000) + before.tv_nsec;
 	uint64_t	after_ns = (after.tv_sec * 1000000000) + after.tv_nsec;
 	int64_t		elapsed_sec = (after_ns - before_ns) / 1000000000;
 	int64_t		elapsed_ns = (after_ns - before_ns) % 1000000000;
+	int64_t		elapsed_minutes = elapsed_sec / 60;
+				elapsed_sec = elapsed_sec % 60;
+	int64_t		elapsed_hours = elapsed_minutes / 60;
+				elapsed_minutes = elapsed_minutes % 60;
 	int64_t		elapsed_ms = (elapsed_ns) / 1000000;
 				elapsed_ns = (elapsed_ns) % 1000000;
 
@@ -217,6 +269,8 @@ void	SolveView::workDone()
 	}
 	
 	ss << "Elapsed time" << std::endl;
+	ss << "hrs: " << elapsed_hours << std::endl;
+	ss << "mins: " << elapsed_minutes << std::endl;
 	ss << "sec: " << elapsed_sec << std::endl;
 	ss << "ms: " << elapsed_ms << std::endl;
 	ss << "ns: " << elapsed_ns << std::endl << std::endl;
@@ -224,6 +278,7 @@ void	SolveView::workDone()
 	ss << "Time Complexity: " << NPuzzle::Agent::OpenSetNodeQueue::nbr_selected << " nodes" << std::endl;
 	ss << "Nodes instances at end of program: " << Node::instances << std::endl;
 	output->append(ss.str().c_str());
+	output->append(oldText);
 
 	// deleting the agent
 	QObject::disconnect(
@@ -356,7 +411,12 @@ void	SolveView::play_stop()
 				moveTile(doing, undoing);
 			}
 		);
-		timer.setInterval(500);
+		int		interval = SolveView::velocities.at(
+			speed_combo->itemText(
+				speed_combo->currentIndex()
+			).toStdString()
+		);
+		timer.setInterval(interval);
 		timer.start();
 		executing = true;
 	}
@@ -437,6 +497,25 @@ void	SolveView::start()
 			board->setVisible(true);
 		}
 	}
+	// Display taken choices
+	std::stringstream	ss;
+	
+	if (UIState::getInstance().atRandom)
+		ss << "Chosen file: at random" << std::endl;
+	else
+		ss << "Chosen file: " << UIState::getInstance().boardFileName.toStdString() << std::endl;
+	for (const auto& pair: NPuzzle::hfromString)
+	{
+		if (pair.second == UIState::getInstance().h)
+		{
+			ss << "Chosen heuristic: " << pair.first << std::endl;
+			break ;
+		}
+	}
+	output->setText(ss.str().c_str());
+	
+	// disabling velocity combo box
+	speed_combo->setVisible(false);
 }
 
 void	SolveView::close()

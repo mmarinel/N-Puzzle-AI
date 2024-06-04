@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SolveView.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 19:11:22 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:11:09 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/04 17:59:14 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QComboBox>
 #include <QStackedWidget>
 #include <BoardView.hpp>
 #include <QTextEdit>
@@ -25,6 +26,7 @@
 #include "Content.hpp"
 #include "Agent.hpp"
 
+#include <map>
 #include <ctime>
 
 #define THRESHOLD_FOR_NEW_WINDOW 9
@@ -44,6 +46,7 @@ private:
 	QPushButton*		playforward_btn;
 	QLabel*				loading_lbl;
 	QMovie*				gif;
+	QComboBox*			speed_combo;
 
 	bool				solving;
 	bool				executing;
@@ -54,6 +57,7 @@ private:
 	QWidget*			solve_btn_box;
 	QWidget*			play_box;
 	QWidget*			loading_lbl_box;
+	QWidget*			speedBox;
 
 	NPuzzle::Agent*		agent;
 	struct timespec		before;
@@ -61,6 +65,9 @@ private:
 	QTimer				timer;
 	Problem::Actions	doing;
 	Problem::Actions	undoing;
+	
+	static std::map<std::string, int>
+						velocities;
 
 public:
 	SolveView(QWidget* parent=nullptr);
