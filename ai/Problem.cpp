@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/02 22:47:26 by mmarinel         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:21:34 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ Problem::result(const State& s, t_action a) const
 {
 	State*		result = new State{s};//exact copy of parent
 	Tile&		empty_tile = result->configuration[result->i_empty][result->j_empty];
-	std::pair<uint8_t,  uint8_t>
+	std::pair<int, int>
 				moveTileOldPos = {
 					// i
 					t_action::UP == a
@@ -118,7 +118,7 @@ Problem::result(const State& s, t_action a) const
 					? result->j_empty - 1
 					: (t_action::RIGHT == a ? result->j_empty + 1 : result->j_empty)
 				};
-	std::pair<uint8_t, uint8_t>
+	std::pair<int, int>
 				moveTileNewPos = {
 					result->i_empty, result->j_empty
 				};

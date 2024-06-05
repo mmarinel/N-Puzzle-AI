@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:17:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 18:29:17 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/05 13:17:13 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	generate_board();
  * @param nbr last tile number to put
  * @return (i,j) coordinates of empty tile
  */
-std::pair<uint8_t, uint8_t>
+std::pair<int, int>
 fillGridAsGoal(
 	State::t_configuration& grid,
 	int size,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Tile.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 18:09:13 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/16 22:44:01 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/05 10:17:39 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,16 @@
 
 #include <string>
 
+//TODO
+//TODO 1. togliere tutti uin8_t (per puzzle grandi: calcola sia male le euristiche che non riesce a descrivere tiles > 255)
+//TODO 2. gestire new_window.
+//TODO
+
+
 class Tile
 {
 private:
-	uint8_t		nbr;
+	int			nbr;
 	bool		empty;
 	
 public:
@@ -31,12 +37,12 @@ public:
 	 * 
 	 * @param _nbr 
 	 */
-	Tile(uint8_t _nbr);
+	Tile(int _nbr);
 	Tile(const Tile&);
 	Tile&	operator=(const Tile& other);
 	bool	operator==(const Tile& other);
 	
 	bool	isEmpty() const;
-	operator uint8_t() const;
+	operator int() const;
 	operator std::string() const;
 };

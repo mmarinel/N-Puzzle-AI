@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/30 18:30:10 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/05 10:27:27 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ bool	NPuzzle::parse_file(QString filepath)
 	QStringList	next_row;
 	int			i = 0, j = 0;
 	bool		ok;
-	size_t		size = std::string::npos;
+	long int	size = std::string::npos;
 	Tile		tile;
 	size_t		parsed_elements_count = 0;
 
@@ -57,7 +57,7 @@ bool	NPuzzle::parse_file(QString filepath)
 			continue ;
 		next_row = parts[0].trimmed().split(QRegularExpression("[,\\s]+"));
 		// size not parsed yet
-		if (std::string::npos == size)
+		if (std::string::npos == static_cast<unsigned long>(size))
 		{
 			// there are multiple numbers for the size line; ergo not a size line
 			if(1 != next_row.length())
@@ -74,7 +74,7 @@ bool	NPuzzle::parse_file(QString filepath)
 		}
 		// parsing next row
 		// invalid row count
-		if (size != static_cast<size_t>(next_row.length()))
+		if (size != next_row.length())
 			return false;
 		for (QString nbr: next_row)
 		{
@@ -111,7 +111,7 @@ void	NPuzzle::generate_board()
 	std::vector<t_action>	v( NPuzzle::shuffle_moves);
 	bool					solvable = UIState::getInstance().atRandomSolvable;
 	State::t_configuration	goal_conf;
-	std::pair<uint8_t, uint8_t>
+	std::pair<int, int>
 							blank_pos;
 
 	goal_conf.clear();
@@ -182,7 +182,7 @@ void	NPuzzle::generate_board()
 	BoardState::getInstance().x_empty = blank_pos.second;
 }
 
-std::pair<uint8_t, uint8_t>
+std::pair<int, int>
 NPuzzle::fillGridAsGoal(
 	State::t_configuration& grid,
 	int size,

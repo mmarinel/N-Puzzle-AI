@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/02 12:28:56 by mmarinel         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:21:44 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ private:
 	 */
 	void	setAsForwardGoal(
 		Problem& p,
-		std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
+		std::map<int, std::pair<int, int>>& state,
 		size_t size
 	);
 	const std::vector<t_action>

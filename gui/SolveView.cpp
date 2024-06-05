@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/04 20:11:08 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/04 22:31:53 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,7 +383,13 @@ void			SolveView::moveTile(
 		empty_tile = tile;
 		tile = 0;
 	}
-	this->board->repaint();
+	if (BoardState::getInstance().size < THRESHOLD_FOR_NO_GRID)
+	{
+		if (BoardState::getInstance().size < THRESHOLD_FOR_NEW_WINDOW)
+			this->board->repaint();
+		else
+			this->new_win_board->repaint();
+	}
 }
 
 void	SolveView::play_stop()

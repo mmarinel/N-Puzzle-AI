@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/03 22:04:49 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/05 10:20:34 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ int		calculateConflictsOnColumn(
 /******END of static non-clas declarations*******/
 
 
-uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
+int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 {
-	uint8_t						score;
-	std::pair<uint8_t, uint8_t>	goalPosition;
+	int						score;
+	std::pair<int, int>	goalPosition;
 	
 	if (-1 != n->s->hManhattan)
 		score = n->s->hManhattan;
@@ -43,9 +43,9 @@ uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 		if (nullptr == n->parent)
 		{
 			score = 0;
-			for (uint8_t i = 0; i < n->s->size; i++)
+			for (int i = 0; i < n->s->size; i++)
 			{
-				for (uint8_t j = 0; j < n->s->size; j++)
+				for (int j = 0; j < n->s->size; j++)
 				{
 					if (0 != n->s->configuration[i][j])
 					{
@@ -61,12 +61,12 @@ uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 		}
 		else
 		{
-			uint8_t		x_movedTile = n->parent->s->j_empty;
-			uint8_t		y_movedTile = n->parent->s->i_empty;
-			uint8_t		movedTile = n->s->configuration[y_movedTile][x_movedTile];
+			int		x_movedTile = n->parent->s->j_empty;
+			int		y_movedTile = n->parent->s->i_empty;
+			int		movedTile = n->s->configuration[y_movedTile][x_movedTile];
 						goalPosition = n->p.goal.at(movedTile);
-			uint8_t		oldScore_movedTile;
-			uint8_t		newScore_movedTile;
+			int		oldScore_movedTile;
+			int		newScore_movedTile;
 
 			oldScore_movedTile = (
 				std::abs(n->s->i_empty - goalPosition.first) +
@@ -84,12 +84,12 @@ uint8_t	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 	return score;
 }
 
-uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
+int	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 {
 	int							score;
 	int							old_adjustment;
 	int							adjustment;
-	std::pair<uint8_t, uint8_t>	goalPosition;
+	std::pair<int, int>	goalPosition;
 	int							manhattan_score;
 	
 	if (-1 != n->s->hLinearConflict)
@@ -100,9 +100,9 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 		{
 			adjustment = 0;
 			manhattan_score = 0;
-			for (uint8_t i = 0; i < n->s->size; i++)
+			for (int i = 0; i < n->s->size; i++)
 			{
-				for (uint8_t j = 0; j < n->s->size; j++)
+				for (int j = 0; j < n->s->size; j++)
 				{
 					if (0 != n->s->configuration[i][j])
 					{
@@ -217,7 +217,7 @@ uint8_t	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 	return score;
 }
 
-uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
+int	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 {
 	int		score;
 	int		adjustment;
@@ -238,10 +238,10 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 		score = 0;
 		adjustment = 0;
 		//top-left corner
-		if (std::pair<uint8_t, uint8_t>(0, 0) != tileInTopLeftGoalPos)
+		if (std::pair<int, int>(0, 0) != tileInTopLeftGoalPos)
 		{
 			if (
-				std::pair<uint8_t, uint8_t>{0, 1} == n->p.goal.at(n->s->configuration[0][1]) &&
+				std::pair<int, int>{0, 1} == n->p.goal.at(n->s->configuration[0][1]) &&
 				0 != tileInTopLeftGoalPos.first
 			)//next-to tile in next col cannot have row conflicts because is in its goal pos
 			//and the only conflict that can have is if the tile behind was in its goal row but wrong column
@@ -249,49 +249,49 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 			//since the corner tile is not in its goal position.
 				adjustment += 2;
 			if (
-				std::pair<uint8_t, uint8_t>{1, 0} == n->p.goal.at(n->s->configuration[1][0]) &&
+				std::pair<int, int>{1, 0} == n->p.goal.at(n->s->configuration[1][0]) &&
 				0 != tileInTopLeftGoalPos.second
 			)//next-to tile in next row cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 		}
 		//top-right corner
-		if (std::pair<uint8_t, uint8_t>(0, n->s->size - 1) != tileInTopRightGoalPos)
+		if (std::pair<int, int>(0, n->s->size - 1) != tileInTopRightGoalPos)
 		{
 			if (
-				std::pair<uint8_t, uint8_t>{0, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[0][(n->s->size - 1) - 1]) &&
+				std::pair<int, int>{0, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[0][(n->s->size - 1) - 1]) &&
 				0 != tileInTopRightGoalPos.first
 			)//next-to tile in next col cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 			if (
-				std::pair<uint8_t, uint8_t>{1, n->s->size - 1} == n->p.goal.at(n->s->configuration[1][n->s->size - 1]) &&
+				std::pair<int, int>{1, n->s->size - 1} == n->p.goal.at(n->s->configuration[1][n->s->size - 1]) &&
 				n->s->size - 1 != tileInTopRightGoalPos.second
 			)//next-to tile in next row cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 		}
 		//bottom-left corner
-		if (std::pair<uint8_t, uint8_t>(n->s->size - 1, 0) != tileInBottomLeftGoalPos)
+		if (std::pair<int, int>(n->s->size - 1, 0) != tileInBottomLeftGoalPos)
 		{
 			if (
-				std::pair<uint8_t, uint8_t>{(n->s->size - 1) - 1, 0} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][0]) &&
+				std::pair<int, int>{(n->s->size - 1) - 1, 0} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][0]) &&
 				0 != tileInBottomLeftGoalPos.second
 			)//next-to tile in next row cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 			if (
-				std::pair<uint8_t, uint8_t>{n->s->size - 1, 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][1]) &&
+				std::pair<int, int>{n->s->size - 1, 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][1]) &&
 				n->s->size - 1 != tileInBottomLeftGoalPos.first
 			)//next-to tile in next col cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 		}
 		//bottom-right corner
-		if (std::pair<uint8_t, uint8_t>(n->s->size - 1, n->s->size - 1) != tileInBottomRightGoalPos)
+		if (std::pair<int, int>(n->s->size - 1, n->s->size - 1) != tileInBottomRightGoalPos)
 		{
 			if (
-				std::pair<uint8_t, uint8_t>{(n->s->size - 1) - 1, n->s->size - 1} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][n->s->size - 1]) &&
+				std::pair<int, int>{(n->s->size - 1) - 1, n->s->size - 1} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][n->s->size - 1]) &&
 				n->s->size - 1 != tileInBottomRightGoalPos.second
 			)//next-to tile in next row cannot have row conflicts because is in its goal pos
 				adjustment += 2;
 			if (
-				std::pair<uint8_t, uint8_t>{n->s->size - 1, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][(n->s->size - 1) - 1]) &&
+				std::pair<int, int>{n->s->size - 1, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][(n->s->size - 1) - 1]) &&
 				n->s->size - 1 != tileInBottomRightGoalPos.first
 			)//next-to tile in next col cannot have row conflicts because is in its goal pos
 				adjustment += 2;
@@ -304,10 +304,10 @@ uint8_t	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 	return score;
 }
 
-uint8_t	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
+int	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 {
-	uint8_t						score = 0;
-	std::pair<uint8_t, uint8_t>	goalPosition;
+	int						score = 0;
+	std::pair<int, int>	goalPosition;
 	
 	if (-1 != n->s->hMisplacedTiles)
 		score = n->s->hMisplacedTiles;
@@ -315,9 +315,9 @@ uint8_t	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 	{
 		if (nullptr == n->parent)
 		{
-			for (uint8_t i = 0; i < n->s->size; i++)
+			for (int i = 0; i < n->s->size; i++)
 			{
-				for (uint8_t j = 0; j < n->s->size; j++)
+				for (int j = 0; j < n->s->size; j++)
 				{
 					if (0 == n->s->configuration[i][j])
 						continue ;
@@ -334,9 +334,9 @@ uint8_t	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 		else
 		{
 			int		misplaced_count;
-			std::pair<uint8_t, uint8_t>
+			std::pair<int, int>
 			previousMovedTilePos = {n->s->i_empty, n->s->j_empty};
-			std::pair<uint8_t, uint8_t>
+			std::pair<int, int>
 			newMovedTilePos = {n->parent->s->i_empty, n->parent->s->j_empty};
 			auto	movedTile = n->s->configuration[newMovedTilePos.first][newMovedTilePos.second];
 
@@ -358,7 +358,7 @@ uint8_t	NPuzzle::t_misplaced_tiles_score::operator()(const Node* n) const
 	return score;
 }
 
-uint8_t	NPuzzle::t_gaschnig_score::operator()(const Node* n) const
+int	NPuzzle::t_gaschnig_score::operator()(const Node* n) const
 {
 	int		score;
 
@@ -390,7 +390,7 @@ uint8_t	NPuzzle::t_gaschnig_score::operator()(const Node* n) const
 	return score;
 }
 
-uint8_t	NPuzzle::t_coalesce_score::operator()(const Node* n) const
+int	NPuzzle::t_coalesce_score::operator()(const Node* n) const
 {
 	int		score;
 
@@ -487,12 +487,12 @@ int		calculateConflictsOnRow(
 {
 	int								adjustment = 0;
 	int								k, t;
-	std::pair<uint8_t, uint8_t>		goalPos;
-	uint8_t							goalRow;
-	uint8_t							goalCol;
-	std::pair<uint8_t, uint8_t>		goalPosForTile;
-	uint8_t							goalRowForTile;
-	uint8_t							goalColForTile;
+	std::pair<int, int>		goalPos;
+	int							goalRow;
+	int							goalCol;
+	std::pair<int, int>		goalPosForTile;
+	int							goalRowForTile;
+	int							goalColForTile;
 
 	for (k = 0; k < size; k++)
 	{
@@ -530,14 +530,14 @@ int		calculateConflictsOnColumn(
 			const Problem& p
 		)
 {
-	int								adjustment = 0;
-	int								k, t;
-	std::pair<uint8_t, uint8_t>		goalPos;
-	uint8_t							goalRow;
-	uint8_t							goalCol;
-	std::pair<uint8_t, uint8_t>		goalPosForTile;
-	uint8_t							goalRowForTile;
-	uint8_t							goalColForTile;
+	int						adjustment = 0;
+	int						k, t;
+	std::pair<int, int>		goalPos;
+	int						goalRow;
+	int						goalCol;
+	std::pair<int, int>		goalPosForTile;
+	int						goalRowForTile;
+	int						goalColForTile;
 
 	for (k = 0; k < size; k++)
 	{

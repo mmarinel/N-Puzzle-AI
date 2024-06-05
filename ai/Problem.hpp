@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/29 20:33:40 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/05 10:21:19 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ public:
 	typedef std::vector<std::vector<Tile> >	t_configuration;
 	typedef std::vector<uint64_t>		t_cols;
 public:
-	uint8_t			size;
-	uint8_t			i_empty;
-	uint8_t			j_empty;
+	int				size;
+	int				i_empty;
+	int				j_empty;
 	int				hCost;
 	int				hManhattan;
 	int				hLinearConflict;
@@ -73,7 +73,7 @@ public:
 	State		initial;
 	int			inversions_at_initial;
 	t_polarity	polarity_at_initial;
-	std::map<uint8_t, std::pair<uint8_t, uint8_t> >
+	std::map<int, std::pair<int, int> >
 				goal;//TODO make it const?
 	int			inversions_at_goal;
 	t_polarity	polarity_at_goal;

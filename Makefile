@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+         #
+#    By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/02 15:02:31 by mmarinel          #+#    #+#              #
-#    Updated: 2024/06/02 15:38:34 by mmarinel         ###   ########.fr        #
+#    Updated: 2024/06/05 22:00:45 by cy4gate_mma      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,21 +15,16 @@ NAME			:= npuzzle
 
 all: $(NAME)
 
-debug:
-	@$(MAKE) --silent .build BUILD_FLAGS="-DCMAKE_BUILD_TYPE=Debug"
+.configure:
+	@cmake -DCMAKE_BUILD_TYPE=Release -B build .
 
-solver:
-	@$(MAKE) --silent .build BUILD_FLAGS="-DCMAKE_BUILD_TYPE=Release"
-
-.build:
-	@cmake $(BUILD_FLAGS) -B build .
+build: .configure
 	@make --silent -C build
 
-run:
+run: build
 	@reset && ./bin/$(NAME) &
-	@disown
 
-$(NAME): solver run
+$(NAME): build
 
 clean:
 	@rm -rf build
@@ -39,4 +34,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re .build 
+.PHONY: all clean fclean re .configure 

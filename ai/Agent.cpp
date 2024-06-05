@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/02 22:48:25 by mmarinel         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:22:59 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,9 +215,9 @@ bool	NPuzzle::Agent::solvable(State* initial)
 	_inversions = Problem::polarity(initial->configuration, initial->size);
 	auto
 		size = initial->size;
-	uint8_t
+	int
 		blankAtGoal_row_bottom_based = size - p.y_empty_at_goal;//1-indexing
-	uint8_t
+	int
 		blankAtInitial_row_bottom_based = size - initial->i_empty;
 	
 	p.inversions_at_initial = _inversions.first;
@@ -248,7 +248,7 @@ bool	NPuzzle::Agent::solvable(State* initial)
 /* ******************************************** */
 void	NPuzzle::Agent::setAsForwardGoal(
 	Problem& p,
-	std::map<uint8_t, std::pair<uint8_t, uint8_t>>& state,
+	std::map<int, std::pair<int, int>>& state,
 	size_t size
 )
 {
@@ -289,7 +289,7 @@ NPuzzle::Agent::usefulActions(
 {
 	t_action	inverse_a = Problem::inverseAction(node->a);
 
-	for (uint8_t i = 0; i < actions.size(); i++)
+	for (size_t i = 0; i < actions.size(); i++)
 	{
 		if (inverse_a == actions[i])
 		{
