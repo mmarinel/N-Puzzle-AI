@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:20:34 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/06 23:06:07 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,36 +175,78 @@ int	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 			 * The only order which gets messed up, is the one on columns for horizontal movements,
 			 * and the one on rows for vertical movements.
 			 * 
+			 * For horizontal moves, The column of the tile and the next column of the tile
+			 * are the only ones whose conflicts are affected by the moves.
+			 * 
+			 * For vertical moves, The row of the tile and the next row of the tile
+			 * are the only ones whose conflicts are affected by the moves.
+			 * 
 			 */
 			if (n->parent->s->j_empty != n->s->j_empty)//Horizontal Move
 			{
-				oldAdjustmentOnLine = calculateConflictsOnColumn(
-					n->parent->s->configuration,
-					n->s->size,
-					n->s->j_empty,//where there was the moved tile, now we have an empty spot
-					n->p
+				oldAdjustmentOnLine = (
+					calculateConflictsOnColumn(
+						n->parent->s->configuration,
+						n->s->size,
+						n->s->j_empty,
+						n->p
+					)
+					+
+					calculateConflictsOnColumn(
+						n->parent->s->configuration,
+						n->s->size,
+						n->parent->s->j_empty,
+						n->p
+					)
 				);
-				newAdjustmentOnLine = calculateConflictsOnColumn(
-					n->s->configuration,
-					n->s->size,
-					n->parent->s->j_empty,
-					n->p
+				newAdjustmentOnLine = (
+					calculateConflictsOnColumn(
+						n->s->configuration,
+						n->s->size,
+						n->s->j_empty,
+						n->p
+					)
+					+
+					calculateConflictsOnColumn(
+						n->s->configuration,
+						n->s->size,
+						n->parent->s->j_empty,
+						n->p
+					)
 				);
 
 			}
 			else//vertical move
 			{
-				oldAdjustmentOnLine = calculateConflictsOnRow(
-					n->parent->s->configuration,
-					n->s->size,
-					n->s->i_empty,
-					n->p
+				oldAdjustmentOnLine = (
+					calculateConflictsOnRow(
+						n->parent->s->configuration,
+						n->s->size,
+						n->s->i_empty,
+						n->p
+					)
+					+
+					calculateConflictsOnRow(
+						n->parent->s->configuration,
+						n->s->size,
+						n->parent->s->i_empty,
+						n->p
+					)
 				);
-				newAdjustmentOnLine = calculateConflictsOnRow(
-					n->s->configuration,
-					n->s->size,
-					n->parent->s->i_empty,
-					n->p
+				newAdjustmentOnLine = (
+					calculateConflictsOnRow(
+						n->s->configuration,
+						n->s->size,
+						n->s->i_empty,
+						n->p
+					)
+					+
+					calculateConflictsOnRow(
+						n->s->configuration,
+						n->s->size,
+						n->parent->s->i_empty,
+						n->p
+					)
 				);
 			}
 			adjustment = old_adjustment - oldAdjustmentOnLine + newAdjustmentOnLine;
@@ -485,14 +527,14 @@ int		calculateConflictsOnRow(
 			const Problem& p
 		)
 {
-	int								adjustment = 0;
-	int								k, t;
+	int						adjustment = 0;
+	int						k, t;
 	std::pair<int, int>		goalPos;
-	int							goalRow;
-	int							goalCol;
+	int						goalRow;
+	int						goalCol;
 	std::pair<int, int>		goalPosForTile;
-	int							goalRowForTile;
-	int							goalColForTile;
+	int						goalRowForTile;
+	int						goalColForTile;
 
 	for (k = 0; k < size; k++)
 	{

@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:22:59 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/06 23:09:12 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,11 +132,12 @@ void	NPuzzle::Agent::rbfs()
 		explored.insert(initial->s);
 		result = rbfsRec(initial.get(), explored, bound);
 		if (result.failure)
-			return ;
+		{
+			emit workDone();
+			return;
+		}
 		solution = std::move(result.actions);
-		// qDebug() << "returning solution";
 		moves = solution.size();
-		// qDebug() << "with " << moves << " moves";
 	}
 	emit workDone();
 }

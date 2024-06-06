@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 13:01:18 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:18:51 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/06 00:37:15 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ public:
 	virtual int		f_val(const Node* n) const = 0;
 	virtual int		h(const Node* n) const = 0;
 	virtual int		g(const Node* n) const = 0;
-	virtual bool		cmp(const Node* n1, const Node* n2) const = 0;
+	virtual bool	cmp(const Node* n1, const Node* n2) const = 0;
 };
 
 template <typename H>

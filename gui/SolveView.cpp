@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/04 22:31:53 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/06 23:13:49 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,8 +200,11 @@ undoing{}
 		[this](){
 			if (agent)
 			{
+				QObject::disconnect(
+					agent, nullptr,
+					nullptr, nullptr
+				);
 				agent->requestInterruption();
-				// agent->terminate();
 				agent->wait();
 				delete agent;
 				agent = nullptr;
@@ -333,55 +336,50 @@ void			SolveView::moveTile(
 			);
 			play_stop();
 		}
+		qDebug() << "<<<<< END OF SEARCH >>>>>";
+		qDebug() << "";
+		qDebug() << "";
 		return ;
 	}
-	BoardState&	state = BoardState::getInstance();
-	Tile&		empty_tile = (
-			state.board[state.y_empty][state.x_empty]
-	);
+	qDebug() << "";
+	qDebug() << "Next State";
+	
+	BoardState&		state = BoardState::getInstance();
 	t_action		a = pop_queue.top();
 	pop_queue.pop();
 	push_queue.push(Problem::inverseAction(a));
 	
 	if ( t_action::UP == a )
 	{
-		Tile&	tile = (
-			state.board[state.y_empty - 1][state.x_empty]
+		state.swap(
+			state.x_empty, state.y_empty, state.x_empty, state.y_empty - 1
 		);
 		state.y_empty = state.y_empty - 1;
 		state.x_empty = state.x_empty;
-		empty_tile = tile;
-		tile = 0;
 	}
 	if ( t_action::DOWN == a )
 	{
-		Tile&	tile = (
-			state.board[state.y_empty + 1][state.x_empty]
+		state.swap(
+			state.x_empty, state.y_empty, state.x_empty, state.y_empty + 1
 		);
 		state.y_empty = state.y_empty + 1;
 		state.x_empty = state.x_empty;
-		empty_tile = tile;
-		tile = 0;
 	}
 	if ( t_action::LEFT == a )
 	{
-		Tile&	tile = (
-			state.board[state.y_empty][state.x_empty - 1]
+		state.swap(
+			state.x_empty, state.y_empty, state.x_empty - 1, state.y_empty
 		);
 		state.y_empty = state.y_empty;
 		state.x_empty = state.x_empty - 1;
-		empty_tile = tile;
-		tile = 0;
 	}
 	if ( t_action::RIGHT == a )
 	{
-		Tile&	tile = (
-			state.board[state.y_empty][state.x_empty + 1]
+		state.swap(
+			state.x_empty, state.y_empty, state.x_empty + 1, state.y_empty
 		);
 		state.y_empty = state.y_empty;
 		state.x_empty = state.x_empty + 1;
-		empty_tile = tile;
-		tile = 0;
 	}
 	if (BoardState::getInstance().size < THRESHOLD_FOR_NO_GRID)
 	{
@@ -443,6 +441,10 @@ bool	SolveView::abort()
 	//TODO handle reset of AI state? && BoardState
 	if (agent)
 	{
+		QObject::disconnect(
+			agent, nullptr,
+			nullptr, nullptr
+		);
 		agent->requestInterruption();
 		agent->wait();
 		delete agent;
