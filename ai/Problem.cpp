@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 22:31:59 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:21:34 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/08 17:43:25 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,10 +217,10 @@ Problem::inverseAction(const t_action& a)
 	return inverse_a;
 }
 
-std::pair<int, Problem::t_polarity>
+std::pair<unsigned long, Problem::t_polarity>
 Problem::polarity(const State::t_configuration& conf, int size)
 {
-	int				inversions = 0;
+	unsigned long	inversions = 0;
 	int				firstNext_i;
 	int				firstNext_j;
 	int				current_i;

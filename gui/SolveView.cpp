@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SolveView.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/06 23:13:49 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/08 17:39:10 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,9 @@ undoing{}
 	output		->setFrameStyle(QFrame::Box | QFrame::Sunken);
 	output		->setLineWidth(3);
 	output		->setMidLineWidth(3);
+	output		->setWordWrapMode(QTextOption::NoWrap);
+	output		->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+	output		->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	output_box->addWidget(output);
 
 	speedBox = new QWidget{};
@@ -336,13 +339,12 @@ void			SolveView::moveTile(
 			);
 			play_stop();
 		}
-		qDebug() << "<<<<< END OF SEARCH >>>>>";
-		qDebug() << "";
-		qDebug() << "";
+		output->append("<<<<< END OF SEARCH >>>>>");
+		output->append("\n");
+		output->append("\n");
 		return ;
 	}
-	qDebug() << "";
-	qDebug() << "Next State";
+	output->append("Next State");
 	
 	BoardState&		state = BoardState::getInstance();
 	t_action		a = pop_queue.top();
@@ -388,6 +390,9 @@ void			SolveView::moveTile(
 		else
 			this->new_win_board->repaint();
 	}
+	output->append(
+		std::move(BoardState::getInstance().toString())
+	);
 }
 
 void	SolveView::play_stop()
@@ -488,10 +493,13 @@ bool	SolveView::abort()
 
 void	SolveView::start()
 {
+	// generate board if random generation was required
+	if (UIState::getInstance().atRandom)
+		NPuzzle::generate_board();
+	
+	// Display in-window or out-window board VIEW
 	if (BoardState::getInstance().size < THRESHOLD_FOR_NO_GRID)
 	{
-		if (UIState::getInstance().atRandom)
-			NPuzzle::generate_board();
 		if (BoardState::getInstance().size >= THRESHOLD_FOR_NEW_WINDOW)
 		{
 			new_win_board->setup();
@@ -505,6 +513,9 @@ void	SolveView::start()
 			board->setVisible(true);
 		}
 	}
+	else
+		output->setMinimumHeight(HEIGHT - 200);
+	
 	// Display taken choices
 	std::stringstream	ss;
 	

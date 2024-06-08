@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Problem.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:31:42 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:21:19 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/08 14:00:53 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,15 @@ public:
 	}	t_polarity;
 	
 public:
-	State		initial;
-	int			inversions_at_initial;
-	t_polarity	polarity_at_initial;
+	State			initial;
+	unsigned long	inversions_at_initial;
+	t_polarity		polarity_at_initial;
 	std::map<int, std::pair<int, int> >
-				goal;//TODO make it const?
-	int			inversions_at_goal;
-	t_polarity	polarity_at_goal;
-	int			x_empty_at_goal;
-	int			y_empty_at_goal;
+					goal;//TODO make it const?
+	unsigned long	inversions_at_goal;
+	t_polarity		polarity_at_goal;
+	int				x_empty_at_goal;
+	int				y_empty_at_goal;
 
 	/**
 	 * @brief in state, empty tile is 0
@@ -101,7 +101,7 @@ public:
 	 * @param state 
 	 * @return n° inversions + polarity 
 	 */
-	static std::pair<int, t_polarity>
+	static std::pair<unsigned long, t_polarity>
 				polarity(
 					const State::t_configuration& conf,
 					int size
