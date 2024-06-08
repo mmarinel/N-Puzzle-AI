@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/08 17:39:10 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/08 18:26:43 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -484,6 +484,8 @@ bool	SolveView::abort()
 	//resetting boards
 	second_window->setVisible(false);
 	board->setVisible(false);
+	board->reset();
+	new_win_board->reset();
 	//Resetting state
 	BoardState::getInstance().reset();
 	UIState::getInstance().reset();

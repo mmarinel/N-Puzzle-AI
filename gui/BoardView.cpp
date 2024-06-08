@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 18:41:36 by matteo            #+#    #+#             */
-/*   Updated: 2024/05/28 20:36:01 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/08 18:49:41 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	BoardView::setup()
 void	BoardView::reset()
 {
 	QList<QWidget*>	tiles = this->findChildren<QWidget*>(
-		QString(), Qt::FindDirectChildrenOnly
+		nullptr, Qt::FindDirectChildrenOnly
 	);
 	for (QWidget* tile: tiles)
 	{
