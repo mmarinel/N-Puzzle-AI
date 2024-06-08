@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   BoardState.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 20:59:35 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 23:35:39 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/08 13:52:19 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BoardState.hpp"
+
+#include <sstream>
 
 BoardState::BoardState(): size(0), x_empty(-1), y_empty(-1), board{}
 {
@@ -67,4 +69,21 @@ void		BoardState::reset()
 	x_empty = -1;
 	y_empty = -1;
 	board.clear();
+}
+
+QString		BoardState::toString()
+{
+	std::stringstream	ss;
+
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			ss << board[i][j];
+			ss << " ";
+		}
+		ss << std::endl;
+	}
+
+	return QString(ss.str().c_str());
 }
