@@ -3,14 +3,28 @@ An AI that can solve the N-puzzle
 
 ![](resources/images/github/NPuzzle-Board.png)
 
-This Project is about creating an AI that can solve the N-Puzzle for N=3,4,5,...
+This Project is about creating an AI that can solve the N-Puzzle for N=3,4,5,... (where N is the length of a side of the square puzzle)
 
-The N-Puzzle is a generalization of the [8-Puzzle](https://en.wikipedia.org/wiki/15_Puzzle) problem invented by a postmaster that went by the name of Noyes Palmer Chapman, in the late 19th century.
+The N-Puzzle is a generalization of the [15-Puzzle](https://en.wikipedia.org/wiki/15_Puzzle) problem invented by a postmaster that went by the name of Noyes Palmer Chapman, in the late 19th century.
+
+run it with:
+
+```
+make run
+```
+
+Ensure to have installed on your machine the following dependencies: **Qt6, cmake v. >=3.18 and make (I used GNU make v. 4.3)**
+
+</br>
 
 As far as it concerns AI, this problem is often referred to as a "toy problem", meaning one of those problems whose solutions are not really relevant for the "real" world, but can be utilized as a test ground by researchers for newly discovered algorithms.
-The N-Puzzle, in particular, is *NP-Hard*, so it's not an easy problem even if the word "toy" may make you think so; this problem has been studied a lot and it's very relevant for when it comes to evaluating the effectiveness and performance of AI search algorithms.
 
-The particular area of AI in which we are moving refers to the design of problem solving agents; for this particular project, the environment is (for obvious reasons) assumed to be observable, discrete, known and deterministic.
+The N-Puzzle, in particular, is *NP-Hard*, so it's not an easy problem to solve even if the word "toy" may make you think so.
+This problem has been studied a lot and it's very relevant for when it comes to evaluating the effectiveness and performance of AI search algorithms.
+
+The particular area of AI in which we are moving refers to the design of problem solving agents which use so called "Search" algorithms. Meaning, agents who first try to solve the problem "in their minds" and then actuate when a solution is found.
+
+For this particular project, the environment is (for obvious reasons) assumed to be observable, discrete, known and deterministic.
 With this in mind, the general high level architecture of our agent can be described by the following loop
 
 - Formulate (a Goal and Problem)
@@ -22,14 +36,15 @@ This is the matter of out project: design an efficient algorithm to search for s
 
 The precise requirements of the project are described [here](en.subject.pdf), with one of the only constraints being the use of the *A\* search algorithm* ore one of its variants.
 
-I devised a variant of the A* search algorithm; particularly: a ***Parallel Bidirectional A**** search algorithm.
+In order to prevent the excessive memory consumption of the A\* search algorithm, I used a custom implementation of the ***Recursive Best First Search*** algorithm that uses the explored set with a compressed representation of the state (the board configuration), which makes up for a faster look-up in that set.
+
 
 1. [The A* search algorithm](README.md#the-a*-search-algorithm)
 	- [Heuristic Functions For the N-Puzzle](README.md#heuristic-functions-for-the-n-puzzle)
 2. [The N-Puzzle](README.md#the-n-puzzle)
 	- [Existence of Solutions](README.md#existence-of-a-solution)
 	- [Uniqueness of Optimal Solution](README.md#uniqueness-of-optimal-solution)
-3. [The Parallel Bidirectional A* search](README.md#the-parallel-bidirectional-a*-search)
+3. [The Recursive Best First Search algorithm (RBFS)](README.md#rbfs)
 4. [Appendix](README.md#appendix)
 5. [Bibliography](README.md#bibliography)
 
