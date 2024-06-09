@@ -133,7 +133,7 @@ N.B.: from now on, we'll indicate the step_cost with the letter c.
 *Proof*: Let's in fact suppose that it were not admissible, then it would exist a path composed of k nodes such that h(n) > c(n, a1, n1) + c(n1, a2, n2) + .... + c(nk-1, ak, nk), where nk is a goal node.
 </br>
 
-But from the definition of consistency, we have h(n) <= c(n, a1, n1) + h(n1) and h(n1) <= c(n1, a2, n2) + h(n2) and so on
+But, from the definition of consistency, we have h(n) <= c(n, a1, n1) + h(n1) and h(n1) <= c(n1, a2, n2) + h(n2) and so on
 
 Therefore, h(n) <= c(n, a1, n1) + h(n1) <= c(n, a1, n1) +  c(n1, a2, n2) + h(n2) <= ... <=  c(n, a1, n1) + c(n1, a2, n2) + .... + c(nk-1, ak, nk)
 
@@ -141,6 +141,8 @@ which contradicts our previous assumption.
 
 
 Admissible heuristics, on the other hand, are not always consistent. One can observe this by artificially creating admissible heuristics for any problem that violate even just once the triangular inequality expressed by the consistency property.
+
+If you cannot see this, try reading into the following [stack overflow question](https://stackoverflow.com/questions/32906001/can-someone-give-me-an-example-of-admissible-heuristic-that-is-not-consistent)
 
 It follows that consistency is a stricter requirement than admissibility
 
