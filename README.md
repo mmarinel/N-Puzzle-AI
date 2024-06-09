@@ -177,8 +177,8 @@ Therefore, f(n') >= g(n) + h(n) = f(n)
 
 *Claim 2*: Whenever *A\** selects a node n for expansion, the optimal path to that node has been found
 
-*Proof*: Let's suppose this is not the case. As a first consequence, we have that there were two children of an ancestor of node n such that one of them was on the optimal path to the state at node n, while the other was not.
-Let's call ñ the ancestor, n1 the children that was the ancestor of n, and n2 the children that was the ancestor of n*, the node containing the same state as n that is on the optimal path.
+*Proof*: Let's suppose that this is not the case. As a first consequence, we have that there were two children of an ancestor of node n such that one of them was on the optimal path to the state contained at node n, while the other one was not.
+Let's call ñ such common ancestor, n1 the children that was the ancestor of n (the node on the sub-optimal path), and n2 the children that was the ancestor of n* (the node containing the same state as n that was on the optimal path).
 
 *Clam 1* tells us that values of f along any path are non decreasing, so
 
@@ -188,8 +188,9 @@ and
 
 f(ñ) <= f(n1) <= f(n)
 
-Moreover, since f = g + h, h is only dependant on the contained state and n* is on the optimal path, we have f(n*) <= f(n).
-In fact, g(n*) <= g(n) otherwise n would be the node on the optimal path.
+Moreover, since f = g + h and h is only dependant on the contained state and n* is on the optimal path, we have f(n*) <= f(n).
+
+In fact, g(n*) <= g(n) otherwise the node on the optimal path would be n, not n*.
 
 Therefore, we have f(n2) <= f(n*) <= f(n), which means that the children n2 would have been considered for expansion before node n, since the frontier is a priority queue ordered by increasing values of f.
 
@@ -200,7 +201,7 @@ Hence, whenever *A\** chooses a node for expansion, the optimal path to that nod
 
 *Theo*: From the two preceding observations, it follows that the sequence of nodes expanded by A* is in non decreasing order of f. Hence, the first goal node selected for expansion must be an optimal solution.
 
-*Proof*: What we just proved is that when *A\** expands a node, that node is the one on the optimal path to the state contained in that node. What we need to prove now is that the first goal node found is also the optimal one, meaning the one that it costs less to arrive to. There may be in fact many goal states, some of them only inside nodes far away in the graph while some others not.
+*Proof*: What we just proved is that when *A\** expands a node, that node is the one on the optimal path to the state contained in that node. What we need to prove now is that the first goal node found is also the optimal one, meaning the one that it costs less to arrive to. There may be in fact many goal states, some of them only inside nodes far away in the graph while some others not, and these goal states may all be different (the NPuzzle only contains one goal state, namely the final configuration. But one can have problems for which a goal state is considered to be any state that satisfies some property described by a first-order logic predicate).
 
 The first thing we observe is that, for goal nodes, f is the real cost of getting to that node as h = 0 for nodes containing goal states. Now, based on what we proved, if there was a better goal node nG2, there would be another node n' in the frontier such that f(n') <= f(nG2). Moreover, since nG2 is a better goal node and f is the real cost of getting to the node for nodes containing goal states, we also have f(nG2) < f(n), where n is the first encountered goal node. 
 
@@ -223,6 +224,8 @@ In the case of *A\** solving the N-Puzzle, it can be proven that the run time is
 Computation time is not, however, A∗’s main drawback. Because it keeps all generated
 nodes in memory,  A∗ usually runs out of space long before it runs out of time. For this reason, A∗ is not practical for many large-scale problems. There are, however, algorithms that overcome the space problem without sacrificing
 optimality or completeness, at a small cost in execution time.
+
+One of these algorithms is The ***Recursive Best First Search (RBFS)***; the algorithm I used in this project.
 
 ### Heuristic Functions For the N-Puzzle
 
