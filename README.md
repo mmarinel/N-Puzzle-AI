@@ -720,6 +720,10 @@ We stop for now as we will talk more in detail about heuristic functions in the 
 
 ## Bibliography
 
+In case of broken links, you can find a copy of these articles in the *literature* folder of this project.
+
 - "*Artificial Intelligence: A modern Approach" by Russell and Norvig (Third Edition)*
 
 - [*"Discovering Admissible Heuristics by Abstracting and Optimizing: A Transformational Approach" by Jack Mosto w and Arman d E. Prieditis*](https://web.mit.edu/6.034/wwwbob/absolver.pdf)
+
+- [*"Finding Optimal Solutions to the Twenty-Four Puzzle" by Richard E. Korf and Larry A. Taylor*](https://cdn.aaai.org/AAAI/1996/AAAI96-178.pdf) 
