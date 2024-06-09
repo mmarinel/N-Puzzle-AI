@@ -93,7 +93,7 @@ aStar(problem)
 }
 ```
 
-The difference between the *uniform cost* and *A\** search algorithms relies in the function f used to order the frontier.
+The difference between the *uniform cost* and *A\** search algorithms relies in the function f used to order the frontier from which we extract nodes for further expansion.
 
 - In the *uniform cost* search: f = g, where g is the function indicating the path cost of a node
 
@@ -101,14 +101,14 @@ The difference between the *uniform cost* and *A\** search algorithms relies in 
 
 the heuristic function is the additional problem specific information we impart to our search algorithm so that it can be guided by knowledge on the problem beyond the problem description itself. One can gather such information from experience or other techniques as discussed in the *Appendix* section.
 
-One thing to immediately notice is that, unlike g, the h component of our f function only depends on the state at node n, not the node itself.
-Think about straight line distances when used as heuristic information in a route finding problem. When we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city can be used as the estimated cost of the cheapest path between them, independently on the way one got to the starting city.
+One thing to immediately notice is that, unlike g, the h component of our f function only depends on the state at node n, not the node itself and the path we followed to get there.
+Think about the problem of getting from city A to city B using, preferably, the shortest path between them. How can we add information that suggests the algorithm which city, among a set of neighbouring cities, is closest to the goal city? Straight line distances, when used as heuristic information in a route finding problem, can guide the algorithm by avoiding the exploration of cities on paths that are not leading toward the goal city. That being said, when we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city can be used as the estimated cost of the cheapest path between them, independently on the way one got to the starting city.
 
-It follows that we consider heuristic functions to
+It follows that we consider heuristic functions to be:
 
-- be non negative
+- non negative
 - problem specific
-- h(n) = 0 if and only if n.state is a goal state
+- s.t. h(n) = 0 if and only if n.state is a goal state
 
 There are other two properties we desire an heuristic function would have, namely **admissibility** and **consistency**.
 We introduce these properites in the remainder of the section, where we focus on the demonstration of completeness and optimaility of the *A\** search algorithm.
