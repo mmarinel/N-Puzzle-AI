@@ -3,7 +3,7 @@ An AI that can solve the N-puzzle
 
 ![](resources/images/github/NPuzzle-Board.png)
 
-This Project is about creating an AI that can solve the N-Puzzle for N=3,4,5,... (where N is the length of a side of the square puzzle)
+This Project is about creating an AI that can solve the N-Puzzle for N=3,4,5,... (where N is the length of a side of the squared puzzle)
 
 The N-Puzzle is a generalization of the [15-Puzzle](https://en.wikipedia.org/wiki/15_Puzzle) problem invented by a postmaster that went by the name of Noyes Palmer Chapman, in the late 19th century.
 
@@ -13,14 +13,14 @@ run it with:
 make run
 ```
 
-Ensure to have installed on your machine the following dependencies: **Qt6, cmake v. >=3.18 and make (I used GNU make v. 4.3)**
+Ensure to have the following dependencies installed on your machine: **Qt6, cmake v. >=3.18 and make (I used GNU make v. 4.3)**
 
 </br>
 
 As far as it concerns AI, this problem is often referred to as a "toy problem", meaning one of those problems whose solutions are not really relevant for the "real" world, but can be utilized as a test ground by researchers for newly discovered algorithms.
 
-The N-Puzzle, in particular, is *NP-Hard*, so it's not an easy problem to solve even if the word "toy" may make you think so.
-This problem has been studied a lot and it's very relevant for when it comes to evaluating the effectiveness and performance of AI search algorithms.
+The N-Puzzle, in particular, is *NP-Hard* for when it comes to finding optimal solutions, so it's not an easy problem to solve even if the word "toy" may make you think so.
+This problem has been studied a lot and it's been very relevant for when it comes to evaluating the effectiveness and performance of AI search algorithms.
 
 The particular area of AI in which we are moving refers to the design of problem solving agents which use so called "Search" algorithms. Meaning, agents who first try to solve the problem "in their minds" and then actuate when a solution is found.
 
@@ -36,7 +36,7 @@ This is the matter of out project: design an efficient algorithm to search for s
 
 The precise requirements of the project are described [here](en.subject.pdf), with one of the only constraints being the use of the *A\* search algorithm* ore one of its variants.
 
-In order to prevent the excessive memory consumption of the A\* search algorithm, I used a custom implementation of the ***Recursive Best First Search*** algorithm that uses the explored set with a compressed representation of the state (the board configuration), which makes up for a faster look-up in that set.
+In order to prevent the excessive memory consumption of the A\* search algorithm, I used a custom implementation of the ***Recursive Best First Search*** algorithm that uses the explored set with a compressed representation of the state (the board configuration), which makes up for a faster look-up in that set, plus an optimized calculation of the heuristic value based on that of the parent.
 
 
 1. [The A* search algorithm](README.md#the-a*-search-algorithm)
@@ -102,9 +102,9 @@ The difference between the *uniform cost* and *A\** search algorithms relies in 
 the heuristic function is the additional problem specific information we impart to our search algorithm so that it can be guided by knowledge on the problem beyond the problem description itself. One can gather such information from experience or other techniques as discussed in the *Appendix* section.
 
 One thing to immediately notice is that, unlike g, the h component of our f function only depends on the state at node n, not the node itself and the path we followed to get there.
-Think about the problem of getting from city A to city B using, preferably, the shortest path between them. How can we add information that suggests the algorithm which city, among a set of neighbouring cities, is closest to the goal city? Straight line distances, when used as heuristic information in a route finding problem, can guide the algorithm by avoiding the exploration of cities on paths that are not leading toward the goal city. That being said, when we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city can be used as the estimated cost of the cheapest path between them, independently on the way one got to the starting city.
+Think about the problem of getting from city A to city B using, preferably, the shortest path between them. How can we add information that suggests the algorithm which city, among a set of neighbouring cities, is closest to the goal city? Straight line distances, when used as heuristic information in a route finding problem, can guide the algorithm by avoiding the exploration of cities on paths that are not leading toward the goal city. From our own experience, in fact, we sense that the cities with the shortest path to a goal destination, also tend to be closer as the crow flies (this is not always the case, but it is generally true). That being said, when we have to get from city A to city B, passing through an indefinite number of intermediate cities, it's obvious that the shortest path between any two cities is the straight line that connects them. Therefore, the straight line distance between any city and the goal city can be used as the estimated cost of the cheapest path between them, independently on the way one got to the starting city.
 
-It follows that we consider heuristic functions to be:
+We consider heuristic functions to be:
 
 - non negative
 - problem specific
