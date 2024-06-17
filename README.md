@@ -213,7 +213,7 @@ If C* is the cost of the optimal solution, then we can say the following
 - *A\** expands all nodes with f(n) < C*
 - *A\** might expand some of the nodes right on the "goal contour" (where f(n) = C*) before selecting a goal node.
 
-Completeness requires that there be only finitely many nodes with cost less than or equal to C∗, a condition that is true if all step costs exceed some finite epsilon and if b is finite.
+Completeness requires that there be only finitely many nodes with cost less than or equal to C∗, a condition that is true if all step costs exceed some finite epsilon (otherwise one could follow an infinite loop and always have a path with cost less than C*) and if the branching factor b (how many children a node has on average) is finite.
 
 Moreover, *A\** is optimally efficient for any given heuristic. That is because any algorithm that does not expand all the nodes with f(n) < C* runs the risk of missing the optimal solution. The only way an algorithm can do a bit better than A* is by saving the useless expansion of some of the non goal nodes on the goal contour.
 
