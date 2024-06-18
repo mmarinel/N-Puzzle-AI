@@ -43,7 +43,6 @@ In order to prevent the excessive memory consumption of the A\* search algorithm
 	- [Heuristic Functions For the N-Puzzle](README.md#heuristic-functions-for-the-n-puzzle)
 2. [The N-Puzzle](README.md#the-n-puzzle)
 	- [Existence of Solutions](README.md#existence-of-a-solution)
-	- [Uniqueness of Optimal Solution](README.md#uniqueness-of-optimal-solution)
 3. [The Recursive Best First Search algorithm (RBFS)](README.md#rbfs)
 4. [Appendix](README.md#appendix)
 5. [Bibliography](README.md#bibliography)
