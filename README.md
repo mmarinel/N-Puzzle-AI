@@ -566,7 +566,7 @@ Which is an ODD number and since ODD + ODD = EVEN \&\& EVEN + ODD = ODD, the fol
 Given the previous invariant, the only way to reach such a state is when the initial configuration does not have one of the parities fixed but not the other. Because, in this case, no move will be able to fix one polarity without messing up the other.
 
 </br>
-The theorem we just proved provides a necessary, but not sufficient condition for the existence of solutions.
+The theorems we just proved provide a necessary, but not sufficient condition for the existence of solutions.
 To prove this condition is also sufficient, we must prove that, from the goal state, one can reach any permutation having even polarity.
 </br>
 
