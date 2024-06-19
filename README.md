@@ -569,7 +569,8 @@ Given the previous invariant, the only way to reach such a state is when the ini
 The theorems we just proved provide a necessary, but not sufficient condition for the existence of solutions.
 To prove this condition is also sufficient, we must prove that, from the goal state, one can reach any permutation having even polarity.
 I tried deriving this fact on my own like the preceding theorem, but I was unsuccessful. After searching for answers, I stumbled upon the first mathematicians that in the late 19-th century discovered the mathematical properties of the 15 Puzzle (Johnson and Story).
-*Story* proved that any permutation can be brought back to one of two possible final states: the goal configuration and the unsolvable configuration, which is derived from the goal by flipping its last two tiles. Being that the latter has an odd polarity by construction, it cannot be reached by any even permutation, leaving the goal configuration as the only possibility.
+
+[*Story*](https://www.jstor.org/stable/2369492?seq=6) proved that any permutation can be brought back to one of two possible final states: the goal configuration and the unsolvable configuration, which is derived from the goal by flipping its last two tiles. Being that the latter has an odd polarity by construction, it cannot be reached by any even permutation, leaving the goal configuration as the only possibility.
 </br>
 
 </br>
