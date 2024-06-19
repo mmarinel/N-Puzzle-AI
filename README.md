@@ -568,6 +568,8 @@ Given the previous invariant, the only way to reach such a state is when the ini
 </br>
 The theorems we just proved provide a necessary, but not sufficient condition for the existence of solutions.
 To prove this condition is also sufficient, we must prove that, from the goal state, one can reach any permutation having even polarity.
+I tried deriving this fact on my own like the preceding theorem, but I was unsuccessful. After searching for answers, I stumbled upon the first mathematicians that in the late 19-th century discovered the mathematical properties of the 15 Puzzle (Johnson and Story).
+*Story* proved that any permutation can be brought back to one of two possible final states: the goal configuration and the unsolvable configuration, which is derived from the goal by flipping its last two tiles. Being that the latter has an odd polarity by construction, it cannot be reached by any even permutation, leaving the goal configuration as the only possibility.
 </br>
 
 </br>
@@ -695,3 +697,5 @@ In case of broken links, you can find a copy of these articles in the *literatur
 - [*"Discovering Admissible Heuristics by Abstracting and Optimizing: A Transformational Approach" by Jack Mosto w and Arman d E. Prieditis*](https://web.mit.edu/6.034/wwwbob/absolver.pdf)
 
 - [*"Finding Optimal Solutions to the Twenty-Four Puzzle" by Richard E. Korf and Larry A. Taylor*](https://cdn.aaai.org/AAAI/1996/AAAI96-178.pdf) 
+
+- [*"Notes on the 15 Puzzle" by W. Johnson and and William E. Story*](https://www.jstor.org/stable/2369492?seq=6)
