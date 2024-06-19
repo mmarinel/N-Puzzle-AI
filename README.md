@@ -468,9 +468,19 @@ So, max{h1(n), ..., hm(n)} = hk(n) <= c(n, a, n') + hk(n') <= c(n, a, n') + max{
 ### Existence of a Solution
 In order to not doom our agent to failure, we must understand when the puzzle is solvable
 
-*Definition*: An inversion, inside a configuration, is formed whenever there is a tile with a greater number than another successive tile encountered while reading through the grid left-right, top-bottom starting from said tile
+**DISCLAIMER !!**: the following considerations are taken with respect to the classical formulation of the N puzzle problem, where the goal state is described as below 
 
-*Definition*: We define as polarity of a configuration the parity of its inversions
+|   |   |  | 
+|---|---|---|
+| 1  | 2  | 3  
+| 4  |  5 |  6 
+|  7 | 8  | 0  
+
+The results we will prove will also be valid for the SNAIL solution formulation, with a few tweaks we will make clear at the end of this section.
+
+*Definition*: An inversion, inside a configuration, is formed whenever there is a tile with a greater number on it than another successive tile encountered while reading through the grid left-right, top-bottom, starting from said tile. Tile '0' not being taken into consideration as it represents the blank, meaning the absence of a tile.
+
+*Definition*: We define polarity of a configuration the parity of its inversions
 
 *Example*: The following configuration has an odd polarity (the '0' represents the empty tile)
 
@@ -553,13 +563,16 @@ Which is an ODD number and since ODD + ODD = EVEN \&\& EVEN + ODD = ODD, the fol
 
 *Proof*: This is because the final state has both EVEN polarity (as there are no inversions in it) and ODD parity of empty tile row index (as the empty tile is in the bottomost rightmost corner, so at row 1).
 
-Given the previous invariant, the only way to reach such a state is when the initial configuration does not share parity of inversions with parity of empty tile row index.
+Given the previous invariant, the only way to reach such a state is when the initial configuration does not have one of the parities fixed but not the other. Because, in this case, no move will be able to fix one polarity without messing up the other.
 
 </br>
 The theorem we just proved provides a necessary, but not sufficient condition for the existence of solutions.
 To prove this condition is also sufficient, we must prove that, from the goal state, one can reach any permutation having even polarity.
+</br>
 
-
+</br>
+To translate these results into the SNAIL-solution formulation, we must first calculate the polarity of the goal state (which changes for different values of N in this case) and then we must substitute the EVEN polarity checks in the proved theorems with the polarity of such final state.
+So, for example, for N ODD we must start from a configuration having ODD polarity if the goal configuration has ODD polarity and viceversa.
 
 ## Appendix
 
