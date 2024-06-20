@@ -44,6 +44,7 @@ In order to prevent the excessive memory consumption of the A\* search algorithm
 2. [The N-Puzzle](README.md#the-n-puzzle)
 	- [Existence of Solutions](README.md#existence-of-a-solution)
 3. [The Recursive Best First Search algorithm (RBFS)](README.md#rbfs)
+	- [Heuristic functions I used](README.md#heuristic-functions-used)
 4. [Appendix](README.md#appendix)
 5. [Bibliography](README.md#bibliography)
 
@@ -576,6 +577,16 @@ I tried deriving this fact on my own like the preceding theorem, but I was unsuc
 </br>
 To translate these results into the SNAIL-solution formulation, we must first calculate the polarity of the goal state (which changes for different values of N in this case) and then we must substitute the EVEN polarity checks in the proved theorems with the polarity of such final state.
 So, for example, for N ODD we must start from a configuration having ODD polarity if the goal configuration has ODD polarity and viceversa.
+
+## RBFS
+
+Recursive Best First Search (RBFS) is a recursive algorithm that, at the expense of a small cost in efficiency, only uses linear space.
+I used this algorithm because A\* is impractical for our use case, as it will fill all available memory pretty soon on a common personal computer.</br>
+
+RBFS starts with the initial state of the problem and, if it is not a solution, it derives all of its children and puts them in an Open Set data structure, that it usually goes by the name of "fringe".
+The recursive process starts here; at each iteration, RBFS extracts the best child from the fringe (the one with the lowest f-value) and it instantiates a new search phase as if this was the root node of a new problem.</br>
+
+But with a twist! RBFS uses the f-value of the best alternative (the second-best child) as a cutoff for how far the new search phase can go without aborting. When the cutoff is reached, meaning when the best leaf of the n-th iteration has an f-value greater or equal than that of the cutoff, the recursion unwinds back and RBFS replaces the f-value of the ancestor with the f-value of the best child this search was able to find within the cutoff. We act this way because we just found out that the best path through the best child costs at least as much as what it is estimated it costs through the best alternative, so we might consider taking a peak on what the alternative has to offer us before continuing on the old path. So, the old-best child is put back in the frontier with an updated f-value, and the recursive process is started again on the old-best alternative, which is now the best child, using the new-best alternative (which may be any node now, even the old-best) f-value as the cutoff. If we'll want to come back, we can since the old-best node incapsulates the f-value of the best leaf we discovered in its now forgotten subtree.
 
 ## Appendix
 
