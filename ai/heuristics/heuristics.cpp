@@ -6,7 +6,7 @@
 /*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/06 23:06:07 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/21 23:15:27 by cy4gate_mma      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,23 @@ int		calculateConflictsOnRow(
 			int row,
 			const Problem& p
 		);
+bool		findTileOnRow(
+			const State::t_configuration& configuration,
+			int tile,
+			int size,
+			int row
+		);
 int		calculateConflictsOnColumn(
 			const State::t_configuration& configuration,
 			int size,
 			int column,
 			const Problem& p
+		);
+int		findTileOnColumn(
+			const State::t_configuration& configuration,
+			int tile,
+			int size,
+			int column
 		);
 /******END of static non-clas declarations*******/
 
@@ -63,14 +75,16 @@ int	NPuzzle::t_manhattan_score::operator()(const Node* n) const
 		{
 			int		x_movedTile = n->parent->s->j_empty;
 			int		y_movedTile = n->parent->s->i_empty;
+			int		old_x_movedTile = n->s->j_empty;
+			int		old_y_movedTile = n->s->i_empty;
 			int		movedTile = n->s->configuration[y_movedTile][x_movedTile];
-						goalPosition = n->p.goal.at(movedTile);
+					goalPosition = n->p.goal.at(movedTile);
 			int		oldScore_movedTile;
 			int		newScore_movedTile;
 
 			oldScore_movedTile = (
-				std::abs(n->s->i_empty - goalPosition.first) +
-				std::abs(n->s->j_empty - goalPosition.second)
+				std::abs(old_y_movedTile - goalPosition.first) +
+				std::abs(old_x_movedTile - goalPosition.second)
 			);
 			newScore_movedTile = (
 				std::abs(y_movedTile - goalPosition.first) +
@@ -276,66 +290,80 @@ int	NPuzzle::t_corner_tiles_score::operator()(const Node* n) const
 		auto	tileInBottomLeftGoalPos = n->p.goal.at(tileInBottomLeft);
 		auto	tileInBottomRight = n->s->configuration[n->s->size - 1][n->s->size - 1];
 		auto	tileInBottomRightGoalPos = n->p.goal.at(tileInBottomRight);
-		
+
+		auto	sideAdjacentTopLeftTile = n->s->configuration[0][1];
+		auto	updownAdjacentTopLeftTile = n->s->configuration[1][0];
+		auto	sideAdjacentTopRightTile = n->s->configuration[0][(n->s->size - 1) - 1];
+		auto	updownAdjacentTopRightTile = n->s->configuration[1][n->s->size - 1];
+		auto	sideAdjacentBottomLeftTile = n->s->configuration[n->s->size - 1][1];
+		auto	updownAdjacentBottomLeftTile = n->s->configuration[(n->s->size - 1) - 1][0];
+		auto	sideAdjacentBottomRightTile = n->s->configuration[n->s->size - 1][(n->s->size - 1) - 1];
+		auto	updownAdjacentBottomRighTile = n->s->configuration[(n->s->size - 1) - 1][n->s->size - 1];
+
 		score = 0;
 		adjustment = 0;
 		//top-left corner
 		if (std::pair<int, int>(0, 0) != tileInTopLeftGoalPos)
 		{
 			if (
-				std::pair<int, int>{0, 1} == n->p.goal.at(n->s->configuration[0][1]) &&
-				0 != tileInTopLeftGoalPos.first
-			)//next-to tile in next col cannot have row conflicts because is in its goal pos
-			//and the only conflict that can have is if the tile behind was in its goal row but wrong column
-			//since the tile behind is the corner tile, if it is in the right row it cannot be in its right column
-			//since the corner tile is not in its goal position.
+				std::pair<int, int>{0, 1} == n->p.goal.at(sideAdjacentTopLeftTile) &&
+				false == (0 == tileInTopLeft && 1 == updownAdjacentTopLeftTile) &&
+				false == findTileOnRow(n->s->configuration, 1, n->s->size, 0)
+			)
 				adjustment += 2;
 			if (
-				std::pair<int, int>{1, 0} == n->p.goal.at(n->s->configuration[1][0]) &&
-				0 != tileInTopLeftGoalPos.second
-			)//next-to tile in next row cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{1, 0} == n->p.goal.at(updownAdjacentTopLeftTile) &&
+				false == (0 == tileInTopLeft && 1 == sideAdjacentTopLeftTile) &&
+				false == findTileOnColumn(n->s->configuration, 1, n->s->size, 0)
+			)
 				adjustment += 2;
 		}
 		//top-right corner
 		if (std::pair<int, int>(0, n->s->size - 1) != tileInTopRightGoalPos)
 		{
 			if (
-				std::pair<int, int>{0, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[0][(n->s->size - 1) - 1]) &&
-				0 != tileInTopRightGoalPos.first
-			)//next-to tile in next col cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{0, (n->s->size - 1) - 1} == n->p.goal.at(sideAdjacentTopRightTile) &&
+				false == (0 == tileInTopRight && n->s->size == updownAdjacentTopRightTile) &&
+				false == findTileOnRow(n->s->configuration, n->s->size, n->s->size, 0)
+			)
 				adjustment += 2;
 			if (
-				std::pair<int, int>{1, n->s->size - 1} == n->p.goal.at(n->s->configuration[1][n->s->size - 1]) &&
-				n->s->size - 1 != tileInTopRightGoalPos.second
-			)//next-to tile in next row cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{1, n->s->size - 1} == n->p.goal.at(updownAdjacentTopRightTile) &&
+				false == (0 == tileInTopRight && n->s->size == sideAdjacentTopRightTile) &&
+				false == findTileOnColumn(n->s->configuration, n->s->size, n->s->size, n->s->size - 1)
+			)
 				adjustment += 2;
 		}
 		//bottom-left corner
 		if (std::pair<int, int>(n->s->size - 1, 0) != tileInBottomLeftGoalPos)
 		{
 			if (
-				std::pair<int, int>{(n->s->size - 1) - 1, 0} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][0]) &&
-				0 != tileInBottomLeftGoalPos.second
-			)//next-to tile in next row cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{(n->s->size - 1) - 1, 0} == n->p.goal.at(updownAdjacentBottomLeftTile) &&
+				false == (0 == tileInBottomLeft && 3*n->s->size - 2 == sideAdjacentBottomLeftTile) &&
+				false == findTileOnColumn(n->s->configuration, 3*n->s->size - 2, n->s->size, 0)
+			)
 				adjustment += 2;
 			if (
-				std::pair<int, int>{n->s->size - 1, 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][1]) &&
-				n->s->size - 1 != tileInBottomLeftGoalPos.first
-			)//next-to tile in next col cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{n->s->size - 1, 1} == n->p.goal.at(sideAdjacentBottomLeftTile) &&
+				false == (0 == tileInBottomLeft && 3*n->s->size - 2 == updownAdjacentBottomLeftTile) &&
+				false == findTileOnRow(n->s->configuration, 3*n->s->size - 2, n->s->size, n->s->size - 1)
+			)
 				adjustment += 2;
 		}
 		//bottom-right corner
 		if (std::pair<int, int>(n->s->size - 1, n->s->size - 1) != tileInBottomRightGoalPos)
 		{
 			if (
-				std::pair<int, int>{(n->s->size - 1) - 1, n->s->size - 1} == n->p.goal.at(n->s->configuration[(n->s->size - 1) - 1][n->s->size - 1]) &&
-				n->s->size - 1 != tileInBottomRightGoalPos.second
-			)//next-to tile in next row cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{(n->s->size - 1) - 1, n->s->size - 1} == n->p.goal.at(updownAdjacentBottomRighTile) &&
+				false == (0 == tileInBottomRight && 2*n->s->size - 1 == sideAdjacentBottomRightTile) &&
+				false == findTileOnColumn(n->s->configuration, 2*n->s->size - 1, n->s->size, n->s->size - 1)
+			)
 				adjustment += 2;
 			if (
-				std::pair<int, int>{n->s->size - 1, (n->s->size - 1) - 1} == n->p.goal.at(n->s->configuration[n->s->size - 1][(n->s->size - 1) - 1]) &&
-				n->s->size - 1 != tileInBottomRightGoalPos.first
-			)//next-to tile in next col cannot have row conflicts because is in its goal pos
+				std::pair<int, int>{n->s->size - 1, (n->s->size - 1) - 1} == n->p.goal.at(sideAdjacentBottomRightTile) &&
+				false == (0 == tileInBottomRight && 2*n->s->size - 1 == updownAdjacentBottomRighTile) &&
+				false == findTileOnRow(n->s->configuration, 2*n->s->size - 1, n->s->size, n->s->size - 1)
+			)
 				adjustment += 2;
 		}
 
@@ -565,6 +593,19 @@ int		calculateConflictsOnRow(
 	return adjustment;
 }
 
+bool		findTileOnRow(
+			const State::t_configuration& configuration,
+			int tile,
+			int size,
+			int row
+		)
+{
+	for (int j = 0; j < size; j++)
+		if (tile == configuration[row][j])
+			return true;
+	return false;
+}
+
 int		calculateConflictsOnColumn(
 			const State::t_configuration& configuration,
 			int size,
@@ -608,4 +649,17 @@ int		calculateConflictsOnColumn(
 		}
 	}
 	return adjustment;
+}
+
+int		findTileOnColumn(
+			const State::t_configuration& configuration,
+			int tile,
+			int size,
+			int column
+		)
+{
+	for (int i = 0; i < size; i++)
+		if (tile == configuration[i][column])
+			return true;
+	return false;
 }
