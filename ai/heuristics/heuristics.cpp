@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heuristics.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 15:40:52 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/21 23:15:27 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/22 15:56:37 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,14 @@ int	NPuzzle::t_linear_conflict_score::operator()(const Node* n) const
 									adjustment += 2;
 									break;//I just need to know if I gotta move
 										//(i.e.: if there is at least one conflict ahead)
+									//N.B.:Quando abbiamo una situazione del tipo: 2 3 1
+									//ci conviene contare 2 mosse per spostare e riportare nella riga giusta la tile 2
+									//e lo stesso numero di mosse per la tile 3
+									//Invece che contare solo 2 mosse per spostare e riportare nella riga giusta la tile 1
+									//Giustificazione: prova a invertire quel 3-cycle sul puzzle senza toccare le tile 2 e 3
+									//(i.e.: andare da 2 3 1 --a--> 1 2 3)
+									//ti renderai conto che dovrai ciclare attorno alla riga, mettendoci molte più mosse
+									//che spostando le tile 2 e 3 per fare spazio alla tile 1.
 								}
 							}
 						}
