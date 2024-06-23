@@ -721,7 +721,7 @@ We stop for now as we will talk more in detail about heuristic functions in the 
 
 ## Bibliography
 
-In case of broken links, you can find a copy of these articles in the *literature* folder of this project.
+In case of broken links, please let me know so that I can provide new ones.
 
 - "*Artificial Intelligence: A modern Approach" by Russell and Norvig (Third Edition)*
 
