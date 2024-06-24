@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:19:23 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:27:27 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/24 18:45:13 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	NPuzzle::parse_file(QString filepath)
 	bool		ok;
 	long int	size = std::string::npos;
 	Tile		tile;
-	size_t		parsed_elements_count = 0;
+	long int	parsed_elements_count = 0;
 
 	if (false == file.open(QIODevice::ReadOnly | QIODevice::Text))
 		return false;
@@ -132,7 +132,7 @@ void	NPuzzle::generate_board()
 	for (t_action& a: v)
 	{
 		a = static_cast<t_action>(
-			std::rand() / (1.0f + RAND_MAX) * 4
+			static_cast<float>(std::rand()) / (1.0f + static_cast<float>(RAND_MAX)) * 4
 		);
 	}
 	// performing moves

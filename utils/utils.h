@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 22:17:46 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 13:17:13 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/24 18:18:17 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_RNG
 {
 	int	operator() (int n)
 	{
-		return std::rand() / (1.0f + RAND_MAX) * n;
+		return static_cast<float>(std::rand()) / (1.0f + static_cast<float>(RAND_MAX)) * n;
 	}
 }	t_RNG;
 

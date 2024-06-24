@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SolveView.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 19:18:31 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/08 18:26:43 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/24 18:53:04 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ void	SolveView::workDone()
 	ss << "ms: " << elapsed_ms << std::endl;
 	ss << "ns: " << elapsed_ns << std::endl << std::endl;
 	ss << "Space Complexity: " << Node::max_instances << " nodes" << std::endl;
-	ss << "Time Complexity: " << NPuzzle::Agent::OpenSetNodeQueue::nbr_selected << " nodes" << std::endl;
+	ss << "Time Complexity: " << NPuzzle::Agent::get_nbr_selected() << " nodes" << std::endl;
 	ss << "Nodes instances at end of program: " << Node::instances << std::endl;
 	output->append(ss.str().c_str());
 	output->append(oldText);

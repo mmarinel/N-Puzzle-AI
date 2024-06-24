@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TileView.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 20:06:37 by matteo            #+#    #+#             */
-/*   Updated: 2024/04/24 18:49:39 by matteo           ###   ########.fr       */
+/*   Updated: 2024/06/24 18:15:00 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,5 @@ public:
 	int		heightForWidth(int w) const override;
 
 protected:
-	void	resizeEvent(QResizeEvent* event);
+	void	resizeEvent(QResizeEvent* event) override;
 };

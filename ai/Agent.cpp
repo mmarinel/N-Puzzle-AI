@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:13:01 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/06 23:09:12 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/24 18:52:59 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	NPuzzle::Agent::aStar()
 			continue ;
 		if (p.goalTest(node->s))
 		{
-			solution = std::move(p.solution(node));
+			solution = p.solution(node);
 			moves = solution.size();
 			// qDebug() << "returning solution";
 			emit workDone();
@@ -152,13 +152,13 @@ NPuzzle::Agent::rbfsRec(
 	t_rbfsIterResult	result;
 	
 	if (p.goalTest(node->s))
-		return (t_rbfsIterResult){node->f, true, std::move(p.solution(node)), false};
+		return (t_rbfsIterResult){node->f, true, p.solution(node), false};
 	
 	OpenSetNodeQueue	fringe{worse, t_frontierNodesEquals{}};
-	auto				actions = std::move(
+	auto				actions = (
 							usefulActions(
 								node,
-								std::move( p.actions(*(node->s)) )
+								p.actions(*(node->s))
 							)
 						);
 	for (const t_action& a: actions)
@@ -298,10 +298,15 @@ NPuzzle::Agent::usefulActions(
 			break ;
 		}
 	}
-	return actions;
+	return std::move(actions);
 }
 
 const Problem&		NPuzzle::Agent::problem()
 {
 	return p;
+}
+
+unsigned long long	NPuzzle::Agent::get_nbr_selected()
+{
+	return OpenSetNodeQueue::nbr_selected;
 }

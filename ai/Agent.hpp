@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Agent.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cy4gate_mmarinelli <cy4gate_mmarinelli@    +#+  +:+       +#+        */
+/*   By: mmarinel <mmarinel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 21:07:49 by matteo            #+#    #+#             */
-/*   Updated: 2024/06/05 10:21:44 by cy4gate_mma      ###   ########.fr       */
+/*   Updated: 2024/06/24 18:52:01 by mmarinel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,8 +198,9 @@ public:
 	Agent();
 	~Agent();
 	
-	void			run() override;
-	const Problem&	problem();
+	void						run() override;
+	const Problem&				problem();
+	static unsigned long long	get_nbr_selected();
 
 	std::stack<t_action>	solution;
 	int						moves;
